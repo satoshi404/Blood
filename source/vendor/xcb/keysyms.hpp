@@ -1,0 +1,32 @@
+#pragma once
+
+#include <pipeline.hpp>
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// xcb/keysyms.h
+
+#if PLATFORM_LINUX
+
+#if VENDOR_WAYLAND
+    #error " Wayland Compositor! "
+#endif
+
+#if VENDOR_XCB_KEYSYMS || VENDOR_ALL_XCB
+
+	struct XCB_KeySymbols
+	{
+		// ..
+	};
+
+#else
+
+	#include <xcb/xcb_keysyms.h>
+
+	// Types
+	using XCB_KeySymbols = xcb_key_symbols_t;
+
+#endif
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////

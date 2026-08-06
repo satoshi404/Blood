@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "blood",
+			"path": "../../blood"
+		},
+		{
+			"name": ".vscode",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
