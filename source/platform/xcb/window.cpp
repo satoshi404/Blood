@@ -20,26 +20,28 @@
 #include <vendor/xcb/keysyms.hpp>
 #include <vendor/x11/xutil.hpp>
 
-#include <vendor/libc/stdint.hpp>
-#include <vendor/libc/stdlib.hpp>
-#include <vendor/libc/string.hpp>
+// TODO: Windows error conflict strlen and strdup
+// #include <vendor/libc/stdio.hpp>
+// #include <vendor/libc/stdlib.hpp>
+// #include <vendor/libc/string.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // TODO: vendor
 #include <X11/Xlib.h>
 #include <X11/Xlib-xcb.h>
 
-static struct WindowHandle
+struct WindowHandler
 {
-  Display *display;
   XCB_Connection *connection;
   XCB_Window window;
-  XCB_Window root;
-
 #if defined(API_NAKED)
-
   xcb_gcontext_t gc;
-
 #endif
+
+  Display *display;
+  XCB_Window root;
 
   struct
   {
@@ -55,10 +57,9 @@ static struct WindowHandle
   XCB_Screen *screen;
 
   bool is_running;
+};
 
-} window_handle = {.is_running = false_value};
-
-WindowHandle handle = window_handle;
+GLOBAL WindowHandler window_handle;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,6 +86,7 @@ static XCB_Atom intern_atom(XCB_Connection *connection, const char *atom_name)
 
 bool CoreWindow::init()
 {
+  window_handle = {0};
 
   IfNullReturn(window_handle.display = XOpenDisplay(nullptr), false_value, "Failed to open X display");
 
@@ -126,13 +128,22 @@ bool CoreWindow::init()
   window_handle.window = xcb_generate_id(window_handle.connection);
   window_handle.root = window_handle.screen->root;
 
-  uint32_t value_mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-  uint32_t value_list[2];
-  value_list[0] = window_handle.screen->white_pixel; // White background
-  value_list[1] = XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_KEY_RELEASE;
-
 // TODO: Better implementation
 #if RENDERER && API_OPENGL
+
+  xcb_colormap_t colormap = xcb_generate_id(window_handle.connection);
+  xcb_create_colormap(
+      window_handle.connection,
+      XCB_COLORMAP_ALLOC_NONE,
+      colormap,
+      window_handle.screen->root,
+      visual->visualid);
+
+  uint32_t value_mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
+  uint32_t value_list[3];
+  value_list[0] = window_handle.screen->white_pixel;
+  value_list[1] = XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_KEY_RELEASE;
+  value_list[2] = colormap;
 
   xcb_create_window(
       window_handle.connection,
@@ -143,21 +154,19 @@ bool CoreWindow::init()
       WindowConfig::Get::width(), WindowConfig::Get::height(),
       0,
       XCB_WINDOW_CLASS_INPUT_OUTPUT,
-      // 0,
       visual->visualid,
       value_mask,
       value_list);
 
   GLXDrawable drawable = (GLXDrawable)window_handle.window;
 
-  GLXContext context =
-      glXCreateContext(
-          window_handle.display,
-          visual,
-          nullptr,
-          true_value);
+  GLXContext context = glXCreateContext(
+      window_handle.display,
+      visual,
+      nullptr,
+      true_value);
 
-  IfNullReturn(visual, false_value, "Error: GlXChooseContext failed");
+  IfNullReturn(context, false_value, "Error: GlXChooseContext failed");
 
   glXMakeCurrent(
       window_handle.display,
@@ -165,6 +174,11 @@ bool CoreWindow::init()
       context);
 
 #else
+
+  uint32_t value_mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+  uint32_t value_list[2];
+  value_list[0] = window_handle.screen->white_pixel; // White background
+  value_list[1] = XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_KEY_RELEASE;
 
   xcb_create_window(
       window_handle.connection,
@@ -181,11 +195,12 @@ bool CoreWindow::init()
 #endif
 
 #if API_NAKED
-
-  auto a = DefaultGC(window_handle.display, window_handle.screen);
-
-  // ..
-
+  window_handle.gc = xcb_generate_id(window_handle.connection);
+  uint32_t gc_mask = XCB_GC_FOREGROUND | XCB_GC_BACKGROUND;
+  uint32_t gc_values[2] = {
+      window_handle.screen->black_pixel,
+      window_handle.screen->white_pixel};
+  xcb_create_gc(window_handle.connection, window_handle.gc, window_handle.window, gc_mask, gc_values);
 #endif
 
   X11_SetFixedSize_Hints(window_handle.connection, window_handle.window, WindowConfig::Get::width(), WindowConfig::Get::height());
@@ -257,22 +272,41 @@ bool CoreWindow::init()
   window_handle.key_symbols = xcb_key_symbols_alloc(window_handle.connection);
   window_handle.is_running = true_value;
 
-  // Show
-  xcb_map_window(window_handle.connection, window_handle.window);
-  xcb_flush(window_handle.connection);
+  Debug::Println(PrintColor_Yellow, "Window XCB:");
+  Debug::Println(PrintColor_Yellow, "XCB Connection %p", window_handle.connection);
+  Debug::Println(PrintColor_Yellow, "XCB GC %p", window_handle.gc);
+  Debug::Println(PrintColor_Yellow, "XCB WINDOW %p", window_handle.window);
 
   return true_value;
 }
 
+void CoreWindow::show()
+{
+  // Show
+  xcb_map_window(window_handle.connection, window_handle.window);
+  xcb_flush(window_handle.connection);
+}
+
+void CoreWindow::swap_buffers()
+{
+#if RENDERER && API_OPENGL
+  glXSwapBuffers(window_handle.display, (GLXDrawable)window_handle.window);
+
+#elif !RENDERER
+  xcb_flush(window_handle.connection);
+
+#endif
+}
+
 void CoreWindow::update_config()
 {
+  Debug::Println(PrintColor_Green, "%ix%i", WindowConfig::Get::width(), WindowConfig::Get::height());
 
   // Size config window update
   {
     i32 dims[] = {WindowConfig::Get::width(), WindowConfig::Get::height()};
     xcb_configure_window(window_handle.connection, window_handle.window,
                          XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT, dims);
-
     xcb_flush(window_handle.connection);
   }
 

@@ -4,12 +4,12 @@
 #include <core/memory.hpp> // usa alloc_time_ns() como base de clock monotônico
 
 // Assinatura da função a ser chamada: recebe um ponteiro genérico opcional
-using TimerCallback = void(*)(void* user_data);
+using TimerCallback = void (*)(void *user_data);
 
 struct ScheduledTask
 {
     TimerCallback callback;
-    void* user_data;
+    void *user_data;
     u64 time_remaining_us;
     u64 interval_us; // usado quando repeat == true, pra reiniciar a contagem
     bool repeat;
@@ -18,9 +18,9 @@ struct ScheduledTask
 
 #if PLATFORM_LINUX
 // TimeSpec já é declarado em core/memory.hpp; só precisamos do nanosleep aqui.
-extern "C" int nanosleep( const TimeSpec*, TimeSpec* );
+extern "C" int nanosleep(const TimeSpec *, TimeSpec *);
 #elif PLATFORM_WINDOWS
-extern "C" void Sleep( unsigned long );
+extern "C" void Sleep(unsigned long);
 #endif
 
 // Namespace utilitário para ler o relógio monotônico em microssegundos
@@ -38,15 +38,15 @@ namespace Timer
 
     // Dorme a thread pelo tempo pedido (em microssegundos).
     // Usado pra cravar um teto de FPS (ex.: 60) sem gastar 100% da CPU.
-    static INLINE void sleep_microseconds( u64 microseconds )
+    static INLINE void sleep_microseconds(u64 microseconds)
     {
 #if PLATFORM_LINUX
         TimeSpec req{};
-        req.tv_sec  = static_cast<i64>( microseconds / 1000000ULL );
-        req.tv_nsec = static_cast<i64>( ( microseconds % 1000000ULL ) * 1000ULL );
-        nanosleep( &req, nullptr );
+        req.tv_sec = static_cast<i64>(microseconds / 1000000ULL);
+        req.tv_nsec = static_cast<i64>((microseconds % 1000000ULL) * 1000ULL);
+        nanosleep(&req, nullptr);
 #elif PLATFORM_WINDOWS
-        Sleep( static_cast<unsigned long>( microseconds / 1000ULL ) );
+        Sleep(static_cast<unsigned long>(microseconds / 1000ULL));
 #endif
     }
 }
@@ -61,7 +61,7 @@ private:
 public:
     // Adiciona uma nova tarefa na fila estática.
     // repeat = true faz o callback disparar de novo a cada `delay_us`, indefinidamente.
-    static void schedule(u64 delay_us, TimerCallback callback, void* user_data = nullptr, bool repeat = false)
+    static void schedule(u64 delay_us, TimerCallback callback, void *user_data = nullptr, bool repeat = false)
     {
         for (usize i = 0; i < MAX_TASKS; ++i)
         {
@@ -89,7 +89,8 @@ public:
     {
         for (usize i = 0; i < MAX_TASKS; ++i)
         {
-            if (!m_tasks[i].active) continue;
+            if (!m_tasks[i].active)
+                continue;
 
             if (delta_us >= m_tasks[i].time_remaining_us)
             {

@@ -3,106 +3,102 @@
 #include <core/types.hpp>
 #include <core/memory.hpp>
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
+template <typename T>
 class List
 {
-	public:
+public:
+	void invert_data(isize capacity_bytes)
+	{
+		void *new_data = malloc(capacity_bytes);
 
-		void invert_data( isize capacity_bytes )
+		memcpy(new_data, data, capacity);
+		free(data);
+
+		data = new_data;
+		capacity = capacity_bytes;
+	}
+
+	void append(T value)
+	{
+		if (capacity < (size() + 1) * sizeof(T))
 		{
-			void* new_data = malloc( capacity_bytes );
+			isize new_capacity = capacity * 2;
+			void *new_data = malloc(new_capacity);
 
-			memcpy( new_data, data, capacity );
-			free( data );
+			memcpy(new_data, data, capacity);
+			free(data);
 
 			data = new_data;
-			capacity = capacity_bytes;
-
+			capacity = new_capacity;
 		}
 
-		void append( T value )
+		T *values = static_cast<T *>(data);
+		values[size()] = value;
+	}
+
+	NO_DISCARD T get(u64 index) const
+	{
+		if (index >= size())
+			return T{};
+
+		T *values = static_cast<T *>(data);
+		return values[index];
+	}
+
+	NO_DISCARD u64 size() const
+	{
+		return capacity / sizeof(T);
+	}
+
+	void clear()
+	{
+		if (data)
+			free(data);
+		data = nullptr;
+		capacity = 0;
+		memset(this, 0, sizeof(List));
+	}
+
+	class Iterator
+	{
+	public:
+		Iterator(const List *list, u64 index)
+			: list(list), index(index)
 		{
-			if ( capacity < ( size() + 1 ) * sizeof( T ) )
-			{
-				isize new_capacity = capacity * 2;
-				void* new_data = malloc( new_capacity );
-
-				memcpy( new_data, data, capacity );
-				free( data );
-
-				data = new_data;
-				capacity = new_capacity;
-			}
-
-			T* values = static_cast<T*>( data );
-			values[ size() ] = value;
 		}
 
-		NO_DISCARD T get( u64 index ) const
+		Iterator &operator++()
 		{
-			if ( index >= size() ) return T{};
-
-			T* values = static_cast<T*>( data );
-			return values[ index ];
+			index++;
+			return *this;
 		}
 
-		NO_DISCARD u64 size() const
+		bool operator!=(const Iterator &other) const
 		{
-			return capacity / sizeof( T );
+			return index != other.index;
 		}
 
-		void clear()
+		T operator*() const
 		{
-			if ( data ) free( data );
-			data = nullptr;
-			capacity = 0;
-			memset( this, 0, sizeof( List ) );
+			return list->get(index);
 		}
-
-		class Iterator
-		{
-			public:
-
-				Iterator( const List* list, u64 index )
-					: list( list )
-					, index( index )
-				{}
-
-				Iterator& operator++()
-				{
-					index++;
-					return *this;
-				}
-
-				bool operator!=( const Iterator& other ) const
-				{
-					return index != other.index;
-				}
-
-				T operator*() const
-				{
-					return list->get( index );
-				}
-
-			private:
-
-				const List* list;
-				u64 index;
-		};
 
 	private:
+		const List *list;
+		u64 index;
+	};
 
-		void* data;
-		isize capacity;
+private:
+	void *data;
+	isize capacity;
 
-		void init( isize capacity_bytes )
-		{
-			capacity = capacity_bytes;
-			data = malloc( capacity );
-		}
+	void init(isize capacity_bytes)
+	{
+		capacity = capacity_bytes;
+		data = malloc(capacity);
+	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -164,3 +164,5 @@ INLINE void* ptr_offset( void* ptr, usize offset ) { return reinterpret_cast<voi
 INLINE void* ptr_offset_ptr( void* ptr, usize offset ) { return reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + offset ); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define GLOBAL

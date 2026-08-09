@@ -2,6 +2,7 @@
 
 #include <core/types.hpp>
 
+#include <pipeline.hpp>
 #include <constants.hpp>
 
 #include <vendor/windows/windows.hpp>
@@ -16,8 +17,17 @@ namespace CoreWindow
   extern void close();
   extern void show();
 
+  extern void swap_buffers();
+
   extern void pool();
   extern void terminate();
+
+  // TODO: Change it
+  #if PLATFORM_LINUX
+  extern void* get_gc();
+  extern void* get_window();
+  extern void* get_connection();
+  #endif
 
   extern void update_config();
 }

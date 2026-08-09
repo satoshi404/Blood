@@ -163,9 +163,7 @@ void RenderFrame()
     g_frameIndex = g_swapChain->GetCurrentBackBufferIndex();
 }
 
-
 #include <vendor/windows/windows.hpp>
-#include <windowsx.h>
 
 static struct
 {

@@ -1,6 +1,9 @@
 #include <vendor/x11/xutil.hpp>
-#include <vendor/libc/string.hpp>
 #include <vendor/xcb/xproto.hpp>
+
+// TODO: Conflict
+// #include <vendor/libc/string.hpp>
+#include <string.h>
 
 #include <core/debug.hpp>
 

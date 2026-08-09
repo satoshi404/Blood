@@ -3,26 +3,23 @@
 #include <core/string.hpp>
 
 #include <core/types.hpp>
-//#include <core/memory.hpp>
+// #include <core/memory.hpp>
 #include <core/timer.hpp>
 #include <platform/keyboard.hpp>
 
-#include <renderer/gpu.hpp>
+#include <renderer/gpu.factory.hpp>
 
 // TODO: Windows error conflict strlen and strdup
-//#include <vendor/libc/stdio.hpp>
-//#include <vendor/libc/stdlib.hpp>
-//#include <vendor/libc/string.hpp>
+// #include <vendor/libc/stdio.hpp>
+// #include <vendor/libc/stdlib.hpp>
+// #include <vendor/libc/string.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-
 #include <pipeline.hpp>
 
 // TODO: Better implementation
-
-
 
 enum_type(EngineMode, u32){
     EngineMode_Debug,
@@ -33,12 +30,14 @@ enum_type(EngineMode, u32){
 
 int main(int argc, char **argv)
 {
+
+  // TEST WINDOWS WINDOW
+#if PLATFORM_WINDOWS
   CoreString testString = CoreString<const char *>("Hello, World");
   Debug::Println(PrintColor_Cyan, "Data: %s, Size: %llu", testString.data(), testString.size());
 
-
   if (!CoreWindow::init())
-  return exit_failed_code;
+    return exit_failed_code;
 
   CoreWindow::show();
 
@@ -47,22 +46,56 @@ int main(int argc, char **argv)
     CoreWindow::pool();
   }
 
-#if 0
+  CoreWindow::terminate();
 
-#if 0
-  GpuLayer_Draw draw =
-  {
-    .context = DrawContext_2D,
-    .type = DrawCommandType_Cube
-  };
+#endif
 
-  GpuLayer_Command command
-  {
-    .type = CommandType_Draw,
-    .draw = draw
-  };
+  // WORK ON LINUX JUST
+#if PLATFORM_LINUX
+#if 1
 
-  GpuLayer::bind_command( command );
+  if (!CoreWindow::init())
+    return exit_failed_code;
+
+  CoreWindow::show();
+
+#if RENDERER
+  // Precisa vir depois de CoreWindow::init()/show(), pois e' so' ali que o
+  // contexto GLX fica current (glXMakeCurrent) — antes disso glewInit()
+  // (chamado dentro de GpuLayer::init()) falharia.
+  if (!GpuLayer::init())
+    return exit_failed_code;
+
+  GpuLayer_Command command_viewport = GpuLayer::make_viewport_command(
+      0, 0,
+      (i32)WindowConfig::Get::width(),
+      (i32)WindowConfig::Get::height(),
+      "main_viewport");
+
+  GpuLayer::bind_command(command_viewport);
+
+  // Materiais que o cubo pode usar — trocaveis a qualquer momento via
+  // update_descriptor(), sem recriar nada.
+  static GpuLayer_Material cube_material_normal = {{0.95f, 0.55f, 0.15f, 1.0f}, 0};
+  static GpuLayer_Material cube_material_highlight = {{1.00f, 0.95f, 0.20f, 1.0f}, 0};
+
+  static GpuTransform cube_transform = {
+      .position = {0.0f, 0.0f, -5.0f},
+      .rotation = {1, 1, 1},
+      //.scale = { 0.1, 0.1, 0.1 }
+
+    };
+
+  GpuLayer_Descriptor cube_descriptor = {};
+  cube_descriptor.type = DrawCommandType_Cube;
+  cube_descriptor.context = Context_3D;
+  cube_descriptor.material = &cube_material_normal; // mesh = nullptr -> usa o quad padrao do Cube
+  cube_descriptor.transform = cube_transform;
+  strncpy(cube_descriptor.label, "cube", sizeof(cube_descriptor.label) - 1);
+
+  GpuLayer_DescriptorHandle cube_handle = GpuLayer::create_descriptor(cube_descriptor);
+
+  GpuLayer_CommandList frame_commands;
 
 #endif
 
@@ -83,16 +116,17 @@ int main(int argc, char **argv)
 
   WindowConfig::Set::title(base_title);
   CoreWindow::update_config();
+  Debug::Println(PrintColor_Cyan, "Here?");
 
   TimerScheduler main_scheduler;
   main_scheduler.schedule(1000000ULL, [](void *user_data)
-  {
+                          {
         static u64 seconds_elapsed = 0;
         seconds_elapsed++;
-        Debug::Println( PrintColor_Cyan, "[Uptime] %llu segundos", seconds_elapsed );
-  }, nullptr,
-  /*repeat=*/true
-  );
+        Debug::Println( PrintColor_Cyan, "[Uptime] %llu segundos", seconds_elapsed ); }, nullptr,
+                          /*repeat=*/true);
+
+  Debug::Println(PrintColor_Cyan, "Here2?");
 
   static bool title_changed = false_value;
   static u64 title_change_timer = 0;
@@ -109,6 +143,9 @@ int main(int argc, char **argv)
 
   u64 last_time = Timer::Get::microseconds();
 
+  f64 angle = 0.;
+  constexpr f64 ROTATION_SPEED = 4.0;
+
   while (!CoreWindow::should_close())
   {
 
@@ -118,10 +155,19 @@ int main(int argc, char **argv)
 
     CoreWindow::pool();
 
+#if RENDERER
+    GpuLayer::new_frame();
+
+    frame_commands.push(GpuLayer::make_clear_command(0.4f, 0.4f, 0.4f, 1.0f, "clear_bg"));
+    frame_commands.push(GpuLayer::make_draw_command(cube_handle, "draw_cube"));
+    frame_commands.push(GpuLayer::make_transform_command(1, 1, 1, "cube_trans"));
+    frame_commands.push(GpuLayer::make_swap_command("present"));
+
+    GpuLayer::submit(frame_commands);
+#endif
+
     main_scheduler.update(delta);
 
-    // TODO: Work on linux yet
-    #if PLATFORM_LINUX
     if (Keyboard::check_pressed(KeyCodeType_Space) && !title_changed)
     {
       strncpy(saved_base_title, base_title, sizeof(saved_base_title) - 1);
@@ -129,6 +175,15 @@ int main(int argc, char **argv)
 
       title_changed = true_value;
       title_change_timer = 0;
+
+#if RENDERER
+      // Demonstra a troca do Descriptor em tempo real: o MESMO handle
+      // passa a apontar pra outro material enquanto o titulo estiver em
+      // "YEAH" — nenhum comando precisa ser recriado, o proximo
+      // make_draw_command(cube_handle) ja' desenha com a cor nova.
+      cube_descriptor.material = &cube_material_highlight;
+      GpuLayer::update_descriptor(cube_handle, cube_descriptor);
+#endif
     }
 
     if (Keyboard::check_pressed(KeyCodeType_Escape))
@@ -147,6 +202,15 @@ int main(int argc, char **argv)
 
       CoreWindow::update_config();
       CoreWindow::change_resolution();
+// Update viewport
+#if RENDERER
+      command_viewport = GpuLayer::make_viewport_command(
+          0, 0,
+          (i32)WindowConfig::Get::width(),
+          (i32)WindowConfig::Get::height(),
+          "main_viewport");
+      GpuLayer::bind_command(command_viewport);
+#endif
       Debug::Println(PrintColor_Green, "[Resolution:%s ] %ix%i", is_fullscreen ? "Windowed" : "Fullscreen",
                      WindowConfig::Get::width(),
                      WindowConfig::Get::height());
@@ -160,10 +224,13 @@ int main(int argc, char **argv)
       {
         strncpy(base_title, saved_base_title, sizeof(base_title) - 1);
         title_changed = false_value;
+
+#if RENDERER
+        cube_descriptor.material = &cube_material_normal;
+        GpuLayer::update_descriptor(cube_handle, cube_descriptor);
+#endif
       }
     }
-
-    #endif
 
     frame_count++;
     fps_accum_us += delta;
@@ -179,6 +246,22 @@ int main(int argc, char **argv)
       CoreWindow::update_config();
     }
 
+    angle += ROTATION_SPEED * (delta / 1'000'000.0);
+
+    // f32 rotation[3][3];
+    // get_rotation_X( angle , rotation );
+
+    cube_transform.rotation[0] = static_cast<f32>(angle);
+    cube_transform.rotation[1] = static_cast<f32>(angle);
+    cube_transform.rotation[2] = static_cast<f32>(angle);
+    cube_transform.mark_dirty();
+
+    GpuTransformOps::update_matrix(cube_transform);
+
+    cube_descriptor.transform = cube_transform;
+
+    GpuLayer::update_descriptor(cube_handle, cube_descriptor);
+
     Keyboard::update(delta);
 
     {
@@ -192,10 +275,14 @@ int main(int argc, char **argv)
     }
   }
 
-
+#if RENDERER
+  GpuLayer::destroy_descriptor(cube_handle);
+  GpuLayer::shutdown();
 #endif
 
   CoreWindow::terminate();
+#endif
+#endif
 
   return exit_success_code;
 }

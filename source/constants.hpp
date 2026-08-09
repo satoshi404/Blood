@@ -5,13 +5,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#define RENDERER ( 1 )
 
-#define API_NAKED  ( 1 )
-#define API_OPENGL ( 0 )
+#define API_NAKED  ( 0 )
+#define API_OPENGL ( 1 )
 #define API_VULKAN ( 0 )
 #define API_D3D12  ( 0 )
 
+#define RENDERER ( API_NAKED || API_D3D12 || API_OPENGL || API_VULKAN )
 
 #if API_NAKED
 
@@ -50,7 +50,7 @@
 
 #define WINDOW_DEFAULT_HEIGHT ( 600 )
 #define WINDOW_DEFAULT_WIDTH  ( 800 )
-#define WINDOW_DEFAULT_TITLE  "AxelEngine"
+#define WINDOW_DEFAULT_TITLE  ( "AxelEngine" )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
