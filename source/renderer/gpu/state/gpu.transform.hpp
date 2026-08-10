@@ -2,9 +2,12 @@
 
 #include <core/types.hpp>
 
+#include <renderer/gpu/core/gpu.enums.hpp>
 
 struct GpuTransform
 {
+    GpuContext context;
+
     f32 position[3] = { 0.0f, 0.0f, 0.0f };
     f32 rotation[3] = { 0.0f, 0.0f, 0.0f };
     f32 scale[3]    = { 1.0f, 1.0f, 1.0f };

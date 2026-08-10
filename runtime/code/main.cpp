@@ -82,8 +82,7 @@ int main(int argc, char **argv)
   static GpuTransform cube_transform = {
       .position = {0.0f, 0.0f, -5.0f},
       .rotation = {1, 1, 1},
-      //.scale = { 0.1, 0.1, 0.1 }
-
+      .scale = { 0.5, 0.5, 0.5 }
     };
 
   GpuLayer_Descriptor cube_descriptor = {};
@@ -143,8 +142,12 @@ int main(int argc, char **argv)
 
   u64 last_time = Timer::Get::microseconds();
 
+  #if RENDERER
+
   f64 angle = 0.;
   constexpr f64 ROTATION_SPEED = 4.0;
+
+  #endif
 
   while (!CoreWindow::should_close())
   {
@@ -158,7 +161,7 @@ int main(int argc, char **argv)
 #if RENDERER
     GpuLayer::new_frame();
 
-    frame_commands.push(GpuLayer::make_clear_command(0.4f, 0.4f, 0.4f, 1.0f, "clear_bg"));
+    frame_commands.push(GpuLayer::make_clear_command(0.4f, 0.7f, 0.9f, 1.0f, "clear_bg"));
     frame_commands.push(GpuLayer::make_draw_command(cube_handle, "draw_cube"));
     frame_commands.push(GpuLayer::make_transform_command(1, 1, 1, "cube_trans"));
     frame_commands.push(GpuLayer::make_swap_command("present"));
@@ -246,14 +249,26 @@ int main(int argc, char **argv)
       CoreWindow::update_config();
     }
 
+    #if RENDERER
+
     angle += ROTATION_SPEED * (delta / 1'000'000.0);
 
-    // f32 rotation[3][3];
-    // get_rotation_X( angle , rotation );
+    if (cube_descriptor.context == Context_2D)
+    {
+        cube_transform.rotation[0] = static_cast<f32>(angle);
+        cube_transform.rotation[1] = static_cast<f32>(angle);
+        cube_transform.rotation[2] = 0;
+    }
+    else
+    {
+        cube_transform.rotation[0] = static_cast<f32>(angle);
+        cube_transform.rotation[1] = static_cast<f32>(angle);
+        cube_transform.rotation[2] = static_cast<f32>(angle);
+    }
 
-    cube_transform.rotation[0] = static_cast<f32>(angle);
-    cube_transform.rotation[1] = static_cast<f32>(angle);
-    cube_transform.rotation[2] = static_cast<f32>(angle);
+    //cube_transform.rotation[0] = static_cast<f32>(angle);
+    //cube_transform.rotation[1] = static_cast<f32>(angle);
+    //cube_transform.rotation[2] = static_cast<f32>(angle);
     cube_transform.mark_dirty();
 
     GpuTransformOps::update_matrix(cube_transform);
@@ -261,6 +276,8 @@ int main(int argc, char **argv)
     cube_descriptor.transform = cube_transform;
 
     GpuLayer::update_descriptor(cube_handle, cube_descriptor);
+
+    #endif
 
     Keyboard::update(delta);
 

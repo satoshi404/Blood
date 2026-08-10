@@ -2,6 +2,22 @@
 
 #include <core/types.hpp>
 
+
+// TODO: New
+enum_type( GpuShaderType, u32 )
+{
+    GpuShaderType_Vertex,
+    GpuShaderType_Frag,
+};
+
+enum_type( GpuShaderRuntimeType, u32 )
+{
+    GpuShaderRuntimeType_DefaultApi,
+    GpuShaderRuntimeType_BloodLanguage,
+    GpuShaderRuntimeType_Abs,
+};
+
+
 enum_type(GpuCommandType, u32){
     GpuCommandType_Clear,
     GpuCommandType_Draw,

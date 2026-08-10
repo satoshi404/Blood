@@ -12,5 +12,4 @@ namespace GpuBufferPool
     bool destroy(GpuBufferHandle handle);
 
     GpuBuffer* get(GpuBufferHandle handle);
-    //const GpuBuffer* get(GpuBufferHandle handle);
 }

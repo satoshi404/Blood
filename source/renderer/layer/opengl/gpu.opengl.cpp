@@ -35,7 +35,8 @@ void GpuBackend::clear(const GpuClear &c)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-#include <cmath>
+// TODO:
+#include <vendor/libc/math.hpp>
 
 void GpuBackend::viewport(const GpuViewport &vp)
 {

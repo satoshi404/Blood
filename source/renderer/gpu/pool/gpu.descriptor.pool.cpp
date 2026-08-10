@@ -2,59 +2,63 @@
 #include <renderer/gpu/core/gpu.limits.hpp>
 #include <core/debug.hpp>
 
-namespace
+struct Slot
 {
-    struct Slot
-    {
-        GpuDescriptor value = {};
-        u32 generation = 0;
-        bool alive = false_value;
-    };
+    GpuDescriptor value = {};
+    u32 generation = 0;
+    bool alive = false_value;
+};
 
-    Slot g_slots[GpuLimits::MaxDescriptors];
-    u32 g_count = 0;
-    bool g_initialized = false_value;
+static Slot slots[ GpuLimits::MaxDescriptors ];
+static u32  slot_size = 0;
 
-    bool valid(GpuDescriptorHandle h)
-    {
-        return g_initialized
-            && h.is_valid()
-            && h.index < GpuLimits::MaxDescriptors
-            && g_slots[h.index].alive
-            && g_slots[h.index].generation == h.generation;
-    }
+static bool descriptor_initialised = false_value;
+
+static bool valid_handler( GpuDescriptorHandle handle )
+{
+    return
+    (
+        handle.is_valid() &&
+        handle.index < GpuLimits::MaxDescriptors &&
+        slots[handle.index].alive &&
+        ( slots[handle.index].generation == handle.generation )
+    );
 }
 
 bool GpuDescriptorPool::init()
 {
-    if (g_initialized)
-        return true_value;
+    for ( u32 i = 0; i < GpuLimits::MaxDescriptors; ++i ) slots[ i ] = {};
 
-    for (u32 i = 0; i < GpuLimits::MaxDescriptors; ++i)
-        g_slots[i] = {};
+    slot_size = 0;
 
-    g_count = 0;
-    g_initialized = true_value;
+    descriptor_initialised = true_value;
+
     return true_value;
 }
 
 void GpuDescriptorPool::shutdown()
 {
-    g_initialized = false_value;
-    g_count = 0;
+    if ( !descriptor_initialised )
+    {
+        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
+        return;
+    }
+    slot_size = 0;
 
-    for (u32 i = 0; i < GpuLimits::MaxDescriptors; ++i)
-        g_slots[i] = {};
+    for (u32 i = 0; i < GpuLimits::MaxDescriptors; ++i) slots[i] = {};
 }
 
-GpuDescriptorHandle GpuDescriptorPool::create(const GpuDescriptor& descriptor)
+GpuDescriptorHandle GpuDescriptorPool::create(const GpuDescriptor &descriptor)
 {
-    if (!g_initialized)
-        init();
-
-    for (u32 i = 0; i < GpuLimits::MaxDescriptors; ++i)
+    if ( !descriptor_initialised )
     {
-        Slot& slot = g_slots[i];
+        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
+        return {};
+    }
+
+    for ( u32 i = 0; i < GpuLimits::MaxDescriptors; ++i )
+    {
+        Slot &slot = slots[i];
 
         if (slot.alive)
             continue;
@@ -65,64 +69,62 @@ GpuDescriptorHandle GpuDescriptorPool::create(const GpuDescriptor& descriptor)
 
         slot.value = descriptor;
         slot.alive = true_value;
-        ++g_count;
+        ++slot_size;
 
-        return { i, slot.generation };
+        return {i, slot.generation};
     }
 
     Debug::Println(
         PrintColor_Red,
         "[Gpu] Descriptor pool cheio (max %u)",
-        GpuLimits::MaxDescriptors
-    );
+        GpuLimits::MaxDescriptors);
 
     return {};
 }
 
 bool GpuDescriptorPool::update(
     GpuDescriptorHandle handle,
-    const GpuDescriptor& descriptor)
+    const GpuDescriptor &descriptor)
 {
-    if (!valid(handle))
+    if ( !descriptor_initialised )
+    {
+        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
         return false_value;
+    }
 
-    g_slots[handle.index].value = descriptor;
-    g_slots[handle.index].value.dirty = true;
+    if ( !valid_handler(handle) ) return false_value;
+
+    slots[handle.index].value = descriptor;
+    slots[handle.index].value.dirty = true;
     return true_value;
 }
 
 bool GpuDescriptorPool::destroy(GpuDescriptorHandle handle)
 {
-    if (!valid(handle))
+    if (!valid_handler(handle))
         return false_value;
 
-    g_slots[handle.index].alive = false_value;
-    g_slots[handle.index].value = {};
+    slots[handle.index].alive = false_value;
+    slots[handle.index].value = {};
 
-    if (g_count)
-        --g_count;
+    if ( slot_size > 0 ) --slot_size;
 
     return true_value;
 }
 
-GpuDescriptor* GpuDescriptorPool::get(GpuDescriptorHandle handle)
+GpuDescriptor *GpuDescriptorPool::get(GpuDescriptorHandle handle)
 {
-    return valid(handle) ? &g_slots[handle.index].value : nullptr;
+    return valid_handler(handle) ? &slots[ handle.index ].value : nullptr;
 }
-
-//const GpuDescriptor* GpuDescriptorPool::get(GpuDescriptorHandle handle)
-//{
-//    return valid(handle) ? &g_slots[handle.index].value : nullptr;
-//}
 
 bool GpuDescriptorPool::exists(GpuDescriptorHandle handle)
 {
-    return valid(handle);
+    return valid_handler(handle);
 }
 
 u32 GpuDescriptorPool::size()
 {
-    return g_count;
+    return slot_size;
 }
 
 u32 GpuDescriptorPool::capacity()
