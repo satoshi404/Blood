@@ -1,0 +1,10 @@
+material "Player"
+{
+    shader = "pbr.shader"
+
+    albedo = "player_albedo.png"
+    normal = "player_normal.png"
+
+    metallic = 0.8
+    roughness = 0.25
+}

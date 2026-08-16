@@ -8,7 +8,11 @@
 #define API_VULKAN ( 0 )
 #define API_D3D12  ( 0 )
 
-#define RENDERER ( API_NAKED || API_D3D12 || API_OPENGL || API_VULKAN )
+#define RENDERER ( API_D3D12 || API_OPENGL || API_VULKAN )
+
+#if !RENDERER
+	#error "Select a api"
+#endif
 
 #if API_VULKAN
 

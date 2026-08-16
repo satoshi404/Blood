@@ -1,39 +1,26 @@
-#include <core/debug.hpp>
+#include <bird.hpp>
+
 #include <core/types.hpp>
+#include <core/debug.hpp>
 
-#include <platform/keyboard.hpp>
+LOCAL const u32 size = 50;
 
-#include <engine/system/node.hpp>
-
-GLOBAL void _start()
+void Bird::init()
 {
-	Debug::Println( PrintColor_Cyan, "Start.." );
+	Debug::Println( PrintColor_Yellow, "Bird::init" );
 }
 
-GLOBAL void _input()
-{
-	if ( Keyboard::check_pressed( VK_U ) )
-	{
-		Debug::Println( PrintColor_Cyan, "Pressed" );
-	}
-	else if ( Keyboard::check_released( VK_U ) )
-	{
-		Debug::Println( PrintColor_Cyan, "Released" );
-	}
-}
-
-GLOBAL void _draw( /*const Node self*/ )
-{
-	// self.pos( 0, 0 );
-	// self.size( 50, 50 );
-}
-
-GLOBAL void _update( f64 delta )
+void Bird::update()
 {
 	// ..
 }
 
-GLOBAL void _finish()
+void Bird::bump()
 {
-	Debug::Println( PrintColor_Cyan, "Finish.." );
+	Debug::Println( PrintColor_Yellow, "Bird::Bump..." );
+}
+
+void Bird::free()
+{
+	// ..
 }

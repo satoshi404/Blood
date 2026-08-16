@@ -1,8 +1,0 @@
-{
-	texture: "bird.png",
-	ligth: "false",
-	shadow: "false",
-	max_mask: "2px",
-	color: "white",
-	size: 20
-}

@@ -1,0 +1,15 @@
+project "Flappy"
+{
+    main_scene = "scenes/main.scn"
+
+    renderer
+    {
+        backend = "opengl"
+    }
+
+    window
+    {
+        width = 1280
+        height = 720
+    }
+}

@@ -35,7 +35,7 @@ function command_run() {
 	const RunRuntime = path.join(PATH_RUNTIME, "build.sh");
 	TerminalRunCommand({ saveAll: true, command: RunRuntime });
 
-	const Binary = path.join(PATH_ENGINE, "build/blood");
+	const Binary = path.join(PATH_RUNTIME, "build/flappy");
 	TerminalRunCommand({ saveAll: true, command: Binary });
 
 }

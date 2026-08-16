@@ -1,0 +1,11 @@
+scene "Main"
+{
+    type = "2D"
+    node "Player"
+    {
+        transform = ...
+
+        mesh = "player.mesh"
+        material = "player.mat"
+    }
+}
