@@ -13,7 +13,7 @@
 #define XCB_AtomWmNormalHints 40
 #define XCB_AtomWmSizeHints   41
 
-#if VENDOR_XCB || VENDOR_ALL_XCB
+#if VENDOR_XCB
 
     #define XCB_COPY_FROM_PARENT ( 0L )
 

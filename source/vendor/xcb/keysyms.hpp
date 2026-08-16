@@ -7,11 +7,7 @@
 
 #if PLATFORM_LINUX
 
-#if VENDOR_WAYLAND
-    #error " Wayland Compositor! "
-#endif
-
-#if VENDOR_XCB_KEYSYMS || VENDOR_ALL_XCB
+#if VENDOR_XCB
 
 	struct XCB_KeySymbols
 	{

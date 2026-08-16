@@ -1,0 +1,145 @@
+#include <engine/engine.hpp>
+
+#include <core/types.hpp>
+#include <core/timer.hpp>
+#include <core/debug.hpp>
+
+#include <platform/window.hpp>
+#include <platform/keyboard.hpp>
+
+#include <renderer/gpu.factory.hpp>
+
+#define ENGINE_COLOR_RENDERER  0.2f, 0.2f, 0.2f, 1.0f
+
+namespace EngineBackend
+{
+	TimerScheduler scheduler;
+	GpuCommandList frame_commands;
+
+	u64 last_time;
+	u64 now;
+    u64 delta;
+	f64 angle = 0.;
+
+	// EngineRenderer 2D;
+
+  	constexpr f64 ROTATION_SPEED = 4.0;
+	constexpr u64 TARGET_FPS = 144ULL;
+	constexpr u64 TARGET_FRAME_US = 1000000ULL / TARGET_FPS;
+}
+
+bool Engine::init()
+{
+	// Engine init
+	if ( !CoreWindow::init() )
+	{
+		Debug::Println( PrintColor_Red, "Engine: Error init core window" );
+		return exit_failed_code;
+	}
+
+	CoreWindow::show();
+
+	if ( !GpuFactory::init() )
+	{
+		Debug::Println( PrintColor_Red, "Engine: Error init gpu renderer" );
+		return exit_failed_code;
+	}
+
+	GpuCommand main_viewport = GpuFactory::make_viewport_command
+	(
+      	0, 0,
+    	(i32)WindowConfig::Get::width(),
+      	(i32)WindowConfig::Get::height(),
+      	"main_viewport"
+	);
+
+  	GpuFactory::bind_command( main_viewport );
+
+	EngineBackend::scheduler.schedule(1000000ULL, [](void *user_data) {
+        static u64 seconds_elapsed = 0;
+        seconds_elapsed++;
+        Debug::Println( PrintColor_Cyan, "[Uptime] %llu segundos", seconds_elapsed ); }, nullptr,
+                          /*repeat=*/true);
+
+	EngineBackend::last_time = Timer::Get::microseconds();
+
+	// Runtime init
+	_start();
+
+	return exit_success_code;
+}
+
+void Engine::update()
+{
+	while (!CoreWindow::should_close())
+  	{
+		CoreWindow::pool();
+
+		EngineBackend::now = Timer::Get::microseconds();
+		EngineBackend::delta = EngineBackend::now - EngineBackend::last_time;
+		EngineBackend::last_time = EngineBackend::now;
+
+		EngineBackend::frame_commands.push(GpuFactory::make_clear_command( ENGINE_COLOR_RENDERER, "clear_bg" ) );
+    	//EngineBackend::frame_commands.push(GpuFactory::make_draw_command(cube_handle, "draw_cube"));
+    	//EngineBackend::frame_commands.push(GpuFactory::make_transform_command(1, 1, 1, "cube_trans"));
+    	EngineBackend::frame_commands.push( GpuFactory::make_swap_command( "present" ) );
+		GpuFactory::submit( EngineBackend::frame_commands );
+
+		EngineBackend::scheduler.update( EngineBackend::delta );
+
+		// Engine input
+		if ( Keyboard::check( VK_Escape ) )
+		{
+			Debug::Println( PrintColor_Cyan, "Stop engine" );
+			EngineCall::stop();
+		}
+
+		// Runtime input
+		_input( );
+
+		// Runtime update
+		_update( EngineBackend::delta );
+
+		// Engine update
+		Keyboard::update( EngineBackend::delta );
+
+		{
+      		u64 frame_end = Timer::Get::microseconds();
+      		u64 frame_elapsed = frame_end - EngineBackend::now;
+
+      		if ( frame_elapsed < EngineBackend::TARGET_FRAME_US )
+      		{
+      		  Timer::sleep_microseconds( EngineBackend::TARGET_FRAME_US - frame_elapsed );
+      		}
+    	}
+	}
+}
+
+void Engine::free()
+{
+	// Engine free
+	//GpuFactory::destroy_descriptor(cube_handle);
+  	GpuFactory::shutdown();
+	CoreWindow::terminate();
+
+	// Runtime free
+	_finish();
+}
+
+/////
+
+void EngineCall::stop()
+{
+	CoreWindow::close();
+}
+
+/////
+// Parse args
+int main()
+{
+	// TODO:
+	Engine::init();
+	Engine::update();
+	Engine::free();
+	return exit_success_code;
+}

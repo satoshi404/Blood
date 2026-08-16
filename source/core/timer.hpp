@@ -1,7 +1,37 @@
 #pragma once
 
 #include <core/types.hpp>
-#include <core/memory.hpp> // usa alloc_time_ns() como base de clock monotônico
+
+// TODO: Conflict
+// #include <vendor/libc/stdlib.hpp>
+// #include <vendor/libc/string.hpp>
+#include <stdlib.h>
+#include <string.h>
+
+struct TimeSpec
+{
+    i64 tv_sec;
+    i64 tv_nsec;
+};
+
+// MOVE
+extern "C" int clock_gettime(int, TimeSpec *);
+static constexpr int MONOTONIC = 1;
+
+static INLINE u64 alloc_time_ns()
+{
+#if PLATFORM_LINUX
+    TimeSpec ts{};
+    clock_gettime(MONOTONIC, &ts);
+
+    return static_cast<u64>(ts.tv_sec) * 1000000000ULL + static_cast<u64>(ts.tv_nsec);
+
+#elif PLATFORM_WINDOWS
+    // TODO:
+    // return GetTickCount64() * 1000000ULL;
+    return 0;
+#endif
+}
 
 // Assinatura da função a ser chamada: recebe um ponteiro genérico opcional
 using TimerCallback = void (*)(void *user_data);

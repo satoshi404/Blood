@@ -30,19 +30,13 @@ namespace Debug
 	extern void Print_formatted_variadic(bool newline, const char *format, va_list args);
 
 	extern void Breakpoint();
-	extern void Breakpoint(const char *message);
+	extern void Breakpoint( const char *message );
 
-	extern void Log(const char *message);
-	extern void Log(const char *message, const char *file, u32 line);
+	extern void Log( const char *message );
+
+	extern void Panic( const char *message );
 }
 
-namespace Panic
-{
-	extern void Panic(const char *message, const char *file, u32 line);
-	extern void Panic(const char *message, const char *file, u32 line, const char *function);
-	extern void Panic(const char *message, const char *file, u32 line, const char *function, const char *expression);
-	extern void Panic(const char *message, const char *file, u32 line, const char *function, const char *expression, const char *additional_info);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +45,8 @@ namespace Panic
 	{                                                           \
 		Debug::Println(PrintColor_Red, "Error: %s\n", message); \
 		return return_value;                                    \
-	}
+	}\
+
 
 #define IfNullPanic(ptr, message)                                      \
 	if (!(ptr))                                                        \

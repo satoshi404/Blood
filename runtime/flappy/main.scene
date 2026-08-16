@@ -1,0 +1,13 @@
+{
+	context: "2D",
+	packege: "flappy",
+	resource:
+	{
+		"bird":
+		{
+			script: "bird.cpp",
+			node: "rectangle",
+			material: "bird.mat",
+		},
+	},
+}

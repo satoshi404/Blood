@@ -6,12 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // xcb/xproto.h
 
-
 #if PLATFORM_LINUX
-
-#if VENDOR_WAYLAND
-    #error " Wayland Compositor! "
-#endif
 
 enum_type( XCB_PropModeType, u32 )
 {
@@ -20,7 +15,7 @@ enum_type( XCB_PropModeType, u32 )
 	XCB_PropModeType_Append = 2,
 };
 
-#if VENDOR_XCB_XPROTO || VENDOR_ALL_XCB
+#if VENDOR_XCB
 
 	#define XCB_CW_BACK_PIXEL  ( 2 )
 	#define XCB_CW_EVENT_MASK ( 2048 )

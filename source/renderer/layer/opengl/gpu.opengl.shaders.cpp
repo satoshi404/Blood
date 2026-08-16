@@ -4,7 +4,7 @@
 
 bool GpuBackend::shader_create( GpuShader& shader )
 {
-
+	return true_value;
 }
 
 void GpuBackend::shader_destroy( GpuShader& shader )

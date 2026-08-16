@@ -36,9 +36,6 @@ struct WindowHandler
 {
   XCB_Connection *connection;
   XCB_Window window;
-#if defined(API_NAKED)
-  xcb_gcontext_t gc;
-#endif
 
   Display *display;
   XCB_Window root;
@@ -194,15 +191,6 @@ bool CoreWindow::init()
 
 #endif
 
-#if API_NAKED
-  window_handle.gc = xcb_generate_id(window_handle.connection);
-  uint32_t gc_mask = XCB_GC_FOREGROUND | XCB_GC_BACKGROUND;
-  uint32_t gc_values[2] = {
-      window_handle.screen->black_pixel,
-      window_handle.screen->white_pixel};
-  xcb_create_gc(window_handle.connection, window_handle.gc, window_handle.window, gc_mask, gc_values);
-#endif
-
   X11_SetFixedSize_Hints(window_handle.connection, window_handle.window, WindowConfig::Get::width(), WindowConfig::Get::height());
 
   {
@@ -238,19 +226,6 @@ bool CoreWindow::init()
     window_handle.atoms.wm_state = intern_atom(window_handle.connection, "_NET_WM_STATE");
   }
 
-  // Atom Icon
-  //{
-  //    const char* atom_name = "_NET_WM_ICON";
-  //    bool only_if_exists = false_value;
-  //
-  //    xcb_intern_atom_cookie_t icon_atom_cookie = xcb_intern_atom( window_handle.connection, only_if_exists, strlen( atom_name ), atom_name );
-  //    xcb_intern_atom_reply_t *icon_reply = xcb_intern_atom_reply( window_handle.connection, icon_atom_cookie, NULL );
-  //
-  //    window_handle.atoms.wm_icon = static_cast<XCB_Atom>( icon_reply->atom );
-  //
-  //    free( icon_reply );
-  //}
-
   // Set atoms for the window
   {
     xcb_change_property(
@@ -274,7 +249,6 @@ bool CoreWindow::init()
 
   Debug::Println(PrintColor_Yellow, "Window XCB:");
   Debug::Println(PrintColor_Yellow, "XCB Connection %p", window_handle.connection);
-  Debug::Println(PrintColor_Yellow, "XCB GC %p", window_handle.gc);
   Debug::Println(PrintColor_Yellow, "XCB WINDOW %p", window_handle.window);
 
   return true_value;

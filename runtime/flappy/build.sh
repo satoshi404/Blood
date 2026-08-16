@@ -2,7 +2,7 @@
 
 set -xe
 
-clang++ -c runtime/code/main.cpp -o build/objects/main.o -Isource
+clang++ -c /home/satoshi/HotFolder/Blood/runtime/flappy/scripts/bird.cpp -o build/objects/bird.o -Isource
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

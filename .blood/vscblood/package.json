@@ -15,7 +15,8 @@
 	],
   "contributes": {
     "commands": [
-      { "command": "vscblood.build_run", "title": "Blood: BuildAndRun" }
+      { "command": "vscblood.build_generator", "title": "Blood: Generate Build" },
+      { "command": "vscblood.run", "title": "Blood: Run runtime" }
     ]
   },
   "devDependencies": {

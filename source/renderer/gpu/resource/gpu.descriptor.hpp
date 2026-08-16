@@ -14,6 +14,11 @@ struct GpuDescriptor
     GpuDrawType type = GpuDrawType_Cube;
     GpuContext context = GpuContext_2D;
 
+    // TODO: Handle Resource
+    //const GpuMeshHandle handle_mesh;
+    //const GpuMaterialHandle handle_material;
+    //const GpuMeshHandle handle_mesh;
+
     const GpuMesh *mesh = nullptr;
     const GpuMaterial *material = nullptr;
 

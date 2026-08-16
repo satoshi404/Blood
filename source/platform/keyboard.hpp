@@ -8,88 +8,88 @@
 enum
 {
 #if PLATFORM_LINUX
-	KeyCodeType_Alt = 0xE9,
-	KeyCodeType_Alt_r = 0xEA,
-	KeyCodeType_Aab = 0x09,
-	KeyCodeType_Pageup = 0x55,
-	KeyCodeType_Pagedown = 0x56,
-	KeyCodeType_End = 0x57,
-	KeyCodeType_Home = 0x50,
-	KeyCodeType_Delete = 0xFF,
-	KeyCodeType_Enter = 0x0D,
-	KeyCodeType_Backspace = 0x08,
-	KeyCodeType_Shift = 0xE1,
-	KeyCodeType_Shift_r = 0xE2,
-	KeyCodeType_Control = 0xE3,
-	KeyCodeType_Control_r = 0xE4,
-	KeyCodeType_Command = KeyCodeType_Control,
-	KeyCodeType_Escape = 0x1B,
-	KeyCodeType_Space = 0x20,
-	KeyCodeType_Equal = 0x3D,
-	KeyCodeType_Minus = 0x2D,
-	KeyCodeType_Up = 0x52,
-	KeyCodeType_Right = 0x53,
-	KeyCodeType_Down = 0x54,
-	KeyCodeType_Left = 0x51,
-	KeyCodeType_F1 = 0xBE,
-	KeyCodeType_F2 = 0xBF,
-	KeyCodeType_F3 = 0xC0,
-	KeyCodeType_F4 = 0xC1,
-	KeyCodeType_F5 = 0xC2,
-	KeyCodeType_F6 = 0xC3,
-	KeyCodeType_F7 = 0xC4,
-	KeyCodeType_F8 = 0xC5,
-	KeyCodeType_F9 = 0xC6,
-	KeyCodeType_F10 = 0xC7,
-	KeyCodeType_F11 = 0xC8,
-	KeyCodeType_F12 = 0xC9,
-	KeyCodeType_Tilde = 0x60,
-	KeyCodeType_Keypad0 = 0x9E,
-	KeyCodeType_Keypad1 = 0x9C,
-	KeyCodeType_Keypad2 = 0x99,
-	KeyCodeType_Keypad3 = 0x9B,
-	KeyCodeType_Keypad4 = 0x96,
-	KeyCodeType_Keypad5 = 0x9D,
-	KeyCodeType_Keypad6 = 0x98,
-	KeyCodeType_Keypad7 = 0x95,
-	KeyCodeType_Keypad8 = 0x97,
-	KeyCodeType_Keypad9 = 0x9A,
-	KeyCodeType_A = 'a',
-	KeyCodeType_B = 'b',
-	KeyCodeType_C = 'c',
-	KeyCodeType_D = 'd',
-	KeyCodeType_E = 'e',
-	KeyCodeType_F = 'f',
-	KeyCodeType_G = 'g',
-	KeyCodeType_H = 'h',
-	KeyCodeType_I = 'i',
-	KeyCodeType_J = 'j',
-	KeyCodeType_K = 'k',
-	KeyCodeType_L = 'l',
-	KeyCodeType_M = 'm',
-	KeyCodeType_N = 'n',
-	KeyCodeType_O = 'o',
-	KeyCodeType_P = 'p',
-	KeyCodeType_Q = 'q',
-	KeyCodeType_R = 'r',
-	KeyCodeType_S = 's',
-	KeyCodeType_T = 't',
-	KeyCodeType_U = 'u',
-	KeyCodeType_V = 'v',
-	KeyCodeType_W = 'w',
-	KeyCodeType_X = 'x',
-	KeyCodeType_Y = 'y',
-	KeyCodeType_Z = 'z',
-	KeyCodeType_0 = '0',
-	KeyCodeType_1 = '1',
-	KeyCodeType_2 = '2',
-	KeyCodeType_3 = '3',
-	KeyCodeType_4 = '4',
-	KeyCodeType_5 = '5',
-	KeyCodeType_6 = '6',
-	KeyCodeType_7 = '7',
-	KeyCodeType_8 = '8',
-	KeyCodeType_9 = '9',
+	VK_Alt = 0xE9,
+	VK_Alt_r = 0xEA,
+	VK_Aab = 0x09,
+	VK_Pageup = 0x55,
+	VK_Pagedown = 0x56,
+	VK_End = 0x57,
+	VK_Home = 0x50,
+	VK_Delete = 0xFF,
+	VK_Enter = 0x0D,
+	VK_Backspace = 0x08,
+	VK_Shift = 0xE1,
+	VK_Shift_r = 0xE2,
+	VK_Control = 0xE3,
+	VK_Control_r = 0xE4,
+	VK_Command = VK_Control,
+	VK_Escape = 0x1B,
+	VK_Space = 0x20,
+	VK_Equal = 0x3D,
+	VK_Minus = 0x2D,
+	VK_Up = 0x52,
+	VK_Right = 0x53,
+	VK_Down = 0x54,
+	VK_Left = 0x51,
+	VK_F1 = 0xBE,
+	VK_F2 = 0xBF,
+	VK_F3 = 0xC0,
+	VK_F4 = 0xC1,
+	VK_F5 = 0xC2,
+	VK_F6 = 0xC3,
+	VK_F7 = 0xC4,
+	VK_F8 = 0xC5,
+	VK_F9 = 0xC6,
+	VK_F10 = 0xC7,
+	VK_F11 = 0xC8,
+	VK_F12 = 0xC9,
+	VK_Tilde = 0x60,
+	VK_Keypad0 = 0x9E,
+	VK_Keypad1 = 0x9C,
+	VK_Keypad2 = 0x99,
+	VK_Keypad3 = 0x9B,
+	VK_Keypad4 = 0x96,
+	VK_Keypad5 = 0x9D,
+	VK_Keypad6 = 0x98,
+	VK_Keypad7 = 0x95,
+	VK_Keypad8 = 0x97,
+	VK_Keypad9 = 0x9A,
+	VK_A = 'a',
+	VK_B = 'b',
+	VK_C = 'c',
+	VK_D = 'd',
+	VK_E = 'e',
+	VK_F = 'f',
+	VK_G = 'g',
+	VK_H = 'h',
+	VK_I = 'i',
+	VK_J = 'j',
+	VK_K = 'k',
+	VK_L = 'l',
+	VK_M = 'm',
+	VK_N = 'n',
+	VK_O = 'o',
+	VK_P = 'p',
+	VK_Q = 'q',
+	VK_R = 'r',
+	VK_S = 's',
+	VK_T = 't',
+	VK_U = 'u',
+	VK_V = 'v',
+	VK_W = 'w',
+	VK_X = 'x',
+	VK_Y = 'y',
+	VK_Z = 'z',
+	VK_0 = '0',
+	VK_1 = '1',
+	VK_2 = '2',
+	VK_3 = '3',
+	VK_4 = '4',
+	VK_5 = '5',
+	VK_6 = '6',
+	VK_7 = '7',
+	VK_8 = '8',
+	VK_9 = '9',
 #elif PLATFORM_WINDOWS
 
 #endif
@@ -118,12 +118,12 @@ public:
 	static State &state();
 
 	static void reset_active();
-	static void set_active( Keyboard &keyboard );
+	static void set_active(Keyboard &keyboard);
 
-	static bool check( u8 key ) { return keyboard->keyboard_check( key ); }
-	static bool check_pressed( u8 key ) { return keyboard->keyboard_check_pressed( key ); }
-	static bool check_pressed_repeat( u8 key ) { return keyboard->keyboard_check_pressed_repeat( key ); }
-	static bool check_released( u8 key ) { return keyboard->keyboard_check_released( key ); }
+	static bool check(u8 key) { return keyboard->keyboard_check(key); }
+	static bool check_pressed(u8 key) { return keyboard->keyboard_check_pressed(key); }
+	static bool check_pressed_repeat(u8 key) { return keyboard->keyboard_check_pressed_repeat(key); }
+	static bool check_released(u8 key) { return keyboard->keyboard_check_released(key); }
 	static bool check_any() { return keyboard->keyboard_check_any(); }
 	static bool check_pressed_any() { return keyboard->keyboard_check_pressed_any(); }
 	static bool check_pressed_repeat_any() { return keyboard->keyboard_check_pressed_repeat_any(); }
@@ -132,14 +132,14 @@ public:
 	static bool has_input() { return keyboard->keyboard_has_input(); }
 	static char *input_buffer() { return keyboard->keyboard_input_buffer(); }
 
-	static void update( u64 delta ) { return keyboard->keyboard_update( delta ); }
+	static void update(u64 delta) { return keyboard->keyboard_update(delta); }
 	static void clear() { return keyboard->keyboard_clear(); }
 
 private:
-	bool keyboard_check( u8 key );
-	bool keyboard_check_pressed( u8 key );
-	bool keyboard_check_pressed_repeat( u8 key );
-	bool keyboard_check_released( u8 key );
+	bool keyboard_check(u8 key);
+	bool keyboard_check_pressed(u8 key);
+	bool keyboard_check_pressed_repeat(u8 key);
+	bool keyboard_check_released(u8 key);
 
 	bool keyboard_check_any();
 	bool keyboard_check_pressed_any();
@@ -149,13 +149,11 @@ private:
 	bool keyboard_has_input();
 	char *keyboard_input_buffer();
 
-	void keyboard_update( u64 delta );
+	void keyboard_update(u64 delta);
 	void keyboard_clear();
 
 public:
 	State keyboardState;
 };
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
