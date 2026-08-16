@@ -21,12 +21,12 @@ struct GpuHandle
         generation = 0;
     }
 
-    bool operator==(const GpuHandle& other) const
+    bool operator==( const GpuHandle& other ) const
     {
         return index == other.index && generation == other.generation;
     }
 
-    bool operator!=(const GpuHandle& other) const
+    bool operator!=( const GpuHandle& other ) const
     {
         return !(*this == other);
     }

@@ -4,9 +4,10 @@
 
 #if API_OPENGL
 
-// TODO: Test
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <renderer/backend/opengl/opengl.hpp>
+
+// TODO:
+#include <vendor/libc/math.hpp>
 
 bool GpuBackend::init()
 {
@@ -34,9 +35,6 @@ void GpuBackend::clear(const GpuClear &c)
     glClearColor(c.r, c.g, c.b, c.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-
-// TODO:
-#include <vendor/libc/math.hpp>
 
 void GpuBackend::viewport(const GpuViewport &vp)
 {

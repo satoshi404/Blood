@@ -2,11 +2,8 @@
 
 #if API_OPENGL
 
-// TODO: Test
-#include <GL/glew.h>
-#include <GL/gl.h>
-
-#define PI 3.14159265f
+#include <renderer/backend/opengl/opengl.hpp>
+#include <vendor/libc/math.hpp>
 
 void GpuBackend::set_transform(const GpuTransform &transform)
 {
@@ -18,15 +15,20 @@ void GpuBackend::set_transform(const GpuTransform &transform)
         transform.position[1],
         transform.position[2]);
 
-    constexpr f32 RAD_TO_DEG = 180.0f / PI;
-    glRotatef(transform.rotation[0] * RAD_TO_DEG, 1, 0, 0);
-    glRotatef(transform.rotation[1] * RAD_TO_DEG, 0, 1, 0);
-    glRotatef(transform.rotation[2] * RAD_TO_DEG, 0, 0, 1);
+    constexpr f32 RAD_TO_DEG = 180.0f / M_PI;
+    const GLfloat rotation_x = transform.rotation[0] * RAD_TO_DEG;
+    const GLfloat rotation_y = transform.rotation[1] * RAD_TO_DEG;
+    const GLfloat rotation_z = transform.rotation[2] * RAD_TO_DEG;
 
-    glScalef(
-        transform.scale[0],
-        transform.scale[1],
-        transform.scale[2]);
+    glRotatef( rotation_x, 1, 0, 0 );
+    glRotatef( rotation_y, 0, 1, 0 );
+    glRotatef( rotation_z, 0, 0, 1 );
+
+    const GLfloat scale_x = transform.scale[0];
+    const GLfloat scale_y = transform.scale[1];
+    const GLfloat scale_z = transform.scale[2];
+    glScalef( scale_x, scale_y, scale_z );
+
 }
 
 void GpuBackend::set_render_state(const GpuRenderState &state)

@@ -21,32 +21,31 @@ namespace GpuBackend
     extern bool init();
     extern void shutdown();
 
-    extern void clear(const GpuClear &);
-    extern void viewport(const GpuViewport &);
+    extern void clear( const GpuClear &c);
+    extern void viewport( const GpuViewport &vp );
     extern void swap();
 
-    extern void set_transform(const GpuTransform &);
-    extern void set_render_state(const GpuRenderState &);
+    extern void set_transform( const GpuTransform &transform );
+    extern void set_render_state(const GpuRenderState &state );
 
-    extern void bind_shader(GpuShaderHandle shader);
-    extern void bind_texture(GpuTextureHandle texture, u32 slot);
+    extern void bind_shader( GpuShaderHandle shader );
+    extern void bind_texture( GpuTextureHandle texture, u32 slot );
 
     extern void push_state();
     extern void pop_state();
 
-    extern bool buffer_create(GpuBuffer &, const f32 *data, u32 float_count);
-    extern void buffer_destroy(GpuBuffer &);
-    extern void mesh_draw(const GpuMesh &, GpuPrimitive);
-    extern void material_bind(const GpuMaterial &);
+    extern bool buffer_create( GpuBuffer &buffer, const f32 *data, u32 float_count);
+    extern void buffer_destroy( GpuBuffer &buffer );
+    extern void mesh_draw( const GpuMesh &mesh, TopologiePrimitive primitive );
+    extern void material_bind( const GpuMaterial &material );
 
     // TODO: New
-    extern bool shader_create( GpuShader& );
-    extern void shader_destroy( GpuShader& );
+    extern bool shader_create( GpuShader &shader );
+    extern void shader_destroy( GpuShader &shader );
+    extern void draw_obj( const GpuDescriptor &desc );
 
-    extern void draw_cube_2d(const GpuDescriptor &);
-    extern void draw_cube_3d(const GpuDescriptor &);
-    extern void draw_sphere_2d(const GpuDescriptor &);
-    extern void draw_sphere_3d(const GpuDescriptor &);
-    extern void draw_obj_2d(const GpuDescriptor &);
-    extern void draw_obj_3d(const GpuDescriptor &);
+    extern void draw_cube_2d(const GpuDescriptor &desc );
+    extern void draw_cube_3d(const GpuDescriptor &desc );
+    extern void draw_sphere_2d(const GpuDescriptor &desc );
+    extern void draw_sphere_3d(const GpuDescriptor &desc );
 }

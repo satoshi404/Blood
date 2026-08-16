@@ -169,25 +169,25 @@ int main( int argc, char** argv )
 
         WorkUnit units[] =
         {
-            { "core/", files_core, static_cast<int>( ARRAY_LEN( files_core ) ) },
-            { "platform/", files_platform, static_cast<int>( ARRAY_LEN( files_platform ) ) },
+            { "core/", files_core, static_cast<int>( ARRAY_SIZE( files_core ) ) },
+            { "platform/", files_platform, static_cast<int>( ARRAY_SIZE( files_platform ) ) },
             // Sub platform
             #if PLATFORM_LINUX
-                { "vendor/x11/", files_vendor_x11, static_cast<int>( ARRAY_LEN( files_vendor_x11 ) ) },
-                { "platform/xcb/", files_sub_platform, static_cast<int>( ARRAY_LEN( files_sub_platform ) ) },
+                { "vendor/x11/", files_vendor_x11, static_cast<int>( ARRAY_SIZE( files_vendor_x11 ) ) },
+                { "platform/xcb/", files_sub_platform, static_cast<int>( ARRAY_SIZE( files_sub_platform ) ) },
             #elif PLATFORM_WINDOWS
-                { "platform/windows/", files_sub_platform, static_cast<int>( ARRAY_LEN( files_sub_platform ) ) },
+                { "platform/windows/", files_sub_platform, static_cast<int>( ARRAY_SIZE( files_sub_platform ) ) },
             #endif
-            {"renderer/gpu/", files_renderer, static_cast<int>( ARRAY_LEN( files_renderer ) ) },
-            {"renderer/gpu/command/", files_command, static_cast<int>( ARRAY_LEN( files_command ) ) },
-            {"renderer/gpu/pool/", files_pool, static_cast<int>( ARRAY_LEN( files_pool ) ) },
-            {"renderer/gpu/render/", files_render, static_cast<int>( ARRAY_LEN( files_render ) ) },
-            {"renderer/gpu/resource/", files_resource, static_cast<int>( ARRAY_LEN( files_resource ) ) },
-            {"renderer/gpu/state/", files_state, static_cast<int>( ARRAY_LEN( files_state ) ) },
+            {"renderer/gpu/", files_renderer, static_cast<int>( ARRAY_SIZE( files_renderer ) ) },
+            {"renderer/gpu/command/", files_command, static_cast<int>( ARRAY_SIZE( files_command ) ) },
+            {"renderer/gpu/pool/", files_pool, static_cast<int>( ARRAY_SIZE( files_pool ) ) },
+            {"renderer/gpu/render/", files_render, static_cast<int>( ARRAY_SIZE( files_render ) ) },
+            {"renderer/gpu/resource/", files_resource, static_cast<int>( ARRAY_SIZE( files_resource ) ) },
+            {"renderer/gpu/state/", files_state, static_cast<int>( ARRAY_SIZE( files_state ) ) },
             #if API_OPENGL
-                {"renderer/layer/opengl/", files_layer_opengl, static_cast<int>( ARRAY_LEN( files_layer_opengl ) ) },
+                {"renderer/layer/opengl/", files_layer_opengl, static_cast<int>( ARRAY_SIZE( files_layer_opengl ) ) },
             #endif
-            {"engine/", files_engine, static_cast<int>( ARRAY_LEN( files_engine ) ) },
+            {"engine/", files_engine, static_cast<int>( ARRAY_SIZE( files_engine ) ) },
         };
 
         int unit_count = static_cast<int>( sizeof(units) / sizeof(units[0]) );

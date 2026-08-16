@@ -9,10 +9,10 @@ struct GpuMesh
 
     u32 vertex_count = 0;
     u32 components = 2;
-    GpuPrimitive primitive = GpuPrimitive_Default;
+    TopologiePrimitive primitive = TopologiePrimitive_Default;
 
-    bool upload(const f32* positions, u32 vertex_count, u32 components = 2);
-    void draw(GpuPrimitive primitive_override = GpuPrimitive_Default) const;
+    bool upload( const f32* positions, u32 vertex_count, u32 components = 2 );
+    void draw( TopologiePrimitive override = TopologiePrimitive_Default ) const;
     void destroy();
 
     bool is_valid() const

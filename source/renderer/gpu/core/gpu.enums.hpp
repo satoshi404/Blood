@@ -49,14 +49,16 @@ enum_type(GpuContext, u32){
     GpuContext_3D,
     GpuContext_Count};
 
-enum_type(GpuPrimitive, u32){
-    GpuPrimitive_Default = 0,
-    GpuPrimitive_Points,
-    GpuPrimitive_Lines,
-    GpuPrimitive_LineStrip,
-    GpuPrimitive_Triangles,
-    GpuPrimitive_TriangleStrip,
-    GpuPrimitive_TriangleFan};
+enum_type( TopologiePrimitive, u32 )
+{
+    TopologiePrimitive_Default = 0,
+    TopologiePrimitive_Points,
+    TopologiePrimitive_Lines,
+    TopologiePrimitive_LineStrip,
+    TopologiePrimitive_Triangles,
+    TopologiePrimitive_TriangleStrip,
+    TopologiePrimitive_TriangleFan
+};
 
 enum_type(GpuBufferType, u8){
     GpuBufferType_Vertex,

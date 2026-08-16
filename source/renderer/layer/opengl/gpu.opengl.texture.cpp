@@ -2,11 +2,7 @@
 
 #if API_OPENGL
 
-// TODO: Test
-#include <GL/glew.h>
-#include <GL/gl.h>
-
-//#include <renderer/opengl/gl.hpp>
+#include <renderer/backend/opengl/opengl.hpp>
 
 void GpuBackend::bind_texture(GpuTextureHandle texture, u32 slot)
 {

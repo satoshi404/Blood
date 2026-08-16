@@ -13,35 +13,37 @@ GpuDescriptorBuilder& GpuDescriptorBuilder::context(GpuContext v)
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::mesh(const GpuMesh* v)
+GpuDescriptorBuilder& GpuDescriptorBuilder::mesh( const GpuMesh* mesh )
 {
-    value.mesh = v;
+    value.mesh = mesh;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::material(const GpuMaterial* v)
+GpuDescriptorBuilder& GpuDescriptorBuilder::material( const GpuMaterial* material )
 {
-    value.material = v;
+    value.material = material;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::position(f32 x, f32 y, f32 z)
+GpuDescriptorBuilder& GpuDescriptorBuilder::position( const f32 x, const f32 y, const f32 z)
 {
     value.transform.position[0] = x;
     value.transform.position[1] = y;
     value.transform.position[2] = z;
     value.transform.mark_dirty();
     value.dirty = true;
+
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::rotation(f32 x, f32 y, f32 z)
+GpuDescriptorBuilder& GpuDescriptorBuilder::rotation( const f32 x, const f32 y, const f32 z )
 {
     value.transform.rotation[0] = x;
     value.transform.rotation[1] = y;
     value.transform.rotation[2] = z;
     value.transform.mark_dirty();
     value.dirty = true;
+
     return *this;
 }
 
@@ -62,9 +64,9 @@ GpuDescriptorBuilder& GpuDescriptorBuilder::size(f32 w, f32 h, f32 d)
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::primitive(GpuPrimitive v)
+GpuDescriptorBuilder& GpuDescriptorBuilder::primitive( TopologiePrimitive primitive )
 {
-    value.primitive = v;
+    value.primitive = primitive;
     value.dirty = true;
     return *this;
 }
@@ -83,16 +85,17 @@ GpuDescriptorBuilder& GpuDescriptorBuilder::z_order(f32 v)
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::label(const char* v)
+GpuDescriptorBuilder& GpuDescriptorBuilder::label( const char* label )
 {
-    if (!v)
+    if (!label)
     {
         value.label[0] = '\0';
         return *this;
     }
 
-    strncpy(value.label, v, sizeof(value.label) - 1);
+    strncpy(value.label, label, sizeof(value.label) - 1);
     value.label[sizeof(value.label) - 1] = '\0';
+
     return *this;
 }
 

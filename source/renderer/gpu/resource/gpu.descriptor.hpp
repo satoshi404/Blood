@@ -26,7 +26,7 @@ struct GpuDescriptor
     GpuSize size = {100.0f, 100.0f, 100.0f};
 
     GpuRenderState render_state = {};
-    GpuPrimitive primitive = GpuPrimitive_Default;
+    TopologiePrimitive primitive = TopologiePrimitive_Default;
 
     i32 layer = 0;
     f32 z_order = 0.0f;
@@ -51,15 +51,15 @@ struct GpuDescriptorBuilder
     GpuDescriptorBuilder &mesh(const GpuMesh *v);
     GpuDescriptorBuilder &material(const GpuMaterial *v);
 
-    GpuDescriptorBuilder &position(f32 x, f32 y, f32 z = 0.0f);
-    GpuDescriptorBuilder &rotation(f32 x, f32 y, f32 z = 0.0f);
+    GpuDescriptorBuilder &position( const f32 x, const f32 y, const f32 z = 0.0f);
+    GpuDescriptorBuilder &rotation( const f32 x, const f32 y, const f32 z = 0.0f);
     GpuDescriptorBuilder &scale(f32 x, f32 y, f32 z = 1.0f);
     GpuDescriptorBuilder &size(f32 w, f32 h, f32 d = 1.0f);
 
-    GpuDescriptorBuilder &primitive(GpuPrimitive v);
+    GpuDescriptorBuilder &primitive( TopologiePrimitive primitive );
     GpuDescriptorBuilder &layer(i32 v);
     GpuDescriptorBuilder &z_order(f32 v);
-    GpuDescriptorBuilder &label(const char *v);
+    GpuDescriptorBuilder &label( const char *label );
 
     GpuDescriptor build() const;
 };

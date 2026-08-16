@@ -18,14 +18,13 @@ bool GpuMesh::upload(const f32* positions, u32 count, u32 comps)
     return true_value;
 }
 
-void GpuMesh::draw(GpuPrimitive primitive_override) const
+void GpuMesh::draw( TopologiePrimitive override ) const
 {
-    const GpuPrimitive p =
-        primitive_override != GpuPrimitive_Default
-        ? primitive_override
+    const TopologiePrimitive primitive = override != TopologiePrimitive_Default
+        ? override
         : primitive;
 
-    GpuBackend::mesh_draw(*this, p);
+    GpuBackend::mesh_draw( *this, primitive );
 }
 
 void GpuMesh::destroy()

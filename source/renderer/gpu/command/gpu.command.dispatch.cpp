@@ -11,7 +11,7 @@ namespace
     {
         { GpuBackend::draw_cube_2d,   GpuBackend::draw_cube_3d   },
         { GpuBackend::draw_sphere_2d, GpuBackend::draw_sphere_3d },
-        { GpuBackend::draw_obj_2d,    GpuBackend::draw_obj_3d    }
+        { GpuBackend::draw_obj,    GpuBackend::draw_obj    }
     };
 
     void execute_draw(const GpuDrawCommand& command)

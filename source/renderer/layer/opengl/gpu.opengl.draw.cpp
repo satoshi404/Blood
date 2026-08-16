@@ -24,7 +24,7 @@ namespace
         };
 
         g_quad_material.color = { 0.95f, 0.55f, 0.15f, 1.0f };
-        g_cube_quad.primitive = GpuPrimitive_TriangleStrip;
+        g_cube_quad.primitive = TopologiePrimitive_TriangleStrip;
 
         g_quad_ready = g_cube_quad.upload(vertices, 4, 2);
 
@@ -97,7 +97,7 @@ namespace
         };
 
         g_cube_material.color = { 0.95f, 0.55f, 0.15f, 1.0f };
-        g_cube_mesh.primitive = GpuPrimitive_Triangles;
+        g_cube_mesh.primitive = TopologiePrimitive_Triangles;
 
         // 36 vertices, 3 componentes (x, y, z)
         g_cube_ready = g_cube_mesh.upload(vertices, 36, 3);
@@ -162,19 +162,11 @@ void GpuBackend::draw_sphere_3d(const GpuDescriptor&)
     );
 }
 
-void GpuBackend::draw_obj_2d(const GpuDescriptor&)
+void GpuBackend::draw_obj( const GpuDescriptor &desc )
 {
     Debug::Println(
         PrintColor_Yellow,
-        "[Gpu:OpenGL] draw_obj_2d ainda nao implementado"
-    );
-}
-
-void GpuBackend::draw_obj_3d(const GpuDescriptor&)
-{
-    Debug::Println(
-        PrintColor_Yellow,
-        "[Gpu:OpenGL] draw_obj_3d ainda nao implementado"
+        "[Gpu:OpenGL] draw_obj ainda nao implementado"
     );
 }
 

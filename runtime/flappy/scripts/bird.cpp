@@ -2,14 +2,15 @@
 #include <core/types.hpp>
 
 #include <platform/keyboard.hpp>
-#include <engine/engine.hpp>
 
-void _start()
+#include <engine/system/node.hpp>
+
+GLOBAL void _start()
 {
 	Debug::Println( PrintColor_Cyan, "Start.." );
 }
 
-void _input()
+GLOBAL void _input()
 {
 	if ( Keyboard::check_pressed( VK_U ) )
 	{
@@ -21,12 +22,18 @@ void _input()
 	}
 }
 
-void _update( f64 delta )
+GLOBAL void _draw( /*const Node self*/ )
+{
+	// self.pos( 0, 0 );
+	// self.size( 50, 50 );
+}
+
+GLOBAL void _update( f64 delta )
 {
 	// ..
 }
 
-void _finish()
+GLOBAL void _finish()
 {
 	Debug::Println( PrintColor_Cyan, "Finish.." );
 }

@@ -2,13 +2,9 @@
 
 #if API_OPENGL
 
+#include <renderer/backend/opengl/opengl.hpp>
 
-// TODO: Test
-#include <GL/glew.h>
-#include <GL/gl.h>
-
-
-void GpuBackend::material_bind(const GpuMaterial& material)
+void GpuBackend::material_bind( const GpuMaterial& material )
 {
     if (material.native_shader_id == 0)
     {
