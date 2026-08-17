@@ -114,7 +114,7 @@ void GpuBackend::draw_cube_2d(const GpuDescriptor& descriptor)
 {
     ensure_quad();
 
-    const GpuMesh& mesh =
+    const GpuMeshHandle& mesh =
         descriptor.mesh ? *descriptor.mesh : g_cube_quad;
 
     const GpuMaterial& material =

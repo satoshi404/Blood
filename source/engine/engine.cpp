@@ -79,15 +79,28 @@ bool Engine::init()
 
 	EngineBackend::last_time = Timer::Get::microseconds();
 
-	// TODO:
+	// Create
+	auto factory_queue = GpuFactory::create_render_queue("Main");
+	auto simple = GpuFactory::create_descriptor(
+		GpuDescriptorBuilder()
+			.mesh(  )
+			.material( )
+			.position( 100.0f, 200.f )
+			.layer(1)
+	);
 
-  	simple_descriptor.type = GpuDrawType_Cube;
-  	simple_descriptor.context = GpuContext_3D;
-  	simple_descriptor.material = &simple_material;
-  	simple_descriptor.transform = simple_transform;
-  	strncpy(simple_descriptor.label, "simple", sizeof(simple_descriptor.label) - 1);
+	// Frame
+	GpuRenderQueue* queue = GpuFactory::get_render_queue( factory_queue );
+	queue->clear();
+	queue->push( simple );
 
-  	simple_handle = GpuFactory::create_descriptor(simple_descriptor);
+	GpuRenderPass pass = GpuFactory::make_simple_pass(
+		0, 0, WindowConfig::Get::width(), WindowConfig::Get::height(),
+		factory_queue,GpuContext_2D ,ENGINE_COLOR_RENDERER,
+		"Pass"
+	);
+
+
 
 	// Runtime init
 	_start();

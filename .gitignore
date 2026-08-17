@@ -1,5 +1,11 @@
 /build
 /build/objects
 /tests
-*.txt
-*.png
+*.o
+*.obj
+*.exe
+*.out
+*.dll
+*.so
+*.a
+generator

@@ -9,6 +9,7 @@
 #include <renderer/gpu/resource/gpu.material.hpp>
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
 #include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/pool/gpu.render.queue.pool.hpp>
 
 // TODO: New
 #include <renderer/gpu/resource/gpu.shader.hpp>

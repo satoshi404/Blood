@@ -2,8 +2,8 @@
 
 GpuTransform GpuTransformOps::identity()
 {
-     GpuTransform t;
-    // Initialize 4x4 identity matrix (flat column-major)
+    GpuTransform t;
+
     t.matrix[0] = 1.0f; t.matrix[4] = 0.0f; t.matrix[8]  = 0.0f; t.matrix[12] = 0.0f;
     t.matrix[1] = 0.0f; t.matrix[5] = 1.0f; t.matrix[9]  = 0.0f; t.matrix[13] = 0.0f;
     t.matrix[2] = 0.0f; t.matrix[6] = 0.0f; t.matrix[10] = 1.0f; t.matrix[14] = 0.0f;
@@ -42,7 +42,7 @@ void GpuTransformOps::update_matrix(GpuTransform& t)
     {
         if (!t.matrix_dirty) return;
 
-        // Precompute sines and cosines of Euler angles (assumed in radians)
+        // Rotation
         f32 cx = std::cos(t.rotation[0]);
         f32 sx = std::sin(t.rotation[0]);
         f32 cy = std::cos(t.rotation[1]);
@@ -50,8 +50,6 @@ void GpuTransformOps::update_matrix(GpuTransform& t)
         f32 cz = std::cos(t.rotation[2]);
         f32 sz = std::sin(t.rotation[2]);
 
-        // Combined Rotation Matrix calculation using YX Z multiplication order
-        // This avoids gimbal lock scenarios common in standard fly-cameras
         f32 r00 = cy * cz + sy * sx * sz;
         f32 r10 = cx * sz;
         f32 r20 = -sy * cz + cy * sx * sz;
@@ -64,7 +62,7 @@ void GpuTransformOps::update_matrix(GpuTransform& t)
         f32 r12 = -sx;
         f32 r22 = cy * cx;
 
-        // Inject Scale directly into the basis vectors (Column-Major SRT layout)
+        // Scale
         t.matrix[0] = r00 * t.scale[0];
         t.matrix[1] = r10 * t.scale[0];
         t.matrix[2] = r20 * t.scale[0];
@@ -80,7 +78,7 @@ void GpuTransformOps::update_matrix(GpuTransform& t)
         t.matrix[10] = r22 * t.scale[2];
         t.matrix[11] = 0.0f;
 
-        // Column 4: Translation (Position)
+        // Translate
         t.matrix[12] = t.position[0];
         t.matrix[13] = t.position[1];
         t.matrix[14] = t.position[2];

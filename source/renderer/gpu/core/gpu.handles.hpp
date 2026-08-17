@@ -38,6 +38,7 @@ struct GpuTextureTag {};
 struct GpuShaderTag {};
 struct GpuMeshTag {};
 struct GpuMaterialTag {};
+struct GpuRenderQueueTag {};
 
 using GpuDescriptorHandle = GpuHandle<GpuDescriptorTag>;
 using GpuBufferHandle     = GpuHandle<GpuBufferTag>;
@@ -45,3 +46,4 @@ using GpuTextureHandle    = GpuHandle<GpuTextureTag>;
 using GpuShaderHandle     = GpuHandle<GpuShaderTag>;
 using GpuMeshHandle       = GpuHandle<GpuMeshTag>;
 using GpuMaterialHandle   = GpuHandle<GpuMaterialTag>;
+using GpuRenderQueueHandle = GpuHandle<GpuRenderQueueTag>;

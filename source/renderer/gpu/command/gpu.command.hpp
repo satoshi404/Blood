@@ -5,8 +5,20 @@
 #include <renderer/gpu/core/gpu.types.hpp>
 #include <renderer/gpu/state/gpu.transform.hpp>
 #include <renderer/gpu/state/gpu.render.state.hpp>
+#include <renderer/gpu/render/gpu.render.pass.hpp>
+#include <renderer/gpu/render/gpu.render.queue.hpp>
 #include <renderer/gpu/resource/gpu.material.hpp>
 #include <renderer/gpu/core/gpu.limits.hpp>
+
+struct GpuBeginRenderPassCommand
+{
+    GpuRenderPass pass;
+};
+
+struct GpuExecuteQueueCommand
+{
+    GpuRenderQueueHandle queue;
+};
 
 struct GpuDrawCommand
 {
@@ -98,4 +110,8 @@ struct GpuCommand
     static GpuCommand pop_state(
         const char* label = nullptr
     );
+
+    static GpuCommand begin_render_pass( const GpuRenderPass& pass, const char* label = nullptr );
+    static GpuCommand end_render_pass( const char* label = nullptr );
+    static GpuCommand execute_queue( const GpuRenderQueueHandle& queue, const char* label = nullptr );
 };

@@ -12,15 +12,14 @@
 struct GpuDescriptor
 {
     GpuDrawType type = GpuDrawType_Cube;
-    GpuContext context = GpuContext_2D;
+    GpuContext context = GpuContext_2D; // Remover ( renderPass apenas sabe o contexto )
 
     // TODO: Handle Resource
-    //const GpuMeshHandle handle_mesh;
-    //const GpuMaterialHandle handle_material;
-    //const GpuMeshHandle handle_mesh;
+    GpuMeshHandle handle_mesh;
+    GpuMaterialHandle handle_material;
 
-    const GpuMesh *mesh = nullptr;
-    const GpuMaterial *material = nullptr;
+   // const GpuMesh *mesh = nullptr;
+   // const GpuMaterial *material = nullptr;
 
     GpuTransform transform = {};
     GpuSize size = {100.0f, 100.0f, 100.0f};
@@ -48,8 +47,8 @@ struct GpuDescriptorBuilder
 
     GpuDescriptorBuilder &type(GpuDrawType v);
     GpuDescriptorBuilder &context(GpuContext v);
-    GpuDescriptorBuilder &mesh(const GpuMesh *v);
-    GpuDescriptorBuilder &material(const GpuMaterial *v);
+    GpuDescriptorBuilder &mesh( GpuMeshHandle h);
+    GpuDescriptorBuilder &material(GpuMaterialHandle h );
 
     GpuDescriptorBuilder &position( const f32 x, const f32 y, const f32 z = 0.0f);
     GpuDescriptorBuilder &rotation( const f32 x, const f32 y, const f32 z = 0.0f);

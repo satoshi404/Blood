@@ -13,15 +13,15 @@ GpuDescriptorBuilder& GpuDescriptorBuilder::context(GpuContext v)
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::mesh( const GpuMesh* mesh )
+GpuDescriptorBuilder& GpuDescriptorBuilder::mesh( GpuMeshHandle mesh )
 {
-    value.mesh = mesh;
+    value.handle_mesh = mesh;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::material( const GpuMaterial* material )
+GpuDescriptorBuilder& GpuDescriptorBuilder::material( GpuMaterialHandle material )
 {
-    value.material = material;
+    value.handle_material = material;
     return *this;
 }
 
