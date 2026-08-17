@@ -1,9 +1,15 @@
-#include <core/types.hpp>
+#include <core/filesystem.hpp>
 #include <core/string.hpp>
 #include <core/debug.hpp>
+#include <core/types.hpp>
 
 #include <pipeline.hpp>
 #include <constants.hpp>
+
+// TODO:
+#include <dirent.h>
+#include <sys/stat.h>
+#include <string.h>
 
 #if PLATFORM_LINUX
     const char* comment = "#";
@@ -11,235 +17,320 @@
     const char* comment = "@rem";
 #endif
 
-#define COMMENT_LENGTH ( 100 )
-#define COMMENT( b, length )\
-    b.append( comment );\
-    b.append( "/", false_value, length );\
-    b.append( "\n" );\
+#define SECTION_LENGTH ( 100 )
+#define SECTION( string, length ) string\
+		.append( comment )\
+        .append( "/", false_value, length )\
+        .append( "\n" );\
 
-#define COMMENT_INTRO_TEXT " Build Generator "
-#define COMMENT_INTRO( text, b, l , l2 )\
-    COMMENT( b, l2 )\
-    b.append( comment, false_value, l );\
-    b.append( text );\
-    b.append( comment, false_value, l );\
-    b.append( "\n" );\
-    COMMENT( b, l2 )
+#define SECTION_COMMENT( text, string, length , section_length )\
+    SECTION( string, section_length ) string\
+		.append( comment, false_value, length )\
+        .append( text )\
+        .append( comment, false_value, length )\
+        .append( "\n" );\
+    SECTION( string, section_length )
 
-const char* toolchain = "clang++";
+const char* toolchain_cxx = "clang++";
+const char* build_dir = "build";
+const char* obj_dir = "build/objects";
+const char* bin_dir = "build/bin";
 
-struct Build
+static const char* engine_dirs[] =
 {
-    String path;
-    const char* work_path;
-    const char* obj_path;
+	"source/core",
+	"source/platform",
+	"source/platform/xcb",
+	"source/platform/windows",
+	"source/vendor/x11",
+	"source/renderer/gpu",
+	"source/renderer/gpu/command",
+	"source/renderer/gpu/pool",
+	"source/renderer/gpu/render",
+	"source/renderer/gpu/resource",
+	"source/renderer/gpu/state",
+	"source/renderer/layer/opengl",
+	"source/engine",
 };
 
-static const char* files_vendor_x11[] =
+static const char* runtime_dirs[] =
 {
-    "xutil.cpp",
+	"runtime/flappy",
+	"runtime/flappy/scripts"
 };
 
-static const char* files_core[] =
+// Helpers
+static bool ends_with( const char* str, const char* suffix )
 {
-    "debug.cpp",
-};
+	size_t len = strlen( str );
+	size_t suflen = strlen( suffix );
 
-static const char* files_platform[] =
-{
-    "keyboard.cpp",
-    "window.config.cpp",
-};
+	if ( suflen > len ) return false_value;
 
-
-static const char* files_engine[] =
-{
-    "engine.cpp",
-};
-
-static const char* files_sub_platform[] =
-{
-    "window.cpp",
-};
-
-static const char* files_renderer[] =
-{
-    "gpu.cpp",
-};
-
-static const char* files_command[] =
-{
-    "gpu.command.cpp",
-    "gpu.command.dispatch.cpp",
-};
-
-static const char* files_pool[] =
-{
-    "gpu.buffer.pool.cpp",
-    "gpu.descriptor.pool.cpp",
-    "gpu.mesh.pool.cpp",
-    "gpu.texture.pool.cpp",
-};
-
-static const char* files_render[] =
-{
-    "gpu.render.pass.cpp",
-    "gpu.render.queue.cpp",
-};
-
-static const char* files_resource[] =
-{
-    "gpu.buffer.cpp",
-    "gpu.descriptor.cpp",
-    "gpu.material.cpp",
-    "gpu.mesh.cpp",
-};
-
-static const char* files_state[] =
-{
-    "gpu.transform.cpp",
-};
-
-static const char* files_layer_opengl[] =
-{
-    "gpu.opengl.cpp",
-    "gpu.opengl.buffer.cpp",
-    "gpu.opengl.draw.cpp",
-    "gpu.opengl.material.cpp",
-    "gpu.opengl.mesh.cpp",
-    "gpu.opengl.shaders.cpp",
-    "gpu.opengl.state.cpp",
-    "gpu.opengl.texture.cpp",
-};
-
-struct WorkUnit {
-    const char* directory;
-    const char** files;
-    int file_count;
-};
-
-static void build( String& generator, Build build, const char* file, const u32 length, const u32 comment_length )
-{
-    generator.append( "-c ", true_value );
-
-    build.path.append( file );
-    generator.append( build.path.data() );
-
-    generator.append( " -o ", true_value );
-    generator.append( build.obj_path );
-    generator.append( file );
-    generator.append( ".o" );
-    generator.append( "-Isource", true_value);
+	return strcmp( str + len - suflen, suffix ) == 0;
 }
 
+static void collect_cpp_files( const char* dir, String& collect, bool& found_any )
+{
+	DIR* d =  opendir( dir );
+	if ( !d ) return;
+
+	struct dirent* entry;
+	while ( (entry = readdir( d)) != nullptr )
+	{
+		if ( entry->d_type == DT_REG && ends_with( entry->d_name, ".cpp" ) )
+		{
+			collect
+				.append( " " )
+				.append( dir )
+				.append( "/" )
+				.append( entry->d_name );
+			found_any = true_value;
+		}
+	}
+	closedir( d );
+}
+
+static void write_rule_cxx( String& out )
+{
+	out.append( "rule cxx\n" );
+	out.append( " command = " );
+	out.append( toolchain_cxx );
+	out.append( " -MMD -MT $out -MF $out.d " );
+	out.append( " $cflags -c $in -o $out\n" );
+	out.append( " description = CXX $in\n" );
+	out.append( " depfile = $out.d\n" );
+	out.append( " deps = gcc\n\n" );
+}
+
+static void write_rule_link( String& out )
+{
+	out
+		.append( "rule link\n" )
+		.append( " command = " )
+		.append( toolchain_cxx )
+		.append( " $in $ldflags -o $out\n" )
+		.append( " description = LINK $out\n\n" );
+}
+
+static void write_rule_archive( String& out )
+{
+	out
+		.append( "rule archive\n" )
+		.append( " command = ar rcs $out $in\n" )
+		.append( " description = AR $out\n\n" );
+}
+
+//
+// TODO: Parse args
+//
 int main( int argc, char** argv )
 {
-    {
-        String generator;
-        generator.init();
+	String ninja;
+	ninja.init();
 
-        i32 comment_length = static_cast<int>( COMMENT_LENGTH );
-        if ( comment_length <= 0 ) comment_length = 1;
+	i32 section_len = SECTION_LENGTH;
+	i32 length = ( section_len / 2 ) - (int)( strlen( "Blood Build Generator ( Ninja )" ) / 2 );
+	if ( section_len <= U32_MIN ) length = 1;
 
-        i32 length = static_cast<int>( comment_length / 2 ) - static_cast<int>( strlen(COMMENT_INTRO_TEXT) / 2 );
-        if ( length <= 0 ) length = 1;
+	SECTION_COMMENT( "Blood Build Generator ( Ninja )", ninja, length, section_len );
+	ninja.append( "\n\n");
 
-        COMMENT_INTRO( COMMENT_INTRO_TEXT, generator, length, comment_length );
+	// Header
+	ninja.append( "ninja_required_version = 1.10\n\n" );
+	ninja.append( "builddir = " );
+	ninja.append( build_dir );
+	ninja.append( "\n" );
+	ninja.append( "objdir = " );
+	ninja.append( obj_dir );
+	ninja.append( "\n" );
+	ninja.append( "bindir = " );
+	ninja.append( bin_dir );
+	ninja.append( "\n\n" );
 
-        generator.append( "\n", false_value, 2 );
-        #if PLATFORM_LINUX
-            generator.append( "rm build/objects/*.o" );
-        #endif
-        generator.append( "\n", false_value, 2 );
+	ninja.append( "cflags = -std=c++20 -Isource -Wall -Wextra -Wno-unused-parameter -g -O0\n" );
 
-        const char* ext = NULL;
+#if PLATFORM_LINUX
+	ninja.append( "ldflags = -lxcb -lxcb-keysyms -lX11 -lX11-xcb -lGL -lGLEW -lpthread -lm\n\n" );
+#elif PLATFORM_WINDOWS
+	ninja.append( "ldflags =\n\n" );
+#endif
 
-        #if PLATFORM_LINUX
-            ext = ".sh";
+	write_rule_cxx( ninja );
+	write_rule_link( ninja );
+	write_rule_archive( ninja );
 
-            generator.append( "#!/bin/bash" );
-            generator.append( "\n" );
-            generator.append( "set -xe" );
-            generator.append( "\n", false_value, 2 );
-        #elif PLATFORM_WINDOWS
-            ext = ".bat";
-        #endif
+	// Collect files
+	String engine_objects;
+	engine_objects.init();
+	String runtime_objects;
+	runtime_objects.init();
 
-      //  generator.append( toolchain );
+	// Engine
+	for ( u32 index = 0; index < ARRAY_SIZE( engine_dirs ); index++ )
+	{
+		const char* path_dir = engine_dirs[ index ];
 
-        WorkUnit units[] =
-        {
-            { "core/", files_core, static_cast<int>( ARRAY_SIZE( files_core ) ) },
-            { "platform/", files_platform, static_cast<int>( ARRAY_SIZE( files_platform ) ) },
-            // Sub platform
-            #if PLATFORM_LINUX
-                { "vendor/x11/", files_vendor_x11, static_cast<int>( ARRAY_SIZE( files_vendor_x11 ) ) },
-                { "platform/xcb/", files_sub_platform, static_cast<int>( ARRAY_SIZE( files_sub_platform ) ) },
-            #elif PLATFORM_WINDOWS
-                { "platform/windows/", files_sub_platform, static_cast<int>( ARRAY_SIZE( files_sub_platform ) ) },
-            #endif
-            {"renderer/gpu/", files_renderer, static_cast<int>( ARRAY_SIZE( files_renderer ) ) },
-            {"renderer/gpu/command/", files_command, static_cast<int>( ARRAY_SIZE( files_command ) ) },
-            {"renderer/gpu/pool/", files_pool, static_cast<int>( ARRAY_SIZE( files_pool ) ) },
-            {"renderer/gpu/render/", files_render, static_cast<int>( ARRAY_SIZE( files_render ) ) },
-            {"renderer/gpu/resource/", files_resource, static_cast<int>( ARRAY_SIZE( files_resource ) ) },
-            {"renderer/gpu/state/", files_state, static_cast<int>( ARRAY_SIZE( files_state ) ) },
-            #if API_OPENGL
-                {"renderer/layer/opengl/", files_layer_opengl, static_cast<int>( ARRAY_SIZE( files_layer_opengl ) ) },
-            #endif
-            {"engine/", files_engine, static_cast<int>( ARRAY_SIZE( files_engine ) ) },
-        };
+		// Skip folders
+		bool skip = false_value;
+#if PLATFORM_LINUX
+		skip = strstr( path_dir, "windows" ) != nullptr;
+#elif PLATFORM_WINDOWS
+		skip = strstr( path_dir, "xcb" ) != nullptr || strstr( path_dir, "x11" ) != nullptr;
+#endif
+		if ( skip ) continue;
 
-        int unit_count = static_cast<int>( sizeof(units) / sizeof(units[0]) );
+// Vulkan || D3D12
+#if !API_OPENGL
+		skip = strstr( path_dir, "opengl" ) != nullptr;
+#endif
+		if ( skip ) continue;
 
-        for ( int w = 0; w < unit_count; w++ )
-        {
-            WorkUnit current_unit = units[ w ];
+		String files;
+		files.init();
+		bool found = false_value;
+		collect_cpp_files( path_dir, files, found );
 
-            for ( int i = 0; i < current_unit.file_count; i++ )
-            {
-                const char* file =  current_unit.files[ i ];
+		if ( !found ) continue;
 
-                Build b;
+		{
+			char text[256];
+			sprintf( text, "[ %s ]", path_dir );
 
-                b.path.init( "source/" );
-                b.obj_path = "build/objects/";
-                b.work_path = current_unit.directory;
-                b.path.append( b.work_path );
+			length = ( section_len / 2 ) - (int)( strlen( text ) / 2);
+			if ( length <= U32_MIN ) length = 1;
+			SECTION_COMMENT( text, ninja, length, section_len );
+		}
 
-                if ( i == 0 )
-                {
-                char text[256];
-                sprintf( text, "[ %s ]", current_unit.directory );
+		DIR* d;
+		if ( (d = opendir( path_dir ) ) != nullptr )
+		{
+			struct dirent* entry;
+			while ( (entry = readdir( d ) ) != nullptr )
+			{
+				if ( (entry->d_type == DT_REG && ends_with( entry->d_name, ".cpp" )) )
+				{
+					String source;
+					source.init( path_dir );
+					source.append( "/" );
+					source.append( entry->d_name );
 
-                length = static_cast<int>( comment_length / 2 ) - static_cast<int>( strlen( text ) / 2 );
-                if ( length <= 0 ) length = 1;
+					String obj;
+					obj.init( "$objdir/" );
+					obj.append( entry->d_name );
+					obj.append( ".o" );
 
-                COMMENT_INTRO( text, generator, length, comment_length );
-                }
+					ninja.append( "build " );
+					ninja.append( obj.data() );
+					ninja.append( ": cxx " );
+					ninja.append( source.data() );
+					ninja.append( "\n" );
 
-                String temp;
-                temp.init( toolchain );
-                build( temp, b,file, length, comment_length );
+					engine_objects.append( " " );
+					engine_objects.append( obj.data() );
+				}
+			}
 
-                generator.append( temp.data() );
-                generator.append( "\n" );
+			closedir( d );
+		}
 
-            }
-            COMMENT( generator, comment_length );
-            generator.append( "\n", false_value, 2 );
-        }
+		SECTION( ninja, section_len );
+		ninja.append( "\n" );
+	}
 
-        Debug::Println( PrintColor_Yellow, generator.data() );
+	// Runtime
+	for ( u32 index = 0; index < ARRAY_SIZE( runtime_dirs ); index++ )
+	{
+		const char* path_dir = runtime_dirs[ index ];
 
-        {
-            String script;
-            script.init( ".blood/vscblood/generator/" );
-            script.append( "build" );
-            script.append( ext );
-            generator.save_data( script.data() );
-        }
-    }
+		{
+			char text[256];
+			sprintf( text, "[ %s ]", path_dir );
 
-    return exit_success_code;
+			length = ( section_len / 2 ) - (int)( strlen( text ) / 2);
+			if ( length <= U32_MIN ) length = 1;
+			SECTION_COMMENT( text, ninja, length, section_len );
+		}
+
+		DIR* d;
+		if ( (d = opendir( path_dir ) ) != nullptr )
+		{
+			struct dirent* entry;
+			while ( (entry = readdir( d ) ) != nullptr )
+			{
+				if ( (entry->d_type == DT_REG && ends_with( entry->d_name, ".cpp" )) )
+				{
+					String source;
+					source.init( path_dir );
+					source.append( "/" );
+					source.append( entry->d_name );
+
+					String obj;
+					obj.init( "$objdir/" );
+					obj.append( entry->d_name );
+					obj.append( ".o" );
+
+					ninja.append( "build " );
+					ninja.append( obj.data() );
+					ninja.append( ": cxx " );
+					ninja.append( source.data() );
+					ninja.append( "\n" );
+
+					runtime_objects.append( " " );
+					runtime_objects.append( obj.data() );
+				}
+			}
+
+			closedir( d );
+		}
+
+		SECTION( ninja, section_len );
+		ninja.append( "\n" );
+	}
+
+	// Targets
+	SECTION_COMMENT( "Targets", ninja, length, section_len )
+
+	ninja.append( "build $bindir/libblood.a: archive" );
+	ninja.append( engine_objects.data() );
+	ninja.append( "\n\n" );
+
+	ninja.append( "build $bindir/flappy: link" );
+	ninja.append( runtime_objects.data() );
+	ninja.append( engine_objects.data() );
+	ninja.append( "\n\n" );
+
+	ninja.append( "default $bindir/flappy\n\n" );
+
+	// Save
+	{
+		String path;
+		path.init( "build.ninja" );
+		ninja.save_data( path.data() );
+		Debug::Println( PrintColor_Green, "Generated: %s", path.data() );
+	}
+
+	// Helper save
+	{
+		String helper;
+		helper.init();
+#if PLATFORM_LINUX
+		helper.append( "#!/bin/bash\nset -e\n" );
+		helper.append( "mkdir -p build/objects build/bin\n" );
+		helper.append( "ninja -C build \"$@\"\n" );
+		helper.append( "build.sh" );
+#else
+		helper.append( "@echo off" );
+		helper.append( "if not exists build\\objects mkdir build\\objects\n" );
+		helper.append( "if not exists build\\bin mkdir build\\bin\n" );
+		helper.append( "ninja -C build %*\n" );
+		helper.append( "build.bat" );
+#endif
+
+		Debug::Println( PrintColor_Cyan, "Generated helper script" );
+	}
+
+	Debug::Println( PrintColor_Yellow, "Blood Ninja Generator finished ( auto-scan )" );
+
+	return exit_success_code;
 }

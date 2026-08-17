@@ -8,7 +8,7 @@
 #include <engine/engine.hpp>
 #include <engine/system/node.hpp>
 
-#include <bird.hpp>
+#include "scripts/bird.hpp"
 
 GLOBAL void _start()
 {
@@ -16,6 +16,7 @@ GLOBAL void _start()
 
 	String title;
 	title.init( WindowConfig::Get::title() );
+	title.append( " -" );
 	title.append( "FlappyBirds", true_value );
 
 	WindowConfig::Set::title( title.data() );

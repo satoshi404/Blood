@@ -7,7 +7,8 @@
     "vscode": "^1.78.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Programming Languages"
   ],
   "main": "./extension.js",
   "activationEvents": [
@@ -15,9 +16,51 @@
 	],
   "contributes": {
     "commands": [
-      { "command": "vscblood.build_generator", "title": "Blood: Generate Build" },
-      { "command": "vscblood.run", "title": "Blood: Run runtime" }
-    ]
+      {
+        "command": "vscblood.generate",
+        "title": "Blood: Generate Build ( Ninja ) ",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "vscblood.build",
+        "title": "Blood: Build ",
+        "icon": "$(check)"
+      },
+      {
+        "command": "vscblood.run",
+        "title": "Blood: Run ",
+        "icon": "$(play)"
+      },
+      {
+        "command": "vscblood.clean",
+        "title": "Blood: Clean ",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "vscblood.rebuild",
+        "title": "Blood: Rebuild ",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "vscblood.generate"
+        },
+        {
+          "command": "vscblood.build"
+        },
+        {
+          "command": "vscblood.play"
+        },
+        {
+          "command": "vscblood.clean"
+        },
+        {
+          "command": "vscblood.rebuild"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "@types/vscode": "^1.78.0",
