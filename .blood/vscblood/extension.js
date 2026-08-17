@@ -182,7 +182,7 @@ async function command_generate()
 		`rm -f "${generatorBin}"`
 	].join( " && " );
 
-	await CommandRunWait( { command: cmd, workspaceRoot: root } );
+	await TerminalRunCommand( { command: cmd, workspaceRoot: root } );
 }
 
 async function command_build()
@@ -190,9 +190,9 @@ async function command_build()
 	const root = get_workspace_path();
 	if ( !root ) return;
 
-	const cmd = `mkdir -p build/objects build/bin && ninja`;
+	const cmd = `mkdir -p build build/objects build/bin && ninja`;
 
-	await CommandRunWait( { command: cmd, workspaceRoot: root } );
+	await TerminalRunCommand( { command: cmd, workspaceRoot: root } );
 }
 
 async function command_run()
@@ -209,7 +209,7 @@ async function command_clean()
 	const root = get_workspace_path();
 	if ( !root ) return;
 
-	await CommandRunWait( { command: `(cd build && ninja -t clean)`, workspaceRoot: root } );
+	await CommandRunWait( { command: `ninja -t clean`, workspaceRoot: root } );
 }
 
 async function command_rebuild()

@@ -7,6 +7,7 @@ LOCAL const u32 size = 50;
 
 void Bird::init()
 {
+	UNUSED_VAR( size );
 	Debug::Println( PrintColor_Yellow, "Bird::init" );
 }
 

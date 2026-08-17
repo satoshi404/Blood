@@ -1,6 +1,5 @@
 /build
 /build/objects
-
 /tests
 *.txt
 *.png

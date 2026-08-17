@@ -15,7 +15,7 @@ void GpuBackend::set_transform(const GpuTransform &transform)
         transform.position[1],
         transform.position[2]);
 
-    constexpr f32 RAD_TO_DEG = 180.0f / M_PI;
+    constexpr f32 RAD_TO_DEG = 360.0f / M_PI;
     const GLfloat rotation_x = transform.rotation[0] * RAD_TO_DEG;
     const GLfloat rotation_y = transform.rotation[1] * RAD_TO_DEG;
     const GLfloat rotation_z = transform.rotation[2] * RAD_TO_DEG;

@@ -13,6 +13,20 @@
 
 #define ENGINE_COLOR_RENDERER  0.2f, 0.2f, 0.2f, 1.0f
 
+// TODO: Test gpu renderer
+
+static GpuMaterial simple_material = { { 0.95f, 0.55f, 0.15f, 1.0f }, 0 };
+
+static GpuTransform simple_transform =
+{
+      .position = {0.0f, 0.0f, -5.0f},
+      .rotation = {1, 1, 1},
+      .scale = { 0.5, 0.5, 0.5 }
+};
+
+GpuDescriptorHandle simple_handle = {};
+GpuDescriptor simple_descriptor = {};
+
 namespace EngineBackend
 {
 	TimerScheduler scheduler;
@@ -65,6 +79,16 @@ bool Engine::init()
 
 	EngineBackend::last_time = Timer::Get::microseconds();
 
+	// TODO:
+
+  	simple_descriptor.type = GpuDrawType_Cube;
+  	simple_descriptor.context = GpuContext_3D;
+  	simple_descriptor.material = &simple_material;
+  	simple_descriptor.transform = simple_transform;
+  	strncpy(simple_descriptor.label, "simple", sizeof(simple_descriptor.label) - 1);
+
+  	simple_handle = GpuFactory::create_descriptor(simple_descriptor);
+
 	// Runtime init
 	_start();
 
@@ -81,11 +105,26 @@ void Engine::update()
 		EngineBackend::delta = EngineBackend::now - EngineBackend::last_time;
 		EngineBackend::last_time = EngineBackend::now;
 
-		EngineBackend::frame_commands.push(GpuFactory::make_clear_command( ENGINE_COLOR_RENDERER, "clear_bg" ) );
-    	//EngineBackend::frame_commands.push(GpuFactory::make_draw_command(cube_handle, "draw_cube"));
-    	//EngineBackend::frame_commands.push(GpuFactory::make_transform_command(1, 1, 1, "cube_trans"));
+		EngineBackend::frame_commands.push( GpuFactory::make_clear_command( ENGINE_COLOR_RENDERER, "clear_bg" ) );
+    	EngineBackend::frame_commands.push( GpuFactory::make_draw_command( simple_handle, "simple" ) );
+    	EngineBackend::frame_commands.push( GpuFactory::make_transform_command( 1, 1, 1, "simple" ) );
     	EngineBackend::frame_commands.push( GpuFactory::make_swap_command( "present" ) );
+
 		GpuFactory::submit( EngineBackend::frame_commands );
+
+		EngineBackend::angle += 2.2 * (  EngineBackend::delta / 1'000'000.0);
+
+		simple_transform.rotation[0] = static_cast<f32>( EngineBackend::angle );
+        simple_transform.rotation[1] = static_cast<f32>( EngineBackend::angle );
+        simple_transform.rotation[2] = 0;
+
+		simple_transform.mark_dirty();
+
+    	GpuTransformOps::update_matrix( simple_transform );
+
+    	simple_descriptor.transform = simple_transform;
+
+		GpuFactory::update_descriptor( simple_handle, simple_descriptor );
 
 		EngineBackend::scheduler.update( EngineBackend::delta );
 
@@ -123,7 +162,7 @@ void Engine::update()
 void Engine::free()
 {
 	// Engine free
-	//GpuFactory::destroy_descriptor(cube_handle);
+	GpuFactory::destroy_descriptor( simple_handle );
   	GpuFactory::shutdown();
 	CoreWindow::terminate();
 
