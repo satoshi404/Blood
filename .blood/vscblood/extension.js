@@ -250,21 +250,25 @@ async function activate( context )
 	WIDGET_GENERETE.text = "$(tools) Generate";
 	WIDGET_GENERETE.command = "vscblood.generete";
 	WIDGET_GENERETE.tooltip = "Blood: Generate build.ninja";
+	WIDGET_GENERETE.color = "Cyan";
 	WIDGET_GENERETE.show();
 
 	WIDGET_BUILD.text = "$(check) Build";
 	WIDGET_BUILD.command = "vscblood.build";
 	WIDGET_BUILD.tooltip = "Blood: Ninja build";
+	WIDGET_GENERETE.color = "Green";
 	WIDGET_BUILD.show();
 
 	WIDGET_RUN.text = "$(play) Run";
 	WIDGET_RUN.command = "vscblood.run";
 	WIDGET_RUN.tooltip = "Blood: Run runtime";
+	WIDGET_GENERETE.color = "Orange";
 	WIDGET_RUN.show();
 
 	WIDGET_CLEAN.text = "$(trash) Clean";
 	WIDGET_CLEAN.command = "vscblood.clean";
 	WIDGET_CLEAN.tooltip = "Blood: Clean";
+	WIDGET_GENERETE.color = "Pink";
 	WIDGET_CLEAN.show();
 
 	context.subscriptions.push(

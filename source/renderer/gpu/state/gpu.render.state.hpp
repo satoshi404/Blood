@@ -4,8 +4,9 @@
 
 struct GpuRenderState
 {
-    bool depth_test = false;
-    bool depth_write = false;
+    bool depth_test  = true;
+    bool depth_write = true;
+    bool cull_face   = true;
 
     bool blending = false;
     GpuBlendMode blend_mode = GpuBlendMode_Alpha;

@@ -83,10 +83,11 @@ bool Engine::init()
 	auto factory_queue = GpuFactory::create_render_queue("Main");
 	auto simple = GpuFactory::create_descriptor(
 		GpuDescriptorBuilder()
-			.mesh(  )
-			.material( )
+			.mesh( {1, 1, 1 } )
+			.material( {} )
 			.position( 100.0f, 200.f )
 			.layer(1)
+			.build()
 	);
 
 	// Frame

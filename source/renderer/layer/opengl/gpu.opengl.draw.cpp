@@ -110,41 +110,43 @@ namespace
     }
 }
 
-void GpuBackend::draw_cube_2d(const GpuDescriptor& descriptor)
-{
-    ensure_quad();
-
-    const GpuMeshHandle& mesh =
-        descriptor.mesh ? *descriptor.mesh : g_cube_quad;
-
-    const GpuMaterial& material =
-        descriptor.material ? *descriptor.material : g_quad_material;
-
-    material.bind();
-
-    set_transform(descriptor.transform);
-    set_render_state(descriptor.render_state);
-
-    mesh.draw(descriptor.primitive);
-}
-
-void GpuBackend::draw_cube_3d(const GpuDescriptor& descriptor)
-{
-    ensure_cube();
-
-    const GpuMesh& mesh =
-        descriptor.mesh ? *descriptor.mesh : g_cube_mesh;
-
-    const GpuMaterial& material =
-        descriptor.material ? *descriptor.material : g_cube_material;
-
-    material.bind();
-
-    set_transform(descriptor.transform);
-    set_render_state(descriptor.render_state);
-
-    mesh.draw(descriptor.primitive);
-}
+//void GpuBackend::draw_cube_2d(const GpuDescriptor& descriptor)
+//{
+//    ensure_quad();
+//
+//    const GpuMeshHandle mh = descriptor.handle_mesh;
+//
+//    const GpuMesh& mesh =
+//        descriptor.mesh ? *descriptor.mesh : g_cube_quad;
+//
+//    const GpuMaterial& material =
+//        descriptor.material ? *descriptor.material : g_quad_material;
+//
+//    material.bind();
+//
+//    set_transform(descriptor.transform);
+//    set_render_state(descriptor.render_state);
+//
+//    mesh.draw(descriptor.primitive);
+//}
+//
+//void GpuBackend::draw_cube_3d(const GpuDescriptor& descriptor)
+//{
+//    ensure_cube();
+//
+//    const GpuMesh& mesh =
+//        descriptor.mesh ? *descriptor.mesh : g_cube_mesh;
+//
+//    const GpuMaterial& material =
+//        descriptor.material ? *descriptor.material : g_cube_material;
+//
+//    material.bind();
+//
+//    set_transform(descriptor.transform);
+//    set_render_state(descriptor.render_state);
+//
+//    mesh.draw(descriptor.primitive);
+//}
 
 void GpuBackend::draw_sphere_2d(const GpuDescriptor&)
 {
