@@ -100,3 +100,29 @@ GpuCommand GpuCommand::pop_state(const char *text)
     make_label(c.label, sizeof(c.label), text);
     return c;
 }
+
+GpuCommand GpuCommand::begin_render_pass( const GpuRenderPass& pass, const char* label )
+{
+    GpuCommand com = {};
+    com.type = GpuCommandType_BeginRenderPass;
+    com.commands.begin_pass.pass = pass;
+    make_label(com.label, sizeof(label)  ,label );
+    return com;
+}
+
+GpuCommand GpuCommand::end_render_pass( const char* label )
+{
+    GpuCommand com = {};
+    com.type = GpuCommandType_EndRenderPass;
+    make_label(com.label, sizeof(label)  ,label );
+    return com;
+}
+
+GpuCommand GpuCommand::execute_queue( const GpuRenderQueueHandle& queue, const char* label )
+{
+    GpuCommand com = {};
+    com.type = GpuCommandType_EndRenderPass;
+    com.commands.execute_pass.queue = queue;
+    make_label(com.label, sizeof(label)  ,label );
+    return com;
+}

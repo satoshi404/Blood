@@ -108,45 +108,49 @@ namespace
                 "[Gpu:OpenGL] Falha ao criar cubo padrao"
             );
     }
+
+    const GpuMesh& resolve_mesh( const GpuDescriptor& desc, const GpuMesh& fallback )
+    {
+        return fallback;
+    }
+
+    const GpuMaterial& resolve_material( const GpuDescriptor& desc, const GpuMaterial& fallback )
+    {
+        return fallback;
+    }
 }
 
-//void GpuBackend::draw_cube_2d(const GpuDescriptor& descriptor)
-//{
-//    ensure_quad();
-//
-//    const GpuMeshHandle mh = descriptor.handle_mesh;
-//
-//    const GpuMesh& mesh =
-//        descriptor.mesh ? *descriptor.mesh : g_cube_quad;
-//
-//    const GpuMaterial& material =
-//        descriptor.material ? *descriptor.material : g_quad_material;
-//
-//    material.bind();
-//
-//    set_transform(descriptor.transform);
-//    set_render_state(descriptor.render_state);
-//
-//    mesh.draw(descriptor.primitive);
-//}
-//
-//void GpuBackend::draw_cube_3d(const GpuDescriptor& descriptor)
-//{
-//    ensure_cube();
-//
-//    const GpuMesh& mesh =
-//        descriptor.mesh ? *descriptor.mesh : g_cube_mesh;
-//
-//    const GpuMaterial& material =
-//        descriptor.material ? *descriptor.material : g_cube_material;
-//
-//    material.bind();
-//
-//    set_transform(descriptor.transform);
-//    set_render_state(descriptor.render_state);
-//
-//    mesh.draw(descriptor.primitive);
-//}
+void GpuBackend::draw_cube_2d(const GpuDescriptor& descriptor)
+{
+   ensure_quad();
+
+   const GpuMesh& mesh = resolve_mesh( descriptor, g_cube_quad );
+   const GpuMaterial& material = resolve_material( descriptor, g_quad_material );
+
+   material.bind();
+
+   set_transform(descriptor.transform);
+   set_render_state(descriptor.render_state);
+
+   TopologiePrimitive prim = ( descriptor.primitive != TopologiePrimitive_Default ) ? descriptor.primitive : mesh.primitive;
+   mesh_draw( mesh, prim );
+}
+
+void GpuBackend::draw_cube_3d(const GpuDescriptor& descriptor)
+{
+   ensure_cube();
+
+   const GpuMesh& mesh = resolve_mesh( descriptor, g_cube_mesh );
+   const GpuMaterial& material = resolve_material( descriptor, g_cube_material );
+
+   material.bind();
+
+   set_transform(descriptor.transform);
+   set_render_state(descriptor.render_state);
+
+   TopologiePrimitive prim = ( descriptor.primitive != TopologiePrimitive_Default ) ? descriptor.primitive : mesh.primitive;
+   mesh_draw( mesh, prim );
+}
 
 void GpuBackend::draw_sphere_2d(const GpuDescriptor&)
 {

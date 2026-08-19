@@ -90,16 +90,3 @@ GpuBuffer* GpuBufferPool::get(GpuBufferHandle h)
 
     return &s.value;
 }
-
-//const GpuBuffer* GpuBufferPool::get(GpuBufferHandle h)
-//{
-//    if (!h.is_valid() || h.index >= GpuLimits::MaxBuffers)
-//        return nullptr;
-//
-//    const Slot& s = g_slots[h.index];
-//
-//    if (!s.alive || s.generation != h.generation)
-//        return nullptr;
-//
-//    return &s.value;
-//}

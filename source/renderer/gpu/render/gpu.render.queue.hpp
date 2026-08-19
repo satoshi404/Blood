@@ -24,7 +24,7 @@ struct GpuRenderQueue
 
 	bool push( GpuDescriptorHandle handle )
 	{
-		if ( count >= GpuLimits::MaxDescriptors || handle.is_valid() ) return false_value;
+		if ( count >= GpuLimits::MaxDescriptors || !handle.is_valid() ) return false_value;
 
 		items[count++] = handle;
 		return true_value;

@@ -51,11 +51,13 @@ struct GpuCommand
         GpuMaterialCommand material;
         GpuTextureCommand texture;
         GpuRenderState render_state;
+        GpuBeginRenderPassCommand begin_pass;
+        GpuExecuteQueueCommand execute_pass;
     } commands;
 
     char label[GpuLimits::LabelSize] = {};
     u64 timestamp = 0;
-    bool enabled = true;
+    bool enabled = true_value;
 
     static GpuCommand clear(
         f32 r,

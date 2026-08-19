@@ -31,7 +31,7 @@ namespace GpuFactory
         return Gpu::get_descriptor(h);
     }
 
-    inline const GpuDescriptor* get_descriptor_mutable(GpuDescriptorHandle h)
+    inline GpuDescriptor* get_descriptor_mutable(GpuDescriptorHandle h)
     {
         return Gpu::get_descriptor_mutable( h );
     }
@@ -131,7 +131,7 @@ namespace GpuFactory
         return GpuCommand::end_render_pass( label );
     }
 
-    inline GpuCommand make_begin_render_pass( const GpuRenderQueueHandle& queue, const char* label = nullptr )
+    inline GpuCommand execute_queue( const GpuRenderQueueHandle& queue, const char* label = nullptr )
     {
         return GpuCommand::execute_queue( queue, label );
     }

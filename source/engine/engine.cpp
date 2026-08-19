@@ -15,17 +15,10 @@
 
 // TODO: Test gpu renderer
 
-static GpuMaterial simple_material = { { 0.95f, 0.55f, 0.15f, 1.0f }, 0 };
 
-static GpuTransform simple_transform =
-{
-      .position = {0.0f, 0.0f, -5.0f},
-      .rotation = {1, 1, 1},
-      .scale = { 0.5, 0.5, 0.5 }
-};
-
-GpuDescriptorHandle simple_handle = {};
-GpuDescriptor simple_descriptor = {};
+static GpuDescriptorHandle simple_handle = {};
+static GpuRenderQueueHandle simple_queue = {};
+static GpuTransform simple_transform = {};
 
 namespace EngineBackend
 {
@@ -50,26 +43,57 @@ bool Engine::init()
 	if ( !CoreWindow::init() )
 	{
 		Debug::Println( PrintColor_Red, "Engine: Error init core window" );
-		return exit_failed_code;
+		return false_value;
 	}
-
-	CoreWindow::show();
 
 	if ( !GpuFactory::init() )
 	{
 		Debug::Println( PrintColor_Red, "Engine: Error init gpu renderer" );
-		return exit_failed_code;
+		return false_value;
 	}
 
-	GpuCommand main_viewport = GpuFactory::make_viewport_command
-	(
-      	0, 0,
-    	(i32)WindowConfig::Get::width(),
-      	(i32)WindowConfig::Get::height(),
-      	"main_viewport"
+	CoreWindow::show();
+
+	// Create
+	//simple_queue = GpuFactory::create_render_queue( "queue" );
+	//if ( !simple_handle.is_valid() )
+	//{
+	//	Engine::free();
+	//	Debug::Println( PrintColor_Red, "Engine: FAILED CREATE RenderQueue" );
+	//	return false_value;
+	//}
+
+	simple_transform = {};
+	simple_transform.position[0] = 0.;
+	simple_transform.position[1] = 0.;
+	simple_transform.position[2] = -5.;
+	simple_transform.scale[0] = 0.08;
+	simple_transform.scale[1] = 0.08;
+	simple_transform.scale[2] = 0.08;
+	simple_transform.mark_dirty();
+
+
+	simple_handle = GpuFactory::create_descriptor(
+		GpuDescriptorBuilder()
+			.type( GpuDrawType_Cube )
+			.context( GpuContext_3D )
+			.position( 100.0f, 200.f )
+			.scale( 0.08, 0.08, 0.08 )
+			.label("cube")
+			.build()
 	);
 
-  	GpuFactory::bind_command( main_viewport );
+	GpuFactory::bind_command(
+		GpuFactory::make_viewport_command(
+			0, 0,
+			(i32)WindowConfig::Get::width(),
+			(i32)WindowConfig::Get::height(),
+			"main_viewport"
+		)
+	);
+
+	EngineBackend::last_time = Timer::Get::microseconds();
+
 
 	EngineBackend::scheduler.schedule(1000000ULL, [](void *user_data) {
         static u64 seconds_elapsed = 0;
@@ -77,36 +101,10 @@ bool Engine::init()
         Debug::Println( PrintColor_Cyan, "[Uptime] %llu segundos", seconds_elapsed ); }, nullptr,
                           /*repeat=*/true);
 
-	EngineBackend::last_time = Timer::Get::microseconds();
-
-	// Create
-	auto factory_queue = GpuFactory::create_render_queue("Main");
-	auto simple = GpuFactory::create_descriptor(
-		GpuDescriptorBuilder()
-			.mesh( {1, 1, 1 } )
-			.material( {} )
-			.position( 100.0f, 200.f )
-			.layer(1)
-			.build()
-	);
-
-	// Frame
-	GpuRenderQueue* queue = GpuFactory::get_render_queue( factory_queue );
-	queue->clear();
-	queue->push( simple );
-
-	GpuRenderPass pass = GpuFactory::make_simple_pass(
-		0, 0, WindowConfig::Get::width(), WindowConfig::Get::height(),
-		factory_queue,GpuContext_2D ,ENGINE_COLOR_RENDERER,
-		"Pass"
-	);
-
-
-
 	// Runtime init
 	_start();
 
-	return exit_success_code;
+	return true_value;
 }
 
 void Engine::update()
@@ -119,26 +117,58 @@ void Engine::update()
 		EngineBackend::delta = EngineBackend::now - EngineBackend::last_time;
 		EngineBackend::last_time = EngineBackend::now;
 
-		EngineBackend::frame_commands.push( GpuFactory::make_clear_command( ENGINE_COLOR_RENDERER, "clear_bg" ) );
-    	EngineBackend::frame_commands.push( GpuFactory::make_draw_command( simple_handle, "simple" ) );
-    	EngineBackend::frame_commands.push( GpuFactory::make_transform_command( 1, 1, 1, "simple" ) );
+		EngineBackend::angle += 2.2 * (  EngineBackend::delta / 1'000'000.0);
+
+		simple_transform.rotation[0] = (f32)( EngineBackend::angle );
+        simple_transform.rotation[1] = (f32)( EngineBackend::angle * 0.6 );
+        simple_transform.rotation[2] = 0;
+		simple_transform.mark_dirty();
+
+		if ( GpuDescriptor* des = GpuFactory::get_descriptor_mutable( simple_handle ) )
+		{
+			des->transform = simple_transform;
+			des->dirty = true_value;
+		}
+
+		GpuRenderQueue* queue = GpuFactory::get_render_queue( simple_queue );
+		if ( queue )
+		{
+			queue->clear();
+			queue->push( simple_handle );
+		}
+
+
+		GpuRenderPass pass = {};
+		pass.viewport =
+		{
+			0, 0,
+			(i32)WindowConfig::Get::width(),
+			(i32)WindowConfig::Get::height()
+		};
+		pass.queue = simple_queue;
+		pass.context = GpuContext_3D;
+		pass.clear_enabled = true_value;
+		pass.enabled = true_value;
+
+		pass.color.load_op = GpuLoadOp_Clear;
+		pass.color.store_op = GpuStoreOp_Store;
+		pass.color.clear = { 0.15, 0.15, 1.0, 1.0 };
+
+		pass.depth.load_op = GpuLoadOp_Clear;
+		pass.depth.store_op = GpuStoreOp_DontCare;
+
+		strncpy( pass.label, "MainPass", GpuLimits::LabelSize - 1 );
+
+		EngineBackend::frame_commands.reset();
+
+		EngineBackend::frame_commands.push(
+			GpuFactory::make_begin_render_pass( pass, "begin_main" )
+		);
+    	EngineBackend::frame_commands.push( GpuFactory::execute_queue( simple_queue, "exec_main_queue" ) );
+    	EngineBackend::frame_commands.push( GpuFactory::make_end_render_pass( "end_main" ) );
     	EngineBackend::frame_commands.push( GpuFactory::make_swap_command( "present" ) );
 
 		GpuFactory::submit( EngineBackend::frame_commands );
-
-		EngineBackend::angle += 2.2 * (  EngineBackend::delta / 1'000'000.0);
-
-		simple_transform.rotation[0] = static_cast<f32>( EngineBackend::angle );
-        simple_transform.rotation[1] = static_cast<f32>( EngineBackend::angle );
-        simple_transform.rotation[2] = 0;
-
-		simple_transform.mark_dirty();
-
-    	GpuTransformOps::update_matrix( simple_transform );
-
-    	simple_descriptor.transform = simple_transform;
-
-		GpuFactory::update_descriptor( simple_handle, simple_descriptor );
 
 		EngineBackend::scheduler.update( EngineBackend::delta );
 
@@ -176,7 +206,7 @@ void Engine::update()
 void Engine::free()
 {
 	// Engine free
-	GpuFactory::destroy_descriptor( simple_handle );
+	//GpuFactory::destroy_descriptor( simple_handle );
   	GpuFactory::shutdown();
 	CoreWindow::terminate();
 
@@ -197,8 +227,10 @@ void EngineCall::stop()
 int main()
 {
 	// TODO:
-	Engine::init();
+	if ( !Engine::init() ) return exit_failed_code;
+
 	Engine::update();
+
 	Engine::free();
 	return exit_success_code;
 }

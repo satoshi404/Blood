@@ -32,7 +32,13 @@ enum_type(GpuCommandType, u32){
     GpuCommandType_Bind_Texture,
     GpuCommandType_Push_State,
     GpuCommandType_Pop_State,
-    GpuCommandType_Count};
+
+    GpuCommandType_BeginRenderPass,
+    GpuCommandType_EndRenderPass,
+    GpuCommandType_ExecuteRenderPass,
+
+    GpuCommandType_Count
+};
 
 enum_type(GpuDrawType, u32){
     GpuDrawType_Cube,

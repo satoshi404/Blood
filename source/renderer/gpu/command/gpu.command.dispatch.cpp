@@ -91,6 +91,45 @@ void GpuCommandDispatcher::execute(const GpuCommand& command)
             GpuBackend::pop_state();
             break;
 
+        case GpuCommandType_BeginRenderPass:
+            {
+                const GpuRenderPass& pass = command.commands.begin_pass.pass;
+
+                if ( !pass.enabled ) break;
+
+                GpuBackend::viewport( pass.viewport );
+
+                if ( pass.clear_enabled || pass.color.load_op == GpuLoadOp_Clear )
+                {
+                    GpuBackend::clear( pass.color.clear );
+                }
+                // todo:
+            }
+
+        break;
+
+        case GpuCommandType_EndRenderPass:
+        //..
+        break;
+
+        case GpuCommandType_ExecuteRenderPass:
+        {
+            GpuRenderQueueHandle qh = command.commands.execute_pass.queue;
+            GpuRenderQueue* queue = GpuRenderQueuePool::get( qh );
+            if ( !queue ) break;
+
+            for ( u32 i = 0; i < queue->count; i++ )
+            {
+                GpuDescriptorHandle dh = queue->items[i];
+                if (!dh.is_valid()) continue;
+
+                GpuDrawCommand cmd = {};
+                cmd.descriptor = dh;
+                execute_draw( cmd );
+            }
+        }
+        break;
+
         case GpuCommandType_Bind_Shader:
         case GpuCommandType_Bind_Buffer:
         case GpuCommandType_UnBind_Buffer:

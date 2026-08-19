@@ -11,7 +11,6 @@ struct GpuRenderState
     bool blending = false;
     GpuBlendMode blend_mode = GpuBlendMode_Alpha;
 
-    bool cull_face = false;
     GpuCullMode cull_mode = GpuCullMode_Back;
 
     bool wireframe = false;
