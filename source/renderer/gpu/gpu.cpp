@@ -4,6 +4,7 @@
 #include <renderer/gpu/pool/gpu.descriptor.pool.hpp>
 #include <renderer/gpu/command/gpu.command.dispatch.hpp>
 #include <renderer/gpu/pool/gpu.mesh.pool.hpp>
+#include <renderer/gpu/pool/gpu.render.queue.pool.hpp>
 #include <core/debug.hpp>
 
 namespace
@@ -17,6 +18,7 @@ bool Gpu::init()
     if (g_initialized)
         return true_value;
 
+    // Init
     GpuDescriptorPool::init();
     GpuRenderQueuePool::init();
 

@@ -9,7 +9,7 @@ namespace
 
     static DrawFn g_draw_table[GpuDrawType_Count][GpuContext_Count] =
     {
-     //   { GpuBackend::draw_cube_2d,   GpuBackend::draw_cube_3d   },
+        { GpuBackend::draw_cube_2d,   GpuBackend::draw_cube_3d   },
         { GpuBackend::draw_sphere_2d, GpuBackend::draw_sphere_3d },
         { GpuBackend::draw_obj,    GpuBackend::draw_obj    }
     };

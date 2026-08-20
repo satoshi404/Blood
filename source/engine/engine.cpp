@@ -56,7 +56,7 @@ bool Engine::init()
 
 	// Create
 	simple_queue = GpuFactory::create_render_queue( "queue" );
-	if ( !simple_handle.is_valid() )
+	if ( !simple_queue.is_valid() )
 	{
 		Engine::free();
 		Debug::Println( PrintColor_Red, "Engine: FAILED CREATE RenderQueue" );
@@ -66,10 +66,10 @@ bool Engine::init()
 	simple_transform = {};
 	simple_transform.position[0] = 0.;
 	simple_transform.position[1] = 0.;
-	simple_transform.position[2] = -5.;
-	simple_transform.scale[0] = 0.08;
-	simple_transform.scale[1] = 0.08;
-	simple_transform.scale[2] = 0.08;
+	simple_transform.position[2] = -4.;
+	simple_transform.scale[0] = 0.8;
+	simple_transform.scale[1] = 0.8;
+	simple_transform.scale[2] = 0.8;
 	simple_transform.mark_dirty();
 
 
@@ -77,9 +77,6 @@ bool Engine::init()
 		GpuDescriptorBuilder()
 			.type( GpuDrawType_Cube )
 			.context( GpuContext_3D )
-			.position( 100.0f, 200.f )
-			.material( {} )
-			.scale( 0.08, 0.08, 0.08 )
 			.label("cube")
 			.build()
 	);
@@ -166,6 +163,7 @@ void Engine::update()
 			GpuFactory::make_begin_render_pass( pass, "begin_main" )
 		);
     	EngineBackend::frame_commands.push( GpuFactory::execute_queue( simple_queue, "exec_main_queue" ) );
+		EngineBackend::frame_commands.push( GpuFactory::make_draw_command( simple_handle, "cube" ) );
     	EngineBackend::frame_commands.push( GpuFactory::make_end_render_pass( "end_main" ) );
     	EngineBackend::frame_commands.push( GpuFactory::make_swap_command( "present" ) );
 

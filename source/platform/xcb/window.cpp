@@ -53,8 +53,8 @@ static struct
   XCB_GenericEvent *event;
   XCB_Screen *screen;
 
-  bool is_running;
-} handle = { .is_running = false_value };
+  bool is_running = false_value;
+} handle = {};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

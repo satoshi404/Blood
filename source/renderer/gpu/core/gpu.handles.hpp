@@ -3,7 +3,7 @@
 #include <core/types.hpp>
 
 template<typename Tag>
-struct GpuHandle
+struct Handle
 {
     static constexpr u32 InvalidIndex = 0xFFFFFFFFu;
 
@@ -21,12 +21,12 @@ struct GpuHandle
         generation = 0;
     }
 
-    bool operator==( const GpuHandle& other ) const
+    bool operator==( const Handle& other ) const
     {
         return index == other.index && generation == other.generation;
     }
 
-    bool operator!=( const GpuHandle& other ) const
+    bool operator!=( const Handle& other ) const
     {
         return !(*this == other);
     }
@@ -40,10 +40,10 @@ struct GpuMeshTag {};
 struct GpuMaterialTag {};
 struct GpuRenderQueueTag {};
 
-using GpuDescriptorHandle = GpuHandle<GpuDescriptorTag>;
-using GpuBufferHandle     = GpuHandle<GpuBufferTag>;
-using GpuTextureHandle    = GpuHandle<GpuTextureTag>;
-using GpuShaderHandle     = GpuHandle<GpuShaderTag>;
-using GpuMeshHandle       = GpuHandle<GpuMeshTag>;
-using GpuMaterialHandle   = GpuHandle<GpuMaterialTag>;
-using GpuRenderQueueHandle = GpuHandle<GpuRenderQueueTag>;
+using GpuDescriptorHandle =  Handle<GpuDescriptorTag>;
+using GpuBufferHandle     =  Handle<GpuBufferTag>;
+using GpuTextureHandle    =  Handle<GpuTextureTag>;
+using GpuShaderHandle     =  Handle<GpuShaderTag>;
+using GpuMeshHandle       =  Handle<GpuMeshTag>;
+using GpuMaterialHandle   =  Handle<GpuMaterialTag>;
+using GpuRenderQueueHandle = Handle<GpuRenderQueueTag>;

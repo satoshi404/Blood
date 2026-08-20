@@ -72,7 +72,7 @@ public:
     char* data() const { return _data; }
     u32 size() const { return _size; }
 
-    String& append( const char* cstr, bool whitespace = false, const u32 repeat = 1 )
+    String& append( const char* cstr, bool whitespace = false, const i32 repeat = 1 )
 	{
         for (int i = 0; i < repeat; i++)
         {

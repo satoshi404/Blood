@@ -35,7 +35,6 @@ namespace
             );
     }
 
-    // --- Cubo 3D (novo) ---
     GpuMesh g_cube_mesh;
     GpuMaterial g_cube_material = {};
     bool g_cube_ready = false_value;
