@@ -13,7 +13,7 @@ struct Slot
     bool alive = false_value;
 };
 
- Slot slots[ GpuLimits::MaxDescriptors ];
+ Slot slots[ GpuLimits::MaxLayers ];
  u32  slot_size = 0;
 
 bool valid_handler( GpuRenderQueueHandle handle )
@@ -87,7 +87,7 @@ GpuRenderQueueHandle GpuRenderQueuePool::create( const char* label )
 
 bool GpuRenderQueuePool::destroy( GpuRenderQueueHandle handle )
 {
-    if (exists( handle ))
+    if (!exists( handle ))
         return false_value;
 
     slots[handle.index].alive = false_value;

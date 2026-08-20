@@ -55,13 +55,13 @@ bool Engine::init()
 	CoreWindow::show();
 
 	// Create
-	//simple_queue = GpuFactory::create_render_queue( "queue" );
-	//if ( !simple_handle.is_valid() )
-	//{
-	//	Engine::free();
-	//	Debug::Println( PrintColor_Red, "Engine: FAILED CREATE RenderQueue" );
-	//	return false_value;
-	//}
+	simple_queue = GpuFactory::create_render_queue( "queue" );
+	if ( !simple_handle.is_valid() )
+	{
+		Engine::free();
+		Debug::Println( PrintColor_Red, "Engine: FAILED CREATE RenderQueue" );
+		return false_value;
+	}
 
 	simple_transform = {};
 	simple_transform.position[0] = 0.;
@@ -78,6 +78,7 @@ bool Engine::init()
 			.type( GpuDrawType_Cube )
 			.context( GpuContext_3D )
 			.position( 100.0f, 200.f )
+			.material( {} )
 			.scale( 0.08, 0.08, 0.08 )
 			.label("cube")
 			.build()
