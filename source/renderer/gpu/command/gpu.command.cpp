@@ -2,50 +2,64 @@
 
 #include <string.h>
 
-void make_label(char *dst, usize size, const char *src)
+void make_label( char *dst, usize size, const char *src )
 {
     if (!src)
     {
         dst[0] = '\0';
         return;
     }
-    strncpy(dst, src, size - 1);
-    dst[size - 1] = '\0';
+
+    strncpy( dst, src, size - 1 );
+    dst[ size - 1 ] = '\0';
 }
 
-GpuCommand GpuCommand::clear(f32 r, f32 g, f32 b, f32 a, const char *text)
+Command GpuCommand::clear( const Color color, const char *text)
 {
-    GpuCommand c = {};
-    c.type = GpuCommandType_Clear;
-    c.commands.clear = {r, g, b, a};
-    make_label(c.label, sizeof(c.label), text);
+    static Command commmand;
+    command.type = CommandType_Clear;
+
+    const float r = color.normalized().r;
+    const float g = color.normalized().g;
+    const float b = color.normalized().b;
+    const float a = color.normalized().a;
+
+    command.commands.clear = {  };
+    make_label( c.label, sizeof(c.label), text );
     return c;
 }
 
-GpuCommand GpuCommand::draw(GpuDescriptorHandle descriptor, const char *text)
+Command Command::draw( DescriptorHandle handle_descriptor, const char *text )
 {
-    GpuCommand c = {};
-    c.type = GpuCommandType_Draw;
-    c.commands.draw.descriptor = descriptor;
-    make_label(c.label, sizeof(c.label), text);
-    return c;
+    static GpuCommand command;
+    command.type = CommandType_Draw;
+    command.commands.draw.descriptor = handle_descriptor;
+    make_label( command.label, sizeof(command.label), text );
+    return command;
 }
 
-GpuCommand GpuCommand::viewport(i32 x, i32 y, i32 w, i32 h, const char *text)
+Command Command::viewport( const i32 viewport_x, const i32 viewport_y, const i32 viewport_w, const i32 viewport_h, const char *text )
 {
-    GpuCommand c = {};
-    c.type = GpuCommandType_Viewport;
-    c.commands.viewport = {x, y, w, h};
-    make_label(c.label, sizeof(c.label), text);
-    return c;
+    static Command command;
+    command.type = CommandType_Viewport;
+
+    command.commands.viewport =
+    {
+        viewport_x,
+        viewport_y,
+        viewport_w,
+        viewport_h
+    };
+    make_label( command.label, sizeof(command.label), text );
+    return command;
 }
 
-GpuCommand GpuCommand::swap(const char *text)
+Command Command::swap( const char *text )
 {
-    GpuCommand c = {};
-    c.type = GpuCommandType_Swap;
-    make_label(c.label, sizeof(c.label), text);
-    return c;
+    static Command comamnd;
+    command.type = CommandType_Swap;
+    make_label(c.label, sizeof( command.label ), command );
+    return command;
 }
 
 GpuCommand GpuCommand::transform(const GpuTransform &value, const char *text)

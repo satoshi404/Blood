@@ -1,119 +1,116 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.enums.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
-#include <renderer/gpu/core/gpu.types.hpp>
+#include <renderer/gpu/core/enums.hpp>
+#include <renderer/gpu/core/handles.hpp>
+#include <renderer/gpu/core/types.hpp>
 #include <renderer/gpu/state/gpu.transform.hpp>
 #include <renderer/gpu/state/gpu.render.state.hpp>
 #include <renderer/gpu/render/gpu.render.pass.hpp>
 #include <renderer/gpu/render/gpu.render.queue.hpp>
 #include <renderer/gpu/resource/gpu.material.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 
-struct GpuBeginRenderPassCommand
+struct BeginRenderPassCommand
 {
-    GpuRenderPass pass;
+    RenderPass pass;
 };
 
-struct GpuExecuteQueueCommand
+struct ExecuteQueueCommand
 {
-    GpuRenderQueueHandle queue;
+    RenderQueueHandle queue;
 };
 
-struct GpuDrawCommand
+struct DrawCommand
 {
-    GpuDescriptorHandle descriptor = {};
+    DescriptorHandle descriptor = {};
 };
 
-struct GpuMaterialCommand
+struct MaterialCommand
 {
-    const GpuMaterial* material = nullptr;
-    GpuShaderHandle shader = {};
-    bool override_material = false;
+    const Material* material = nullptr;
+    ShaderHandle shader = {};
+    bool override_material = false_value;
 };
 
-struct GpuTextureCommand
+struct TextureCommand
 {
-    GpuTextureHandle texture = {};
+    TextureHandle texture = {};
     u32 slot = 0;
 };
 
-struct GpuCommand
+struct Command
 {
-    GpuCommandType type = GpuCommandType_Clear;
+    CommandType type = CommandType_Clear;
 
     union
     {
-        GpuClear clear;
-        GpuDrawCommand draw;
-        GpuViewport viewport;
-        GpuTransform transform;
-        GpuMaterialCommand material;
-        GpuTextureCommand texture;
-        GpuRenderState render_state;
-        GpuBeginRenderPassCommand begin_pass;
-        GpuExecuteQueueCommand execute_pass;
+        Clear clear;
+        DrawCommand draw;
+        Viewport viewport;
+        Transform transform;
+        MaterialCommand material;
+        TextureCommand texture;
+        RenderState render_state;
+        BeginRenderPassCommand begin_pass;
+        ExecuteQueueCommand execute_pass;
     } commands;
 
-    char label[GpuLimits::LabelSize] = {};
+    char label[ Limits::LabelSize ] = {};
     u64 timestamp = 0;
     bool enabled = true_value;
 
-    static GpuCommand clear(
-        f32 r,
-        f32 g,
-        f32 b,
-        f32 a = 1.0f,
+    static Command clear(
+        const Color color = DefaultClearColor,
         const char* label = nullptr
     );
 
-    static GpuCommand draw(
-        GpuDescriptorHandle descriptor,
+    static Command draw(
+        DescriptorHandle descriptor,
         const char* label = nullptr
     );
 
-    static GpuCommand viewport(
-        i32 x,
-        i32 y,
-        i32 width,
-        i32 height,
+    static Command viewport(
+        const i32 x,
+        const i32 y,
+        const i32 width,
+        const i32 height,
         const char* label = nullptr
     );
 
-    static GpuCommand swap(
+    static Command swap(
         const char* label = nullptr
     );
 
-    static GpuCommand transform(
-        const GpuTransform& value,
+    static Command transform(
+        const Transform& value,
         const char* label = nullptr
     );
 
-    static GpuCommand material(
-        const GpuMaterial* value,
+    static Command material(
+        const Material* value,
         const char* label = nullptr
     );
 
-    static GpuCommand render_state(
-        const GpuRenderState& value,
+    static Command render_state(
+        const RenderState& value,
         const char* label = nullptr
     );
 
-    static GpuCommand texture(
-        GpuTextureHandle texture,
-        u32 slot,
+    static Command texture(
+        TextureHandle texture,
+        const u32 slot,
         const char* label = nullptr
     );
 
-    static GpuCommand push_state(
+    static Command push_state(
         const char* label = nullptr
     );
 
-    static GpuCommand pop_state(
+    static Command pop_state(
         const char* label = nullptr
     );
 
-    static GpuCommand begin_render_pass( const GpuRenderPass& pass, const char* label = nullptr );
-    static GpuCommand end_render_pass( const char* label = nullptr );
-    static GpuCommand execute_queue( const GpuRenderQueueHandle& queue, const char* label = nullptr );
+    static Command begin_render_pass( const RenderPass& pass, const char* label = nullptr );
+    static Command end_render_pass( const char* label = nullptr );
+    static Command execute_queue( const RenderQueueHandle& queue, const char* label = nullptr );
 };

@@ -1,19 +1,18 @@
 #pragma once
 
 #include <renderer/gpu/command/gpu.command.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 
-struct GpuCommandList
+struct CommandList
 {
-    GpuCommand items[GpuLimits::MaxCommands] = {};
+    Command items[ Limits::MaxCommands ] = {};
     u32 count = 0;
 
-    bool push(const GpuCommand& command)
+    bool push( const Command& command )
     {
-        if (count >= GpuLimits::MaxCommands)
-            return false_value;
+        if ( count >= Limits::MaxCommands ) return false_value;
 
-        items[count++] = command;
+        items[count++] = command
         return true_value;
     }
 

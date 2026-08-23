@@ -1,17 +1,22 @@
 #pragma once
 
+#include <renderer/gpu/core/handles.hpp>
+
+#include <renderer/gpu/resource/gpu.descriptor.hpp>
+
 #include <core/types.hpp>
 
-class GpuPool
+template<typename T>
+struct Slot
 {
-public:
-	GpuPool();
+	T value = {};
+    u32 generation = 0;
+    bool alive = false_value;
+};
 
-	bool exists() const;
-	const u32 size() const;
-	const u32 capacity() const;
-
-private:
-	u32 capacity;
-	u32 size;
+namespace Pool
+{
+	extern BufferHandle create_buffer( const f32* data, u32 float_count );
+	extern GpuDescriptorHandle create_descriptor( const GpuDescriptor &descriptor );
+	extern void free();
 };

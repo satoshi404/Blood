@@ -5,7 +5,7 @@ namespace
 {
     struct Slot
     {
-        GpuBuffer value = {};
+        Buffer value = {};
         u32 generation = 0;
         bool alive = false;
     };

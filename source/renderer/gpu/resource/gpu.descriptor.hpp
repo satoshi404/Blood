@@ -1,13 +1,13 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.enums.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
-#include <renderer/gpu/core/gpu.types.hpp>
+#include <renderer/gpu/core/enums.hpp>
+#include <renderer/gpu/core/handles.hpp>
+#include <renderer/gpu/core/types.hpp>
 #include <renderer/gpu/state/gpu.transform.hpp>
 #include <renderer/gpu/state/gpu.render.state.hpp>
 #include <renderer/gpu/resource/gpu.mesh.hpp>
 #include <renderer/gpu/resource/gpu.material.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 
 struct GpuDescriptor
 {

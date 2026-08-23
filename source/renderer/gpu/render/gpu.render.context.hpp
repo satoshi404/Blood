@@ -4,14 +4,14 @@
 
 struct GpuRenderContext
 {
-	GpuRenderPass* current_pass = nullptr;
-	GpuRenderQueue* current_queue = nullptr;
+	RenderPass* current_pass = nullptr;
+	RenderQueue* current_queue = nullptr;
 
-	GpuViewport viewport = {};
-	GpuRenderState render_state = {};
-	GpuMaterialHandle bound_material = {};
-	GpuShaderHandle bound_shader = {};
-	GpuMeshHandle bound_mesh = {};
+	Viewport viewport = {};
+	RenderState render_state = {};
+	MaterialHandle bound_material = {};
+	ShaderHandle bound_shader = {};
+	MeshHandle bound_mesh = {};
 
 	u32 draw_calls = 0;
 	u32 vertices = 0;

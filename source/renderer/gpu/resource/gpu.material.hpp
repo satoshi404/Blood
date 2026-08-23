@@ -1,7 +1,7 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.handles.hpp>
-#include <renderer/gpu/core/gpu.types.hpp>
+#include <renderer/gpu/core/handles.hpp>
+#include <renderer/gpu/core/types.hpp>
 
 struct GpuMaterial
 {

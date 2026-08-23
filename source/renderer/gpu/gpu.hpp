@@ -22,13 +22,13 @@ namespace Gpu
     void new_frame();
     const GpuStatistics& statistics();
 
-    GpuDescriptorHandle create_descriptor(const GpuDescriptor&);
-    bool update_descriptor(GpuDescriptorHandle, const GpuDescriptor&);
-    bool destroy_descriptor(GpuDescriptorHandle);
+    GpuDescriptorHandle create_descriptor (const GpuDescriptor& );
+    bool update_descriptor( GpuDescriptorHandle, const GpuDescriptor& );
+    bool destroy_descriptor( GpuDescriptorHandle );
 
-    const GpuDescriptor* get_descriptor(GpuDescriptorHandle);
-    GpuDescriptor* get_descriptor_mutable(GpuDescriptorHandle);
+    const GpuDescriptor* get_descriptor( GpuDescriptorHandle );
+    GpuDescriptor* get_descriptor_mutable( GpuDescriptorHandle );
 
-    void submit(GpuCommandList&);
-    void execute(const GpuCommand&);
+    void submit( GpuCommandList& );
+    void execute( const GpuCommand& );
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.enums.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/enums.hpp>
+#include <renderer/gpu/core/handles.hpp>
 #include <core/types.hpp>
 
-struct GpuBuffer
+struct Buffer
 {
     GpuBufferType type = GpuBufferType_Vertex;
 

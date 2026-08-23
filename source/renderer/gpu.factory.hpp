@@ -3,159 +3,185 @@
 #include <renderer/gpu/gpu.hpp>
 #include <renderer/layer/gpu.backend.hpp>
 
-namespace GpuFactory
+#include <core/math.hpp>
+
+namespace Factory
 {
-    inline bool init() { return Gpu::init(); }
-    inline void shutdown() { Gpu::shutdown(); }
-
-    inline void new_frame() { Gpu::new_frame(); }
-    inline const GpuStatistics& statistics() { return Gpu::statistics(); }
-
-    inline GpuDescriptorHandle create_descriptor(const GpuDescriptor& d)
+    INLINE bool init()
     {
-        return Gpu::create_descriptor(d);
+        return Gpu::init();
     }
 
-    inline bool update_descriptor(GpuDescriptorHandle h, const GpuDescriptor& d)
+    INLINE void shutdown()
     {
-        return Gpu::update_descriptor(h, d);
+        Gpu::shutdown();
     }
 
-    inline bool destroy_descriptor(GpuDescriptorHandle h)
+    INLINE void new_frame()
     {
-        return Gpu::destroy_descriptor(h);
+        Gpu::new_frame();
     }
 
-    inline const GpuDescriptor* get_descriptor(GpuDescriptorHandle h)
+    INLINE const Statistics& statistics() const
     {
-        return Gpu::get_descriptor(h);
+        return Gpu::statistics();
     }
 
-    inline GpuDescriptor* get_descriptor_mutable(GpuDescriptorHandle h)
+    INLINE DescriptorHandle create_descriptor(const Descriptor& descriptor )
     {
-        return Gpu::get_descriptor_mutable( h );
+        return Gpu::create_descriptor( descriptor );
     }
 
-    inline GpuRenderQueueHandle create_render_queue( const char* label = nullptr )
+    INLINE bool update_descriptor( const DescriptorHandle handle, const Descriptor& descriptor )
     {
-        return GpuRenderQueuePool::create( label );
+        return Gpu::update_descriptor( handle, descriptor );
     }
 
-    inline bool destroy_render_queue( GpuRenderQueueHandle h )
+    INLINE bool destroy_descriptor( const DescriptorHandle handle )
     {
-        return GpuRenderQueuePool::destroy( h );
+        return Gpu::destroy_descriptor( handle );
     }
 
-    inline GpuRenderQueue* get_render_queue(GpuRenderQueueHandle h )
+    INLINE const Descriptor* get_descriptor( const DescriptorHandle handle )
     {
-        return GpuRenderQueuePool::get( h );
+        return Gpu::get_descriptor( handle );
     }
 
-    inline GpuCommand make_draw_command(
-        GpuDescriptorHandle h,
+    INLINE Descriptor* get_descriptor_mutable( const DescriptorHandle handle )
+    {
+        return Gpu::get_descriptor_mutable( handle );
+    }
+
+    INLINE RenderQueueHandle create_render_queue( const char* label = nullptr )
+    {
+        return RenderQueuePool::create( label );
+    }
+
+    INLINE bool destroy_render_queue( const RenderQueueHandle handle )
+    {
+        return RenderQueuePool::destroy( handle );
+    }
+
+    INLINE RenderQueue* get_render_queue( const RenderQueueHandle handle )
+    {
+        return GpuRenderQueuePool::get( handle );
+    }
+
+    INLINE Command make_draw_command(
+        DescriptorHandle h,
         const char* label = nullptr)
     {
-        return GpuCommand::draw(h, label);
+        return Command::draw(h, label);
     }
 
-    inline GpuCommand make_clear_command(
-        f32 r, f32 g, f32 b, f32 a = 1.0f,
+    INLINE Command make_clear_command(
+        const Color color,
+        const char* label = nullptr )
+    {
+        return Command::clear( color.r, color.g, color.b, color.a, label );
+    }
+
+    INLINE Command make_viewport_command(
+        const i32 viewport_x,
+        const i32 viewport_y,
+        const i32 viewport_w,
+        const i32 viewport_h,
+        const char* label = nullptr
+    )
+    {
+        return Command::viewport( x, y, width, height, label );
+    }
+
+    INLINE Command make_swap_command( const char* label = nullptr )
+    {
+        return Command::swap( label );
+    }
+
+    INLINE Command make_transform_command(
+        const f32 x, const f32 y, const f32 z,
         const char* label = nullptr)
     {
-        return GpuCommand::clear(r, g, b, a, label);
-    }
-
-    inline GpuCommand make_viewport_command(
-        i32 x, i32 y, i32 width, i32 height,
-        const char* label = nullptr)
-    {
-        return GpuCommand::viewport(x, y, width, height, label);
-    }
-
-    inline GpuCommand make_swap_command(const char* label = nullptr)
-    {
-        return GpuCommand::swap(label);
-    }
-
-    inline GpuCommand make_transform_command(
-        f32 x, f32 y, f32 z,
-        const char* label = nullptr)
-    {
-        GpuTransform t = {};
+        Transform t = {};
         t.position[0] = x;
         t.position[1] = y;
         t.position[2] = z;
-        return GpuCommand::transform(t, label);
+        return Command::transform( t, label );
     }
 
-    // TODO: temporary ( update material )
-    inline GpuCommand make_material_command(
-        const GpuMaterialHandle material,
+    INLINE Command make_material_command(
+        const MaterialHandle handle_material,
         const char* label = nullptr)
     {
         return GpuCommand::material( nullptr, label);
     }
 
-    inline GpuCommand make_render_state_command(
-        const GpuRenderState& state,
-        const char* label = nullptr)
+    INLINE Command make_render_state_command(
+        const RenderState& state,
+        const char* label = nullptr
+    )
     {
-        return GpuCommand::render_state(state, label);
+        return Command::render_state( state, label );
     }
 
-    inline GpuCommand make_texture_command(
-        GpuTextureHandle texture,
+    INLINE Command make_texture_command(
+        TextureHandle handle_texture,
         u32 slot,
         const char* label = nullptr)
     {
-        return GpuCommand::texture(texture, slot, label);
+        return Command::texture(texture, slot, label);
     }
 
-    inline void bind_command(GpuCommand command)
+    INLINE void bind_command( Command command )
     {
         Gpu::execute(command);
     }
 
-    inline void submit(GpuCommandList& list)
+    INLINE void submit( CommandList& list )
     {
         Gpu::submit(list);
     }
 
-    inline GpuCommand make_begin_render_pass( const GpuRenderPass& pass, const char* label = nullptr )
+    INLINE Command make_begin_render_pass( const RenderPass& pass, const char* label = nullptr )
     {
-        return GpuCommand::begin_render_pass( pass, label );
+        return Command::begin_render_pass( pass, label );
     }
 
-    inline GpuCommand make_end_render_pass( const char* label = nullptr )
+    INLINE Command make_end_render_pass( const char* label = nullptr )
     {
-        return GpuCommand::end_render_pass( label );
+        return Command::end_render_pass( label );
     }
 
-    inline GpuCommand execute_queue( const GpuRenderQueueHandle& queue, const char* label = nullptr )
+    INLINE Command execute_queue( const RenderQueueHandle& queue, const char* label = nullptr )
     {
-        return GpuCommand::execute_queue( queue, label );
+        return Command::execute_queue( queue, label );
     }
 
-    inline GpuRenderPass make_simple_pass(
-        i32 x, i32 y, i32 width, i32 height,
-        GpuRenderQueueHandle queue,
-        GpuContext context,
-        f32 r, f32 g, f32 b, f32 a = 1.0,
+    INLINE RenderPass make_simple_pass(
+        const i32 x, const i32 y, const i32 width, const i32 height,
+        RenderQueueHandle queue,
+        Context context,
+        const Color color,
         const char* label = nullptr
     )
     {
-        GpuRenderPass pass = {};
+        RenderPass pass;
         pass.viewport = { x, y, width, height };
         pass.queue = queue;
-        pass.color.load_op = GpuLoadOp_Clear;
+        pass.color.load_op = LoadOpType_Clear;
+
+        const float r = fClamp( color.r, 0.f, 1.f );
+        const float g = fClamp( color.g, 0.f, 1.f );
+        const float b = fClamp( color.b, 0.f, 1.f );
+        const float a = fClamp( color.a, 0.f, 1.f );
+
         pass.color.clear = { r, g, b, a };
         pass.clear_enabled = true_value;
         pass.context = context;
 
         if ( label )
         {
-            strncpy( pass.label, label, GpuLimits::LabelSize - 1 );
-            pass.label[GpuLimits::LabelSize - 1] = '\0';
+            strncpy( pass.label, label, Limits::LabelSize - 1 );
+            pass.label[ Limits::LabelSize - 1] = '\0';
         }
 
         return pass;

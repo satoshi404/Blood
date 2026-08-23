@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/handles.hpp>
 
 struct GpuTexture
 {

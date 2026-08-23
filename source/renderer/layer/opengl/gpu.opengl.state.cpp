@@ -5,24 +5,25 @@
 #include <renderer/backend/opengl/opengl.hpp>
 #include <vendor/libc/math.hpp>
 
-void GpuBackend::set_transform(const GpuTransform &transform)
+void Backend::set_transform ( const Transform &transform )
 {
-    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
     glTranslatef(
         transform.position[0],
         transform.position[1],
-        transform.position[2]);
+        transform.position[2]
+    );
 
-    constexpr f32 RAD_TO_DEG = 180.0f / M_PI;
+    constexpr f32 RAD_TO_DEG = 180.f / M_PI;
     const GLfloat rotation_x = transform.rotation[0] * RAD_TO_DEG;
     const GLfloat rotation_y = transform.rotation[1] * RAD_TO_DEG;
     const GLfloat rotation_z = transform.rotation[2] * RAD_TO_DEG;
 
-    glRotatef( rotation_x, 1, 0, 0 );
-    glRotatef( rotation_y, 0, 1, 0 );
-    glRotatef( rotation_z, 0, 0, 1 );
+    glRotatef( rotation_x, 1.f, 0.f, 0.f );
+    glRotatef( rotation_y, 0.f, 1.f, 0.f );
+    glRotatef( rotation_z, 0.f, 0.f, 1.f );
 
     const GLfloat scale_x = transform.scale[0];
     const GLfloat scale_y = transform.scale[1];
@@ -31,73 +32,74 @@ void GpuBackend::set_transform(const GpuTransform &transform)
 
 }
 
-void GpuBackend::set_render_state(const GpuRenderState &state)
+void Backend::set_render_state( const RenderState &state )
 {
-    if (state.depth_test)
-        glEnable(GL_DEPTH_TEST);
+    if ( state.depth_test )
+        glEnable( GL_DEPTH_TEST );
     else
-        glDisable(GL_DEPTH_TEST);
+        glDisable( GL_DEPTH_TEST );
 
-    glDepthMask(state.depth_write ? GL_TRUE : GL_FALSE);
+    glDepthMask( state.depth_write ? GL_TRUE : GL_FALSE );
 
-    if (state.blending)
+    if ( state.blending )
     {
-        glEnable(GL_BLEND);
+        glEnable( GL_BLEND );
 
-        switch (state.blend_mode)
+        switch ( state.blend_mode )
         {
-        case GpuBlendMode_Additive:
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+            case BlendModeType_Additive:
+                glBlendFunc( GL_SRC_ALPHA, GL_ONE );
             break;
 
-        case GpuBlendMode_Multiply:
-            glBlendFunc(GL_DST_COLOR, GL_ZERO);
+            case BlendModeType_Multiply:
+                glBlendFunc( GL_DST_COLOR, GL_ZERO );
             break;
 
-        default:
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            default:
+                glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
             break;
         }
     }
     else
     {
-        glDisable(GL_BLEND);
+        glDisable( GL_BLEND );
     }
 
-    if (state.cull_face)
+    if ( state.cull_face )
     {
         glEnable(GL_CULL_FACE);
         glCullFace(
-            state.cull_mode == GpuCullMode_Front
+            state.cull_mode == CullModeType_Front
                 ? GL_FRONT
-                : GL_BACK);
+                : GL_BACK
+            );
     }
     else
     {
-        glDisable(GL_CULL_FACE);
+        glDisable( GL_CULL_FACE );
     }
 
     glPolygonMode(
         GL_FRONT_AND_BACK,
-        state.wireframe ? GL_LINE : GL_FILL);
+        state.wireframe ? GL_LINE : GL_FILL
+    );
 
-    glLineWidth(state.line_width);
-    glPointSize(state.point_size);
+    glLineWidth( state.line_width );
+    glPointSize( state.point_size );
 }
 
-void GpuBackend::push_state()
+void Backend::push_state()
 {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPushAttrib( GL_ALL_ATTRIB_BITS );
 
-    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode( GL_MODELVIEW );
     glPushMatrix();
 }
 
-void GpuBackend::pop_state()
+void Backend::pop_state()
 {
-    glMatrixMode(GL_MODELVIEW);
+    glMatrixMode( GL_MODELVIEW );
     glPopMatrix();
-
     glPopAttrib();
 }
 

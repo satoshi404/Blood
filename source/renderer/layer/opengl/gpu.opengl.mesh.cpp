@@ -5,23 +5,23 @@
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-LOCAL GLenum primitive_to_gl( TopologiePrimitive primitive )
+LOCAL GLenum primitive_to_gl( TopologiePrimitiveType primitive_type )
 {
-    switch ( primitive )
+    switch ( primitive+_type )
     {
-        case TopologiePrimitive_Points:        return GL_POINTS;
-        case TopologiePrimitive_Lines:         return GL_LINES;
-        case TopologiePrimitive_LineStrip:     return GL_LINE_STRIP;
-        case TopologiePrimitive_Triangles:     return GL_TRIANGLES;
-        case TopologiePrimitive_TriangleStrip: return GL_TRIANGLE_STRIP;
-        case TopologiePrimitive_TriangleFan:   return GL_TRIANGLE_FAN;
-        default:                               return GL_TRIANGLE_STRIP;
+        case TopologiePrimitiveType_Points:        return GL_POINTS;
+        case TopologiePrimitiveType_Lines:         return GL_LINES;
+        case TopologiePrimitiveType_LineStrip:     return GL_LINE_STRIP;
+        case TopologiePrimitiveType_Triangles:     return GL_TRIANGLES;
+        case TopologiePrimitiveType_TriangleStrip: return GL_TRIANGLE_STRIP;
+        case TopologiePrimitiveType_TriangleFan:   return GL_TRIANGLE_FAN;
+        default:                                   return GL_TRIANGLE_STRIP;
     }
 }
 
-void GpuBackend::mesh_draw( const GpuMesh& mesh, TopologiePrimitive primitive )
+void Backend::mesh_draw( const Mesh& mesh, TopologiePrimitiveType primitive_type )
 {
-    if (!mesh.is_valid())
+    if ( !mesh.is_valid() )
     {
         Debug::Println(
             PrintColor_Red,
@@ -36,7 +36,7 @@ void GpuBackend::mesh_draw( const GpuMesh& mesh, TopologiePrimitive primitive )
     glVertexPointer( mesh.components, GL_FLOAT, 0, nullptr );
 
     glDrawArrays(
-        primitive_to_gl( primitive ),
+        primitive_to_gl( primitive_type ),
         0,
         mesh.vertex_count
     );
