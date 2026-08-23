@@ -1,33 +1,33 @@
 #include <renderer/gpu/pool/gpu.descriptor.pool.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 #include <core/debug.hpp>
 
 struct Slot
 {
-    GpuDescriptor value = {};
-    u32 generation = 0;
+    Descriptor value = {};
+    uint_32 generation = 0;
     bool alive = false_value;
 };
 
-static Slot slots[ GpuLimits::MaxDescriptors ];
-static u32  slot_size = 0;
+static Slot slots[ Limits::Max_Descriptors ];
+static uint_32  slot_size = 0;
 
 static bool descriptor_initialised = false_value;
 
-static bool valid_handler( GpuDescriptorHandle handle )
+static bool valid_handler( DescriptorHandle handle )
 {
     return
     (
         handle.is_valid() &&
-        handle.index < GpuLimits::MaxDescriptors &&
+        handle.index < Limits::Max_Descriptors &&
         slots[handle.index].alive &&
         ( slots[handle.index].generation == handle.generation )
     );
 }
 
-bool GpuDescriptorPool::init()
+bool DescriptorPool::init()
 {
-    for ( u32 i = 0; i < GpuLimits::MaxDescriptors; ++i ) slots[ i ] = {};
+    for ( uint_32 i = 0; i < Limits::Max_Descriptors; ++i ) slots[ i ] = {};
 
     slot_size = 0;
 
@@ -36,27 +36,27 @@ bool GpuDescriptorPool::init()
     return true_value;
 }
 
-void GpuDescriptorPool::shutdown()
+void DescriptorPool::shutdown()
 {
     if ( !descriptor_initialised )
     {
-        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
+        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
         return;
     }
     slot_size = 0;
 
-    for (u32 i = 0; i < GpuLimits::MaxDescriptors; ++i) slots[i] = {};
+    for (uint_32 i = 0; i < Limits::Max_Descriptors; ++i) slots[i] = {};
 }
 
-GpuDescriptorHandle GpuDescriptorPool::create(const GpuDescriptor &descriptor)
+DescriptorHandle DescriptorPool::create(const Descriptor &descriptor)
 {
     if ( !descriptor_initialised )
     {
-        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
+        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
         return {};
     }
 
-    for ( u32 i = 0; i < GpuLimits::MaxDescriptors; ++i )
+    for ( uint_32 i = 0; i < Limits::Max_Descriptors; ++i )
     {
         Slot &slot = slots[i];
 
@@ -75,20 +75,20 @@ GpuDescriptorHandle GpuDescriptorPool::create(const GpuDescriptor &descriptor)
     }
 
     Debug::Println(
-        PrintColor_Red,
+        PrintColorType_Red,
         "[Gpu] Descriptor pool cheio (max %u)",
-        GpuLimits::MaxDescriptors);
+        Limits::Max_Descriptors);
 
     return {};
 }
 
-bool GpuDescriptorPool::update(
-    GpuDescriptorHandle handle,
-    const GpuDescriptor &descriptor)
+bool DescriptorPool::update(
+    DescriptorHandle handle,
+    const Descriptor &descriptor)
 {
     if ( !descriptor_initialised )
     {
-        Debug::Println( PrintColor_Red, "Error: Descriptor not initialised" );
+        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
         return false_value;
     }
 
@@ -99,7 +99,7 @@ bool GpuDescriptorPool::update(
     return true_value;
 }
 
-bool GpuDescriptorPool::destroy(GpuDescriptorHandle handle)
+bool DescriptorPool::destroy( DescriptorHandle handle )
 {
     if (!valid_handler(handle))
         return false_value;
@@ -112,22 +112,22 @@ bool GpuDescriptorPool::destroy(GpuDescriptorHandle handle)
     return true_value;
 }
 
-GpuDescriptor *GpuDescriptorPool::get(GpuDescriptorHandle handle)
+Descriptor *DescriptorPool::get( DescriptorHandle handle )
 {
     return valid_handler(handle) ? &slots[ handle.index ].value : nullptr;
 }
 
-bool GpuDescriptorPool::exists(GpuDescriptorHandle handle)
+bool DescriptorPool::exists( DescriptorHandle handle )
 {
     return valid_handler(handle);
 }
 
-u32 GpuDescriptorPool::size()
+uint_32 DescriptorPool::size()
 {
     return slot_size;
 }
 
-u32 GpuDescriptorPool::capacity()
+uint_32 DescriptorPool::capacity()
 {
-    return GpuLimits::MaxDescriptors;
+    return Limits::Max_Descriptors;
 }

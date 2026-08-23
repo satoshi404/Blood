@@ -66,19 +66,19 @@ public:
     {
         free( _data );
         _data = strdup(cstr);
-        _size = static_cast<u32>(strlen(cstr));
+        _size = static_cast<uint_32>(strlen(cstr));
     }
 
     char* data() const { return _data; }
-    u32 size() const { return _size; }
+    uint_32 size() const { return _size; }
 
-    String& append( const char* cstr, bool whitespace = false, const i32 repeat = 1 )
+    String& append( const char* cstr, bool whitespace = false, const int_32 repeat = 1 )
 	{
         for (int i = 0; i < repeat; i++)
         {
-	        u32 add_size = static_cast<u32>( strlen( cstr ) );
-	        u32 sep_size = whitespace ? 1u : 0u;
-	        u32 new_total = _size + sep_size + add_size;
+	        uint_32 add_size = static_cast<uint_32>( strlen( cstr ) );
+	        uint_32 sep_size = whitespace ? 1u : 0u;
+	        uint_32 new_total = _size + sep_size + add_size;
 
 	        char* new_data = static_cast<char*>(malloc(new_total + 1));
 	        memcpy(new_data, _data, _size);
@@ -129,5 +129,5 @@ public:
 
 private:
     char* _data;
-    u32 _size;
+    uint_32 _size;
 };

@@ -1,14 +1,14 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #if API_OPENGL
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-void GpuBackend::material_bind( const GpuMaterial& material )
+void Backend::bind_material( Material material )
 {
     if (material.native_shader_id == 0)
     {
-        const f32 color[4] =
+        const float_32 color[4] =
         {
             material.color.r,
             material.color.g,

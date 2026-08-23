@@ -1,13 +1,12 @@
 #pragma once
 
 #include <core/types.hpp>
-#include <renderer/gpu/core/gpu.enums.hpp>
+#include <renderer/gpu/core/enums.hpp>
 
-namespace GpuShader
+namespace Shader
 {
-	GpuShaderType type;
-	GpuShaderRuntimeType runtimeType;
-
+	ShaderType type;
+	ShaderRuntimeType runtimeType;
 	bool init();
 
 };

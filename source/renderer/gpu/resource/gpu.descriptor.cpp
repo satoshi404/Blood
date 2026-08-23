@@ -1,91 +1,87 @@
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <core/math.hpp>
 #include <string.h>
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::type(GpuDrawType v)
+
+DescriptorBuilder& DescriptorBuilder::type( DrawType draw_type )
 {
-    value.type = v;
+    value.draw_type = draw_type;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::context(GpuContext v)
+DescriptorBuilder& DescriptorBuilder::context( ContextType context_type )
 {
-    value.context = v;
+    value.context_type = context_type;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::mesh( GpuMeshHandle mesh )
+DescriptorBuilder& DescriptorBuilder::mesh( MeshHandle mesh )
 {
     value.handle_mesh = mesh;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::material( GpuMaterialHandle material )
+DescriptorBuilder& DescriptorBuilder::material( MaterialHandle material )
 {
     value.handle_material = material;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::position( const f32 x, const f32 y, const f32 z)
+DescriptorBuilder& DescriptorBuilder::position( const float_32 x, const float_32 y, const float_32 z)
 {
-    value.transform.position[0] = x;
-    value.transform.position[1] = y;
-    value.transform.position[2] = z;
+    value.transform.position = fvec3( x, y, z );
     value.transform.mark_dirty();
     value.dirty = true;
 
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::rotation( const f32 x, const f32 y, const f32 z )
+DescriptorBuilder& DescriptorBuilder::rotation( const float_32 x, const float_32 y, const float_32 z )
 {
-    value.transform.rotation[0] = x;
-    value.transform.rotation[1] = y;
-    value.transform.rotation[2] = z;
+    value.transform.rotation = fvec3( x, y, z );
     value.transform.mark_dirty();
     value.dirty = true;
 
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::scale(f32 x, f32 y, f32 z)
+DescriptorBuilder& DescriptorBuilder::scale( const float_32 x, const float_32 y, const float_32 z )
 {
-    value.transform.scale[0] = x;
-    value.transform.scale[1] = y;
-    value.transform.scale[2] = z;
+    value.transform.scale = fvec3( x, y, z );
     value.transform.mark_dirty();
     value.dirty = true;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::size(f32 w, f32 h, f32 d)
+DescriptorBuilder& DescriptorBuilder::size( const float_32 w, const float_32 h, const float_32 d )
 {
     value.size = { w, h, d };
     value.dirty = true;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::primitive( TopologiePrimitive primitive )
+DescriptorBuilder& DescriptorBuilder::primitive( TopologiePrimitiveType primitive_type )
 {
-    value.primitive = primitive;
+    value.primitive_type = primitive_type;
     value.dirty = true;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::layer(i32 v)
+DescriptorBuilder& DescriptorBuilder::layer( const int_32 layer )
 {
-    value.layer = v;
+    value.layer = layer;
     value.dirty = true;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::z_order(f32 v)
+DescriptorBuilder& DescriptorBuilder::z_order( const float_32 z_value_order )
 {
-    value.z_order = v;
+    value.z_order = z_value_order;
     value.dirty = true;
     return *this;
 }
 
-GpuDescriptorBuilder& GpuDescriptorBuilder::label( const char* label )
+DescriptorBuilder& DescriptorBuilder::label( const char* label )
 {
     if (!label)
     {
@@ -99,7 +95,7 @@ GpuDescriptorBuilder& GpuDescriptorBuilder::label( const char* label )
     return *this;
 }
 
-GpuDescriptor GpuDescriptorBuilder::build() const
+Descriptor DescriptorBuilder::build() const
 {
     return value;
 }

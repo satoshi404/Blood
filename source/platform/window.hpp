@@ -47,7 +47,7 @@ namespace WindowConfig
   {
     extern void fullscreen( const bool value );
     extern void vsync( const bool value );
-    extern void size( const u32 width, const u32 height );
+    extern void size( const uint_32 width, const uint_32 height );
     extern void title( const char* title );
     extern bool clipboard( const char *buffer );
     extern bool selection( const char *buffer );
@@ -59,16 +59,16 @@ namespace WindowConfig
   {
     extern bool is_fullscreen();
     extern bool is_vsync();
-    extern i32 width();
-    extern i32 height();
+    extern int_32 width();
+    extern int_32 height();
     extern const char* title();
-    extern bool clipboard( char *buffer, usize size );
-    extern bool selection( char *buffer, usize size );
+    extern bool clipboard( char *buffer, unsigned_size size );
+    extern bool selection( char *buffer, unsigned_size size );
 
     namespace Pixels
     {
-      extern i32 width();
-      extern i32 height();
+      extern int_32 width();
+      extern int_32 height();
     }
   }
 }

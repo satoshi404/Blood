@@ -1,7 +1,7 @@
 #pragma once
 
 #include <renderer/gpu/gpu.hpp>
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #include <core/math.hpp>
 
@@ -22,7 +22,7 @@ namespace Factory
         Gpu::new_frame();
     }
 
-    INLINE const Statistics& statistics() const
+    INLINE const Statistics& statistics()
     {
         return Gpu::statistics();
     }
@@ -64,7 +64,7 @@ namespace Factory
 
     INLINE RenderQueue* get_render_queue( const RenderQueueHandle handle )
     {
-        return GpuRenderQueuePool::get( handle );
+        return RenderQueuePool::get( handle );
     }
 
     INLINE Command make_draw_command(
@@ -78,18 +78,18 @@ namespace Factory
         const Color color,
         const char* label = nullptr )
     {
-        return Command::clear( color.r, color.g, color.b, color.a, label );
+        return Command::clear( color, label );
     }
 
     INLINE Command make_viewport_command(
-        const i32 viewport_x,
-        const i32 viewport_y,
-        const i32 viewport_w,
-        const i32 viewport_h,
+        const int_32 viewport_x,
+        const int_32 viewport_y,
+        const int_32 viewport_w,
+        const int_32 viewport_h,
         const char* label = nullptr
     )
     {
-        return Command::viewport( x, y, width, height, label );
+        return Command::viewport( viewport_x, viewport_y, viewport_w, viewport_h, label );
     }
 
     INLINE Command make_swap_command( const char* label = nullptr )
@@ -98,21 +98,21 @@ namespace Factory
     }
 
     INLINE Command make_transform_command(
-        const f32 x, const f32 y, const f32 z,
+        const float_32 x, const float_32 y, const float_32 z,
         const char* label = nullptr)
     {
-        Transform t = {};
-        t.position[0] = x;
-        t.position[1] = y;
-        t.position[2] = z;
-        return Command::transform( t, label );
+        Transform transform;
+        transform.position.x = x;
+        transform.position.y = y;
+        transform.position.z = z;
+        return Command::transform( transform, label );
     }
 
     INLINE Command make_material_command(
         const MaterialHandle handle_material,
         const char* label = nullptr)
     {
-        return GpuCommand::material( nullptr, label);
+        return Command::material( nullptr, label);
     }
 
     INLINE Command make_render_state_command(
@@ -125,10 +125,10 @@ namespace Factory
 
     INLINE Command make_texture_command(
         TextureHandle handle_texture,
-        u32 slot,
+        uint_32 slot,
         const char* label = nullptr)
     {
-        return Command::texture(texture, slot, label);
+        return Command::texture( handle_texture, slot, label);
     }
 
     INLINE void bind_command( Command command )
@@ -157,31 +157,33 @@ namespace Factory
     }
 
     INLINE RenderPass make_simple_pass(
-        const i32 x, const i32 y, const i32 width, const i32 height,
+        const int_32 x, const int_32 y, const int_32 width, const int_32 height,
         RenderQueueHandle queue,
-        Context context,
-        const Color color,
+        ContextType context_type,
+        Color color,
         const char* label = nullptr
     )
     {
         RenderPass pass;
         pass.viewport = { x, y, width, height };
         pass.queue = queue;
-        pass.color.load_op = LoadOpType_Clear;
+        pass.color.load_op = LoadOpType_Clear;\
 
-        const float r = fClamp( color.r, 0.f, 1.f );
-        const float g = fClamp( color.g, 0.f, 1.f );
-        const float b = fClamp( color.b, 0.f, 1.f );
-        const float a = fClamp( color.a, 0.f, 1.f );
+        Color normal_color = color.normalized();
+
+        const float_32 r = normal_color.r;
+        const float_32 g = normal_color.g;
+        const float_32 b = normal_color.b;
+        const float_32 a = normal_color.a;
 
         pass.color.clear = { r, g, b, a };
         pass.clear_enabled = true_value;
-        pass.context = context;
+        pass.context_type = context_type;
 
         if ( label )
         {
-            strncpy( pass.label, label, Limits::LabelSize - 1 );
-            pass.label[ Limits::LabelSize - 1] = '\0';
+            strncpy( pass.label, label, Limits::Label_Size - 1 );
+            pass.label[ Limits::Label_Size - 1] = '\0';
         }
 
         return pass;

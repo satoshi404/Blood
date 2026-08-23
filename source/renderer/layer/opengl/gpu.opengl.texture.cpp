@@ -1,10 +1,10 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #if API_OPENGL
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-void Backend::bind_texture( TextureHandle texture, const u32 slot )
+void Backend::bind_texture( TextureHandle texture, const uint_32 slot )
 {
     if ( !texture.is_valid() ) return;
 

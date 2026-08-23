@@ -2,8 +2,8 @@
 
 #include <renderer/gpu/command/gpu.command.hpp>
 
-namespace GpuCommandDispatcher
+namespace CommandDispatcher
 {
-    void execute(const GpuCommand& command);
-    void execute(const GpuCommand* commands, u32 count);
+    void execute(const Command& command);
+    void execute(const Command* commands, uint_32 count);
 }

@@ -1,20 +1,21 @@
 #pragma once
 
 #include <core/types.hpp>
+#include <core/math.hpp>
 
 #include <renderer/gpu/core/enums.hpp>
 
 struct Transform
 {
-    Context context;
+    ContextType context_type;
 
-    f32 position[3] = { 0.0f, 0.0f, 0.0f };
-    f32 rotation[3] = { 0.0f, 0.0f, 0.0f };
-    f32 scale[3]    = { 1.0f, 1.0f, 1.0f };
+    float_vec3 position = fvec3_zero;
+    float_vec3 rotation = fvec3_zero;
+    float_vec3 scale    = fvec3( 1.f, 1.f, 1.f );
 
     bool absolute = false_value;
     bool matrix_dirty = true_value;
-    f32 matrix[16] = {};
+    mat4_float_vec4 matrix = mat4_float_vec4_zero;
 
     void mark_dirty()
     {
@@ -26,8 +27,8 @@ namespace TransformOps
 {
     Transform identity();
 
-    void set_position( Transform&, const f32 x, const f32 y, const f32 z );
-    void set_rotation( Transform&, const f32 x, const f32 y, const f32 z );
-    void set_scale( Transform&, const f32 x, const f32 y, const f32 z );
-    void update_matrix( Transform& t );
+    void set_position( Transform& trasform, const float_32 x, const float_32 y, const float_32 z );
+    void set_rotation( Transform& trasform, const float_32 x, const float_32 y, const float_32 z );
+    void set_scale( Transform& trasform, const float_32 x, const float_32 y, const float_32 z );
+    void update_matrix( Transform& trensform );
 }

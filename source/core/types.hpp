@@ -19,93 +19,79 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Signed Integer types
 
-using i8 = signed char;
-#define I8_MAX ( 127 )              // 0x7F
-#define I8_MIN ( -128 )             // 0x80
+using int_8 = signed char;
+#define INT8_MAX ( 127 )              // 0x7F
+#define INT8_MIN ( -128 )             // 0x80
 
-using i16 = signed short;
-#define I16_MAX ( 32767 )           // 0x7FFF
-#define I16_MIN ( -32768 )          // 0x8000
+using int_16 = signed short;
+#define INT16_MAX ( 32767 )           // 0x7FFF
+#define INT16_MIN ( -32768 )          // 0x8000
 
-using i32 = signed int;
-#define I32_MAX ( 2147483647 )      // 0x7FFFFFFF
-#define I32_MIN ( -2147483647 - 1 )
+using int_32 = signed int;
+#define INT32_MAX ( 2147483647 )      // 0x7FFFFFFF
+#define INT32_MIN ( -2147483647 - 1 )
 
-using i64 = signed long long;
-#define I64_MAX ( 9223372036854775807LL )  // 0x7FFFFFFFFFFFFFFF
-#define I64_MIN ( -9223372036854775807LL - 1LL ) // 0x8000000000000000
+using int_64 = signed long long;
+#define INT64_MAX ( 9223372036854775807LL )  // 0x7FFFFFFFFFFFFFFF
+#define INT64_MIN ( -9223372036854775807LL - 1LL ) // 0x8000000000000000
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Unsigned Integer types
 
-using u8 = unsigned char;
-#define U8_MAX ( 255 )              // 0xFF
-#define U8_MIN ( 0 )
+using uint_8 = unsigned char;
+#define UINT_8_MAX ( 255 )              // 0xFF
+#define UINT_8_MIN ( 0 )
 
-using u16 = unsigned short;
-#define U16_MAX ( 65535 )           // 0xFFFF
-#define U16_MIN ( 0 )
+using uint_16 = unsigned short;
+#define UINT_16_MAX ( 65535 )           // 0xFFFF
+#define UINT_16_MIN ( 0 )
 
-using u32 = unsigned int;
-#define U32_MAX ( 4294967295U )     // 0xFFFFFFFF
-#define U32_MIN ( 0 )
+using uint_32 = unsigned int;
+#define UINT_32_MAX ( 4294967295U )     // 0xFFFFFFFF
+#define UINT_32_MIN ( 0 )
 
-using u64 = unsigned long long;
-#define U64_MAX ( 18446744073709551615ULL ) // 0xFFFFFFFFFFFFFFFF
-#define U64_MIN ( 0 )
-
-// Type conversion functions ( from )
-INLINE u32 u32_from_u64( u64 value ) { return static_cast<u32>( value & 0xFFFFFFFFULL ); }
-INLINE u64 u64_from_u32( u32 value ) { return static_cast<u64>( value ); }
-INLINE u16 u16_from_u32( u32 value ) { return static_cast<u16>( value & 0xFFFFU ); }
-INLINE u32 u32_from_u16( u16 value ) { return static_cast<u32>( value ); }
-INLINE u8 u8_from_u32( u32 value ) { return static_cast<u8>( value & 0xFFU ); }
-INLINE u32 u32_from_u8( u8 value ) { return static_cast<u32>( value ); }
-INLINE u8 u8_from_u64( u64 value ) { return static_cast<u8>( value & 0xFFULL ); }
-INLINE u64 u64_from_u8( u8 value ) { return static_cast<u64>( value ); }
-INLINE u16 u16_from_u64( u64 value ) { return static_cast<u16>( value & 0xFFFFULL ); }
-INLINE u64 u64_from_u16( u16 value ) { return static_cast<u64>( value ); }
-INLINE u32 u32_from_i64( i64 value ) { return static_cast<u32>( value & 0xFFFFFFFFLL ); }
-// ..
+using uint_64 = unsigned long long;
+#define UINT_64_MAX ( 18446744073709551615ULL ) // 0xFFFFFFFFFFFFFFFF
+#define UINT_64_MIN ( 0 )
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Floating-point types
 
-using f32 = float;
-#define F32_MAX ( 3.402823466e+38F )
-#define F32_MIN ( 1.175494351e-38F )
-using f64 = double;
-#define F64_MAX ( 1.7976931348623158e+308 )
-#define F64_MIN ( 2.2250738585072014e-308 )
+using float_32 = float;
+#define FLOAT32_MAX ( 3.402823466e+38F )
+#define FLOAT32_MIN ( 1.175494351e-38F )
+using float_64 = double;
+#define FLOAT64_MAX ( 1.7976931348623158e+308 )
+#define FLOAT64_MIN ( 2.2250738585072014e-308 )
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Pointer and size types
 
 #if ARCH_X86_64
-    using isize = i64;
-    using usize = u64;
+    using signed_size = int_64;
+    using unsigned_size = uint_64;
 #elif ARCH_X86
-    using isize = i32;
-    using usize = u32;
+    using int_size = int_32;
+    using uint_size = uint_32;
 #else
     #error "Unsupported architecture"
 #endif
 
-INLINE usize align_up( usize value, usize alignment ) { return ( value + ( alignment - 1 ) ) & ~( alignment - 1 ); }
-INLINE usize align_down( usize value, usize alignment ) { return value & ~( alignment - 1 ); }
-INLINE bool is_aligned( usize value, usize alignment ) { return ( value & ( alignment - 1 ) ) == 0; }
-INLINE usize align_up_ptr( void* ptr, usize alignment ) { return align_up( reinterpret_cast<usize>( ptr ), alignment ); }
-INLINE usize align_down_ptr( void* ptr, usize alignment ) { return align_down( reinterpret_cast<usize>( ptr ), alignment ); }
+INLINE unsigned_size align_up( unsigned_size value, unsigned_size alignment ) { return ( value + ( alignment - 1 ) ) & ~( alignment - 1 ); }
+INLINE unsigned_size align_down( unsigned_size value, unsigned_size alignment ) { return value & ~( alignment - 1 ); }
+INLINE bool is_aligned( unsigned_size value, unsigned_size alignment ) { return ( value & ( alignment - 1 ) ) == 0; }
+INLINE unsigned_size align_up_ptr( void* ptr, unsigned_size alignment ) { return align_up( reinterpret_cast<unsigned_size>( ptr ), alignment ); }
+INLINE unsigned_size align_down_ptr( void* ptr, unsigned_size alignment ) { return align_down( reinterpret_cast<unsigned_size>( ptr ), alignment ); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Calling conventions
 
 #if defined(_MSC_VER)
 	#define CDECL __attribute__((cdecl))
-	#define SIZE_TYPE ( u64 )
+	#define SIZE_TYPE ( uint_64 )
 #else // defined(__GNUC__) || defined(__clang__)
 	#define CDECL
-	#define SIZE_TYPE ( long usize )
+	#define SIZE_TYPE ( long unsigned_size )
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +117,9 @@ INLINE usize align_down_ptr( void* ptr, usize alignment ) { return align_down( r
 #define SET_BITFIELD( value, offset, size, new_value ) ( ( value ) = ( ( value ) & ~( BITMASK( size ) << ( offset ) ) ) | ( ( ( new_value ) & BITMASK( size ) ) << ( offset ) ) )
 #define SET_BIT( value, bit ) ( ( value ) |= BIT( bit ) )
 
-INLINE bool check_bit( u64 value, u32 bit ) { return ( value & BIT( bit ) ) != 0; }
-INLINE bool check_bitmask( u64 value, u64 mask ) { return ( value & mask ) == mask; }
-INLINE void set_bit( u64& value, u32 bit ) { value |= BIT( bit ); }
+INLINE bool check_bit( uint_64 value, uint_32 bit ) { return ( value & BIT( bit ) ) != 0; }
+INLINE bool check_bitmask( uint_64 value, uint_64 mask ) { return ( value & mask ) == mask; }
+INLINE void set_bit( uint_64& value, uint_32 bit ) { value |= BIT( bit ); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Bytes
@@ -143,25 +129,25 @@ INLINE void set_bit( u64& value, u32 bit ) { value |= BIT( bit ); }
 #define GIGABYTES( n ) ( MEGABYTES( n ) * 1024ULL )
 #define TERABYTES( n ) ( GIGABYTES( n ) * 1024ULL )
 
-INLINE u64 bytes_to_kilobytes( u64 bytes ) { return bytes / 1024ULL; }
-INLINE u64 bytes_to_megabytes( u64 bytes ) { return bytes / ( 1024ULL * 1024ULL ); }
-INLINE u64 bytes_to_gigabytes( u64 bytes ) { return bytes / ( 1024ULL * 1024ULL * 1024ULL ); }
-INLINE u64 bytes_to_terabytes( u64 bytes ) { return bytes / ( 1024ULL * 1024ULL * 1024ULL * 1024ULL ); }
+INLINE uint_64 to_kilobytes( const uint_64 bytes ) { return bytes / 1024ULL; }
+INLINE uint_64 to_megabytes( const uint_64 bytes ) { return bytes / ( 1024ULL * 1024ULL ); }
+INLINE uint_64 to_gigabytes( const uint_64 bytes ) { return bytes / ( 1024ULL * 1024ULL * 1024ULL ); }
+INLINE uint_64 to_terabytes( const uint_64 bytes ) { return bytes / ( 1024ULL * 1024ULL * 1024ULL * 1024ULL ); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Pointer arithmetic
 
-#define PTR_ADD( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + ( offset ) ) )
-#define PTR_SUB( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) - ( offset ) ) )
-#define PTR_DIFF( ptr1, ptr2 ) ( reinterpret_cast<usize>( ptr1 ) - reinterpret_cast<usize>( ptr2 ) )
-#define PTR_OFFSET( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + ( offset ) ) )
-#define PTR_OFFSET_PTR( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + ( offset ) ) )
+#define PTR_ADD( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + ( offset ) ) )
+#define PTR_SUB( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) - ( offset ) ) )
+#define PTR_DIFF( ptr1, ptr2 ) ( reinterpret_cast<unsigned_size>( ptr1 ) - reinterpret_cast<unsigned_size>( ptr2 ) )
+#define PTR_OFFSET( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + ( offset ) ) )
+#define PTR_OFFSET_PTR( ptr, offset ) ( reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + ( offset ) ) )
 
-INLINE void* ptr_add( void* ptr, usize offset ) { return reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + offset ); }
-INLINE void* ptr_sub( void* ptr, usize offset ) { return reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) - offset ); }
-INLINE usize ptr_diff( void* ptr1, void* ptr2 ) { return reinterpret_cast<usize>( ptr1 ) - reinterpret_cast<usize>( ptr2 ); }
-INLINE void* ptr_offset( void* ptr, usize offset ) { return reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + offset ); }
-INLINE void* ptr_offset_ptr( void* ptr, usize offset ) { return reinterpret_cast<void*>( reinterpret_cast<usize>( ptr ) + offset ); }
+INLINE void* ptr_add( void* ptr, unsigned_size offset ) { return reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + offset ); }
+INLINE void* ptr_sub( void* ptr, unsigned_size offset ) { return reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) - offset ); }
+INLINE unsigned_size ptr_diff( void* ptr1, void* ptr2 ) { return reinterpret_cast<unsigned_size>( ptr1 ) - reinterpret_cast<unsigned_size>( ptr2 ); }
+INLINE void* ptr_offset( void* ptr, unsigned_size offset ) { return reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + offset ); }
+INLINE void* ptr_offset_ptr( void* ptr, unsigned_size offset ) { return reinterpret_cast<void*>( reinterpret_cast<unsigned_size>( ptr ) + offset ); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -1,28 +1,28 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #if API_OPENGL
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-bool GpuBackend::buffer_create(GpuBuffer& buffer, const f32* data, u32 float_count)
+bool Backend::buffer_create( Buffer& buffer, const float_32* data, uint_32 float_count )
 {
     glGenBuffers( 1, &buffer.native_id );
     glBindBuffer( GL_ARRAY_BUFFER, buffer.native_id );
     glBufferData(
         GL_ARRAY_BUFFER,
-        static_cast<GLsizeiptr>( float_count * sizeof(f32) ),
+        static_cast<GLsizeiptr>( float_count * sizeof(float_32) ),
         data,
         GL_STATIC_DRAW
     );
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
     buffer.float_count = float_count;
-    buffer.byte_size = static_cast<usize>( float_count ) * sizeof( f32 );
+    buffer.byte_size = static_cast<unsigned_size>( float_count ) * sizeof( float_32 );
 
     return buffer.native_id != 0;
 }
 
-void GpuBackend::buffer_destroy( GpuBuffer& buffer )
+void Backend::buffer_destroy( Buffer& buffer )
 {
     if (!buffer.native_id)
         return;

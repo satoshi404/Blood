@@ -10,7 +10,7 @@ void Debug::Print_formatted_variadic_color(bool newline, int color, const char *
 {
 	printf("\x1b[%dm", color);
 	vprintf(format, args);
-	printf(newline ? "\x1b[%dm\n" : "\x1b[%dm", PrintColor_Default);
+	printf(newline ? "\x1b[%dm\n" : "\x1b[%dm", PrintColorType_Default);
 }
 
 void Debug::Print_formatted_variadic(bool newline, const char *format, va_list args)
@@ -27,11 +27,11 @@ void Debug::Print(const char *format, ...)
 	VA_END(args);
 }
 
-void Debug::Print(PrintColor color, const char *format, ...)
+void Debug::Print(PrintColorType color_type, const char *format, ...)
 {
 	va_list args;
-	VA_START(args, format);
-	Debug::Print_formatted_variadic_color(false_value, color, format, args);
+	VA_START( args, format );
+	Debug::Print_formatted_variadic_color( false_value, color_type, format, args );
 	VA_END(args);
 }
 
@@ -43,11 +43,11 @@ void Debug::Println(const char *format, ...)
 	VA_END(args);
 }
 
-void Debug::Println(PrintColor color, const char *format, ...)
+void Debug::Println(PrintColorType color_type, const char *format, ...)
 {
 	va_list args;
 	VA_START(args, format);
-	Debug::Print_formatted_variadic_color(true_value, color, format, args);
+	Debug::Print_formatted_variadic_color(true_value, color_type, format, args);
 	VA_END(args);
 }
 

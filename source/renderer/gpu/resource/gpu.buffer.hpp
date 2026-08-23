@@ -6,15 +6,15 @@
 
 struct Buffer
 {
-    GpuBufferType type = GpuBufferType_Vertex;
+    BufferType type = BufferType_Vertex;
 
     // Backend-owned native handle. Kept generic here.
-    u32 native_id = 0;
+    uint_32 native_id = 0;
 
-    u32 float_count = 0;
-    usize byte_size = 0;
+    uint_32 float_count = 0;
+    unsigned_size byte_size = 0;
 
-    bool create(const f32* data, u32 float_count);
+    bool create(const float_32* data, uint_32 float_count);
     void destroy();
 
     bool is_valid() const

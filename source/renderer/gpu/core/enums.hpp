@@ -4,13 +4,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-enum_type( ShaderType, u8 )
+enum_type( ShaderType, uint_8 )
 {
     ShaderType_Vertex,
     ShaderType_Frag,
 };
 
-enum_type( ShaderRuntimeType, u8 )
+enum_type( ShaderRuntimeType, uint_8 )
 {
     ShaderRuntimeType_DefaultApi,
     ShaderRuntimeType_BloodLanguage,
@@ -18,7 +18,7 @@ enum_type( ShaderRuntimeType, u8 )
 };
 
 
-enum_type( CommandType, u8 )
+enum_type( CommandType, uint_8 )
 {
     CommandType_Clear,
     CommandType_Draw,
@@ -39,7 +39,7 @@ enum_type( CommandType, u8 )
     CommandType_Count
 };
 
-enum_type( DrawType, u8 )
+enum_type( DrawType, uint_8 )
 {
     DrawType_Cube,
     DrawType_Sphere,
@@ -48,14 +48,14 @@ enum_type( DrawType, u8 )
     DrawType_Count
 };
 
-enum_type( Context, u8 )
+enum_type( ContextType, uint_8 )
 {
-    Context_2D,
-    Context_3D,
-    Context_Count
+    ContextType_2D,
+    ContextType_3D,
+    ContextType_Count
 };
 
-enum_type( TopologiePrimitiveType, u8 )
+enum_type( TopologiePrimitiveType, uint_8 )
 {
     TopologiePrimitiveType_Default = 0,
     TopologiePrimitiveType_Points,
@@ -66,7 +66,7 @@ enum_type( TopologiePrimitiveType, u8 )
     TopologiePrimitiveType_TriangleFan
 };
 
-enum_type( BufferType, u8 )
+enum_type( BufferType, uint_8 )
 {
     BufferType_Vertex,
     BufferType_Index,
@@ -75,7 +75,7 @@ enum_type( BufferType, u8 )
     BufferType_Instance
 };
 
-enum_type( BlendModeType, u8 )
+enum_type( BlendModeType, uint_8 )
 {
     BlendModeType_None,
     BlendModeType_Alpha,
@@ -83,14 +83,14 @@ enum_type( BlendModeType, u8 )
     BlendModeType_Multiply
 };
 
-enum_type( CullModeType, u8 )
+enum_type( CullModeType, uint_8 )
 {
     CullModeType_Back,
     CullModeType_Front,
     CullModeType_None
 };
 
-enum_type( ShaderBindType, u8 )
+enum_type( ShaderBindType, uint_8 )
 {
     ShaderBindType_Texture2D,
     ShaderBindType_Vec2,

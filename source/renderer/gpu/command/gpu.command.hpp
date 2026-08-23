@@ -7,7 +7,7 @@
 #include <renderer/gpu/state/gpu.render.state.hpp>
 #include <renderer/gpu/render/gpu.render.pass.hpp>
 #include <renderer/gpu/render/gpu.render.queue.hpp>
-#include <renderer/gpu/resource/gpu.material.hpp>
+#include <renderer/gpu/resource/material.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 struct BeginRenderPassCommand
@@ -27,7 +27,7 @@ struct DrawCommand
 
 struct MaterialCommand
 {
-    const Material* material = nullptr;
+    Material* material = nullptr;
     ShaderHandle shader = {};
     bool override_material = false_value;
 };
@@ -35,16 +35,18 @@ struct MaterialCommand
 struct TextureCommand
 {
     TextureHandle texture = {};
-    u32 slot = 0;
+    uint_32 slot = 0;
 };
 
 struct Command
 {
+    Command();
+
     CommandType type = CommandType_Clear;
 
-    union
+    struct
     {
-        Clear clear;
+        Color clear;
         DrawCommand draw;
         Viewport viewport;
         Transform transform;
@@ -55,12 +57,12 @@ struct Command
         ExecuteQueueCommand execute_pass;
     } commands;
 
-    char label[ Limits::LabelSize ] = {};
-    u64 timestamp = 0;
+    char label[ Limits::Label_Size ] = {};
+    uint_64 timestamp = 0;
     bool enabled = true_value;
 
     static Command clear(
-        const Color color = DefaultClearColor,
+        Color color = DefaultClearColor,
         const char* label = nullptr
     );
 
@@ -70,10 +72,10 @@ struct Command
     );
 
     static Command viewport(
-        const i32 x,
-        const i32 y,
-        const i32 width,
-        const i32 height,
+        const int_32 x,
+        const int_32 y,
+        const int_32 width,
+        const int_32 height,
         const char* label = nullptr
     );
 
@@ -87,7 +89,7 @@ struct Command
     );
 
     static Command material(
-        const Material* value,
+        Material* value,
         const char* label = nullptr
     );
 
@@ -98,7 +100,7 @@ struct Command
 
     static Command texture(
         TextureHandle texture,
-        const u32 slot,
+        const uint_32 slot,
         const char* label = nullptr
     );
 

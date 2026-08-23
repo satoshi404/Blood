@@ -3,7 +3,7 @@
 struct MapKind
 {
 	const char* name;
-	u32 kind;
+	uint_32 kind;
 };
 
 const MapKind kinds[ Blood_CompilerKind_Count ] =

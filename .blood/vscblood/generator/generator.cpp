@@ -129,9 +129,9 @@ int main( int argc, char** argv )
 	String ninja;
 	ninja.init();
 
-	i32 section_len = SECTION_LENGTH;
-	i32 length = ( section_len / 2 ) - (int)( strlen( "Blood Build Generator ( Ninja )" ) / 2 );
-	if ( section_len <= U32_MIN ) length = 1;
+	int_32 section_len = SECTION_LENGTH;
+	int_32 length = ( section_len / 2 ) - (int)( strlen( "Blood Build Generator ( Ninja )" ) / 2 );
+	if ( section_len <= UINT_32_MIN ) length = 1;
 
 	SECTION_COMMENT( "Blood Build Generator ( Ninja )", ninja, length, section_len );
 	ninja.append( "\n\n");
@@ -167,7 +167,7 @@ int main( int argc, char** argv )
 	runtime_objects.init();
 
 	// Engine
-	for ( u32 index = 0; index < ARRAY_SIZE( engine_dirs ); index++ )
+	for ( uint_32 index = 0; index < ARRAY_SIZE( engine_dirs ); index++ )
 	{
 		const char* path_dir = engine_dirs[ index ];
 
@@ -198,7 +198,7 @@ int main( int argc, char** argv )
 			sprintf( text, "[ %s ]", path_dir );
 
 			length = ( section_len / 2 ) - (int)( strlen( text ) / 2);
-			if ( length <= U32_MIN ) length = 1;
+			if ( length <= UINT_32_MIN ) length = 1;
 			SECTION_COMMENT( text, ninja, length, section_len );
 		}
 
@@ -239,7 +239,7 @@ int main( int argc, char** argv )
 	}
 
 	// Runtime
-	for ( u32 index = 0; index < ARRAY_SIZE( runtime_dirs ); index++ )
+	for ( uint_32 index = 0; index < ARRAY_SIZE( runtime_dirs ); index++ )
 	{
 		const char* path_dir = runtime_dirs[ index ];
 
@@ -248,7 +248,7 @@ int main( int argc, char** argv )
 			sprintf( text, "[ %s ]", path_dir );
 
 			length = ( section_len / 2 ) - (int)( strlen( text ) / 2);
-			if ( length <= U32_MIN ) length = 1;
+			if ( length <= UINT_32_MIN ) length = 1;
 			SECTION_COMMENT( text, ninja, length, section_len );
 		}
 
@@ -307,7 +307,7 @@ int main( int argc, char** argv )
 		String path;
 		path.init( "build.ninja" );
 		ninja.save_data( path.data() );
-		Debug::Println( PrintColor_Green, "Generated: %s", path.data() );
+		Debug::Println( PrintColorType_Green, "Generated: %s", path.data() );
 	}
 
 	// Helper save
@@ -327,10 +327,10 @@ int main( int argc, char** argv )
 		helper.append( "build.bat" );
 #endif
 
-		Debug::Println( PrintColor_Cyan, "Generated helper script" );
+		Debug::Println( PrintColorType_Cyan, "Generated helper script" );
 	}
 
-	Debug::Println( PrintColor_Yellow, "Blood Ninja Generator finished ( auto-scan )" );
+	Debug::Println( PrintColorType_Yellow, "Blood Ninja Generator finished ( auto-scan )" );
 
 	return exit_success_code;
 }

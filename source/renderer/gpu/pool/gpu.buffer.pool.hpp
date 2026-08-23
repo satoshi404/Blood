@@ -1,15 +1,15 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/resource/gpu.buffer.hpp>
 
-namespace GpuBufferPool
+namespace BufferPool
 {
     bool init();
     void shutdown();
 
-    GpuBufferHandle create(const f32* data, u32 float_count);
-    bool destroy(GpuBufferHandle handle);
+    BufferHandle create(const float_32* data, uint_32 float_count);
+    bool destroy( BufferHandle handle );
 
-    GpuBuffer* get(GpuBufferHandle handle);
+    Buffer* get( BufferHandle handle );
 }

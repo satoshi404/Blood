@@ -2,12 +2,12 @@
 
 #include <renderer/gpu/core/handles.hpp>
 
-struct GpuTexture
+struct Texture
 {
-    u32 native_id = 0;
-    u32 width = 0;
-    u32 height = 0;
-    u32 channels = 0;
+    uint_32 native_id = 0;
+    uint_32 width = 0;
+    uint_32 height = 0;
+    uint_32 channels = 0;
 
     bool is_valid() const
     {

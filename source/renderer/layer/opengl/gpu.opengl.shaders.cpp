@@ -1,14 +1,14 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #include <core/debug.hpp>
 
-bool GpuBackend::shader_create( GpuShader& shader )
+bool Backend::shader_create( Shader& shader )
 {
 	return true_value;
 }
 
-void GpuBackend::shader_destroy( GpuShader& shader )
+void Backend::shader_destroy( Shader& shader )
 {
 	// TODO:
-	Debug::Println( PrintColor_Yellow, "TODO:" );
+	Debug::Println( PrintColorType_Yellow, "TODO:" );
 }

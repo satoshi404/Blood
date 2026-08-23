@@ -1,4 +1,4 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 #include <core/debug.hpp>
 
 #if API_OPENGL
@@ -7,7 +7,7 @@
 
 LOCAL GLenum primitive_to_gl( TopologiePrimitiveType primitive_type )
 {
-    switch ( primitive+_type )
+    switch ( primitive_type )
     {
         case TopologiePrimitiveType_Points:        return GL_POINTS;
         case TopologiePrimitiveType_Lines:         return GL_LINES;
@@ -24,7 +24,7 @@ void Backend::mesh_draw( const Mesh& mesh, TopologiePrimitiveType primitive_type
     if ( !mesh.is_valid() )
     {
         Debug::Println(
-            PrintColor_Red,
+            PrintColorType_Red,
             "[Gpu:OpenGL] mesh invalida"
         );
         return;

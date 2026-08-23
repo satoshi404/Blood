@@ -1,12 +1,12 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.enums.hpp>
-#include <renderer/gpu/core/gpu.types.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/enums.hpp>
+#include <renderer/gpu/core/types.hpp>
+#include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
 #include <renderer/gpu/resource/gpu.buffer.hpp>
 #include <renderer/gpu/resource/gpu.mesh.hpp>
-#include <renderer/gpu/resource/gpu.material.hpp>
+#include <renderer/gpu/resource/material.hpp>
 #include <renderer/gpu/resource/gpu.texture.hpp>
 #include <renderer/gpu/resource/gpu.shader.hpp>
 #include <renderer/gpu/state/gpu.transform.hpp>
@@ -16,19 +16,19 @@
 
 namespace Gpu
 {
-    bool init();
-    void shutdown();
+    extern bool init();
+    extern void shutdown();
 
-    void new_frame();
-    const GpuStatistics& statistics();
+    extern void new_frame();
+    extern const Statistics& statistics();
 
-    GpuDescriptorHandle create_descriptor (const GpuDescriptor& );
-    bool update_descriptor( GpuDescriptorHandle, const GpuDescriptor& );
-    bool destroy_descriptor( GpuDescriptorHandle );
+    extern DescriptorHandle create_descriptor( const Descriptor& descriptor );
+    extern bool update_descriptor( DescriptorHandle handle, const Descriptor& descriptor );
+    extern bool destroy_descriptor( DescriptorHandle handle );
 
-    const GpuDescriptor* get_descriptor( GpuDescriptorHandle );
-    GpuDescriptor* get_descriptor_mutable( GpuDescriptorHandle );
+    extern const Descriptor* get_descriptor( DescriptorHandle handle );
+    extern Descriptor* get_descriptor_mutable( DescriptorHandle handle );
 
-    void submit( GpuCommandList& );
-    void execute( const GpuCommand& );
+    extern void submit( CommandList& command_list );
+    extern void execute( const Command&  command_list );
 }

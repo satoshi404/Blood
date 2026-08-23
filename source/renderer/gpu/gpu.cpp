@@ -9,7 +9,7 @@
 
 namespace
 {
-    GpuStatistics g_statistics = {};
+    Statistics g_statistics = {};
     bool g_initialized = false_value;
 }
 
@@ -19,17 +19,17 @@ bool Gpu::init()
         return true_value;
 
     // Init
-    GpuDescriptorPool::init();
-    GpuRenderQueuePool::init();
+    DescriptorPool::init();
+    RenderQueuePool::init();
 
-    if (!GpuBackend::init())
+    if (! Backend::init())
     {
         Debug::Println(
-            PrintColor_Red,
+            PrintColorType_Red,
             "[Gpu] backend init falhou"
         );
 
-        GpuDescriptorPool::shutdown();
+        DescriptorPool::shutdown();
         return false_value;
     }
 
@@ -37,7 +37,7 @@ bool Gpu::init()
     g_initialized = true_value;
 
     Debug::Println(
-        PrintColor_Green,
+        PrintColorType_Green,
         "[Gpu] inicializado"
     );
 
@@ -49,8 +49,8 @@ void Gpu::shutdown()
     if (!g_initialized)
         return;
 
-    GpuBackend::shutdown();
-    GpuDescriptorPool::shutdown();
+    Backend::shutdown();
+    DescriptorPool::shutdown();
 
     g_statistics = {};
     g_initialized = false_value;
@@ -61,57 +61,57 @@ void Gpu::new_frame()
     g_statistics.reset_frame();
 }
 
-const GpuStatistics& Gpu::statistics()
+const Statistics& Gpu::statistics()
 {
     return g_statistics;
 }
 
-GpuDescriptorHandle Gpu::create_descriptor(const GpuDescriptor& descriptor)
+DescriptorHandle Gpu::create_descriptor(const Descriptor& descriptor)
 {
-    return GpuDescriptorPool::create(descriptor);
+    return DescriptorPool::create(descriptor);
 }
 
 bool Gpu::update_descriptor(
-    GpuDescriptorHandle handle,
-    const GpuDescriptor& descriptor)
+    DescriptorHandle handle,
+    const Descriptor& descriptor)
 {
-    return GpuDescriptorPool::update(handle, descriptor);
+    return DescriptorPool::update(handle, descriptor);
 }
 
-bool Gpu::destroy_descriptor(GpuDescriptorHandle handle)
+bool Gpu::destroy_descriptor( DescriptorHandle handle )
 {
-    return GpuDescriptorPool::destroy(handle);
+    return DescriptorPool::destroy(handle);
 }
 
-const GpuDescriptor* Gpu::get_descriptor(GpuDescriptorHandle handle)
+const Descriptor* Gpu::get_descriptor( DescriptorHandle handle)
 {
-    return GpuDescriptorPool::get(handle);
+    return DescriptorPool::get(handle);
 }
 
-GpuDescriptor* Gpu::get_descriptor_mutable(GpuDescriptorHandle handle)
+Descriptor* Gpu::get_descriptor_mutable( DescriptorHandle handle )
 {
-    return GpuDescriptorPool::get(handle);
+    return DescriptorPool::get(handle);
 }
 
-void Gpu::submit(GpuCommandList& list)
+void Gpu::submit( CommandList& commad_list )
 {
     if (!g_initialized)
     {
         Debug::Println(
-            PrintColor_Red,
+            PrintColorType_Red,
             "[Gpu] submit antes de init"
         );
         return;
     }
 
-    GpuCommandDispatcher::execute(list.items, list.count);
-    list.reset();
+    CommandDispatcher::execute(commad_list.items, commad_list.count);
+    commad_list.reset();
 }
 
-void Gpu::execute(const GpuCommand& command)
+void Gpu::execute(const Command& command)
 {
     if (!g_initialized)
         return;
 
-    GpuCommandDispatcher::execute(command);
+    CommandDispatcher::execute(command);
 }

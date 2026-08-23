@@ -7,10 +7,10 @@
 template<typename Tag>
 struct Handle
 {
-    static constexpr u32 InvalidIndex = 0xFFFFFFFFu;
+    static constexpr uint_32 InvalidIndex = UINT_32_MAX;
 
-    u32 index = InvalidIndex;
-    u32 generation = 0;
+    uint_32 index = InvalidIndex;
+    uint_32 generation = 0;
 
     bool is_valid() const
     {

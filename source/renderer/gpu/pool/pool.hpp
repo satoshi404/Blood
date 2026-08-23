@@ -1,22 +1,22 @@
-#pragma once
+// #pragma once
 
-#include <renderer/gpu/core/handles.hpp>
+// #include <renderer/gpu/core/handles.hpp>
 
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+// #include <renderer/gpu/resource/gpu.descriptor.hpp>
 
-#include <core/types.hpp>
+// #include <core/types.hpp>
 
-template<typename T>
-struct Slot
-{
-	T value = {};
-    u32 generation = 0;
-    bool alive = false_value;
-};
+// template<typename T>
+// struct Slot
+// {
+// 	T value = {};
+//     uint_32 generation = 0;
+//     bool alive = false_value;
+// };
 
-namespace Pool
-{
-	extern BufferHandle create_buffer( const f32* data, u32 float_count );
-	extern GpuDescriptorHandle create_descriptor( const GpuDescriptor &descriptor );
-	extern void free();
-};
+// namespace Pool
+// {
+// 	extern BufferHandle create_buffer( const float_32* data, uint_32 float_count );
+// 	extern DescriptorHandle create_descriptor( const Descriptor &descriptor );
+// 	extern void free();
+// };

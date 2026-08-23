@@ -88,7 +88,7 @@ bool CoreWindow::init()
   if (!(handle.connection = XGetXCBConnection(handle.display)))
   {
 
-    Debug::Println(PrintColor_Red, "Error: Connect to xcb server");
+    Debug::Println(PrintColorType_Red, "Error: Connect to xcb server");
 
     XCloseDisplay(handle.display);
     handle.display = nullptr;
@@ -245,9 +245,9 @@ bool CoreWindow::init()
   handle.key_symbols = xcb_key_symbols_alloc(handle.connection);
   handle.is_running = true_value;
 
-  Debug::Println(PrintColor_Yellow, "Window XCB:");
-  Debug::Println(PrintColor_Yellow, "XCB Connection %p", handle.connection);
-  Debug::Println(PrintColor_Yellow, "XCB WINDOW %p", handle.window);
+  Debug::Println(PrintColorType_Yellow, "Window XCB:");
+  Debug::Println(PrintColorType_Yellow, "XCB Connection %p", handle.connection);
+  Debug::Println(PrintColorType_Yellow, "XCB WINDOW %p", handle.window);
 
   return true_value;
 }
@@ -272,11 +272,11 @@ void CoreWindow::swap_buffers()
 
 void CoreWindow::update_config()
 {
-  Debug::Println(PrintColor_Green, "%ix%i", WindowConfig::Get::width(), WindowConfig::Get::height());
+  Debug::Println(PrintColorType_Green, "%ix%i", WindowConfig::Get::width(), WindowConfig::Get::height());
 
   // Size config window update
   {
-    i32 dims[] = {WindowConfig::Get::width(), WindowConfig::Get::height()};
+    int_32 dims[] = {WindowConfig::Get::width(), WindowConfig::Get::height()};
     xcb_configure_window(handle.connection, handle.window,
                          XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT, dims);
     xcb_flush(handle.connection);
@@ -365,7 +365,7 @@ void CoreWindow::pool()
     {
       xcb_key_press_event_t *kp = (xcb_key_press_event_t *)handle.event;
       xcb_keysym_t keysym = xcb_key_press_lookup_keysym(handle.key_symbols, kp, 0);
-      u8 key = keysym & 0xFF;
+      uint_8 key = keysym & 0xFF;
 
       Keyboard::state().keyCurrent[key] = true_value;
     }
@@ -375,7 +375,7 @@ void CoreWindow::pool()
     {
       xcb_key_release_event_t *kr = (xcb_key_release_event_t *)handle.event;
       xcb_keysym_t keysym = xcb_key_press_lookup_keysym(handle.key_symbols, kr, 0);
-      u8 key = keysym & 0xFF;
+      uint_8 key = keysym & 0xFF;
 
       Keyboard::state().keyCurrent[key] = false_value;
     }

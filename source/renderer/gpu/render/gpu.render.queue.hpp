@@ -2,16 +2,16 @@
 
 #include <core/types.hpp>
 
-#include <renderer/gpu/core/gpu.limits.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/limits.hpp>
+#include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
 
-struct GpuRenderQueue
+struct RenderQueue
 {
-	char label[GpuLimits::LabelSize] = {};
+	char label[ Limits::Label_Size ] = {};
 
-	GpuDescriptorHandle items[ GpuLimits::MaxDescriptors ] = {};
-	u32 count = 0;
+	DescriptorHandle items[ Limits::Max_Descriptors ] = {};
+	uint_32 count = 0;
 
 	bool sort_by_material = true_value;
 	bool sort_by_depth = true_value;
@@ -22,9 +22,9 @@ struct GpuRenderQueue
 		count = 0;
 	}
 
-	bool push( GpuDescriptorHandle handle )
+	bool push( DescriptorHandle handle )
 	{
-		if ( count >= GpuLimits::MaxDescriptors || !handle.is_valid() ) return false_value;
+		if ( count >= Limits::Max_Descriptors || !handle.is_valid() ) return false_value;
 
 		items[count++] = handle;
 		return true_value;

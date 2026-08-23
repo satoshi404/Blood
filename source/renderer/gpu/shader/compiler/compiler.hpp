@@ -2,7 +2,7 @@
 
 #include <core/types.hpp>
 
-enum_type( Blood_CompilerKind, u32 )
+enum_type( Blood_CompilerKind, uint_32 )
 {
 	Blood_CompilerKind_Eof = 256,
 	Blood_CompilerKind_Identifier,

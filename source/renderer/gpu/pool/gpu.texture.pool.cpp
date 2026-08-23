@@ -1,45 +1,45 @@
 #include <renderer/gpu/pool/gpu.texture.pool.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 
 namespace
 {
     struct Slot
     {
-        GpuTexture value = {};
-        u32 generation = 0;
+        Texture value = {};
+        uint_32 generation = 0;
         bool alive = false;
     };
 
-    Slot g_slots[GpuLimits::MaxTextures];
+    Slot g_slots[ Limits::Max_Textures ];
     bool g_initialized = false;
 }
 
-bool GpuTexturePool::init()
+bool TexturePool::init()
 {
     if (g_initialized)
         return true_value;
 
-    for (u32 i = 0; i < GpuLimits::MaxTextures; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
         g_slots[i] = {};
 
     g_initialized = true_value;
     return true_value;
 }
 
-void GpuTexturePool::shutdown()
+void TexturePool::shutdown()
 {
-    for (u32 i = 0; i < GpuLimits::MaxTextures; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
         g_slots[i] = {};
 
     g_initialized = false_value;
 }
 
-GpuTextureHandle GpuTexturePool::create(const GpuTexture& texture)
+TextureHandle TexturePool::create( const Texture& texture )
 {
     if (!g_initialized)
         init();
 
-    for (u32 i = 0; i < GpuLimits::MaxTextures; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
     {
         Slot& s = g_slots[i];
         if (s.alive)
@@ -57,24 +57,24 @@ GpuTextureHandle GpuTexturePool::create(const GpuTexture& texture)
     return {};
 }
 
-bool GpuTexturePool::destroy(GpuTextureHandle h)
+bool TexturePool::destroy( TextureHandle handle )
 {
-    if (!h.is_valid() || h.index >= GpuLimits::MaxTextures)
-        return false;
+    if (!handle.is_valid() || handle.index >= Limits::Max_Textures)
+        return false_value;
 
-    Slot& s = g_slots[h.index];
+    Slot& slot = g_slots[handle.index];
 
-    if (!s.alive || s.generation != h.generation)
-        return false;
+    if (!slot.alive || slot.generation != handle.generation)
+        return false_value;
 
-    s.value = {};
-    s.alive = false;
+    slot.value = {};
+    slot.alive = false_value;
     return true;
 }
 
-GpuTexture* GpuTexturePool::get(GpuTextureHandle h)
+Texture* TexturePool::get( TextureHandle h )
 {
-    if (!h.is_valid() || h.index >= GpuLimits::MaxTextures)
+    if (!h.is_valid() || h.index >= Limits::Max_Textures)
         return nullptr;
 
     Slot& s = g_slots[h.index];
@@ -84,16 +84,3 @@ GpuTexture* GpuTexturePool::get(GpuTextureHandle h)
 
     return &s.value;
 }
-
-//const GpuTexture* GpuTexturePool::get(GpuTextureHandle h)
-//{
-//    if (!h.is_valid() || h.index >= GpuLimits::MaxTextures)
-//        return nullptr;
-//
-//    const Slot& s = g_slots[h.index];
-//
-//    if (!s.alive || s.generation != h.generation)
-//        return nullptr;
-//
-//    return &s.value;
-//}

@@ -25,25 +25,25 @@ void Keyboard::set_active( Keyboard &keyboard )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Keyboard::keyboard_check( u8 key )
+bool Keyboard::keyboard_check( uint_8 key )
 {
 	return keyboardState.keyCurrent[key];
 }
 
 
-bool Keyboard::keyboard_check_pressed( u8 key )
+bool Keyboard::keyboard_check_pressed( uint_8 key )
 {
 	return keyboardState.keyCurrent[key] && !keyboardState.keyPrevious[key];
 }
 
 
-bool Keyboard::keyboard_check_pressed_repeat( u8 key )
+bool Keyboard::keyboard_check_pressed_repeat( uint_8 key )
 {
 	return keyboard_check_pressed( key ) || keyboardState.keyRepeat[key];
 }
 
 
-bool Keyboard::keyboard_check_released( u8 key )
+bool Keyboard::keyboard_check_released( uint_8 key )
 {
 	return !keyboardState.keyCurrent[key] && keyboardState.keyPrevious[key];
 }
@@ -51,7 +51,7 @@ bool Keyboard::keyboard_check_released( u8 key )
 
 bool Keyboard::keyboard_check_any()
 {
-	for( int i = 0; i < U8_MAX; i++ )
+	for( int i = 0; i < UINT_8_MAX; i++ )
 	{
 		if( Keyboard::keyboard_check( i ) ) { return true_value; }
 	}
@@ -62,7 +62,7 @@ bool Keyboard::keyboard_check_any()
 
 bool Keyboard::keyboard_check_pressed_any()
 {
-	for( int i = 0; i < U8_MAX; i++ )
+	for( int i = 0; i < UINT_8_MAX; i++ )
 	{
 		if( Keyboard::keyboard_check_pressed( i ) ) { return true_value; }
 	}
@@ -73,7 +73,7 @@ bool Keyboard::keyboard_check_pressed_any()
 
 bool Keyboard::keyboard_check_pressed_repeat_any()
 {
-	for( int i = 0; i < U8_MAX; i++ )
+	for( int i = 0; i < UINT_8_MAX; i++ )
 	{
 		if( Keyboard::keyboard_check_pressed_repeat( i ) ) { return true_value; }
 	}
@@ -84,7 +84,7 @@ bool Keyboard::keyboard_check_pressed_repeat_any()
 
 bool Keyboard::keyboard_check_released_any()
 {
-	for( int i = 0; i < U8_MAX; i++ )
+	for( int i = 0; i < UINT_8_MAX; i++ )
 	{
 		if( Keyboard::keyboard_check_released( i ) ) { return true_value; }
 	}
@@ -104,10 +104,10 @@ char *Keyboard::keyboard_input_buffer()
 }
 
 
-void Keyboard::keyboard_update( u64 delta )
+void Keyboard::keyboard_update( uint_64 delta )
 {
 	// Key State
-	for( int key = 0; key < U8_MAX; key++ )
+	for( int key = 0; key < UINT_8_MAX; key++ )
 	{
 		keyboardState.keyPrevious[key] = keyboardState.keyCurrent[key];
 		keyboardState.keyRepeat[key] = false_value;
@@ -121,7 +121,7 @@ void Keyboard::keyboard_update( u64 delta )
 void Keyboard::keyboard_clear()
 {
 	// Reset Key States
-	for( int key = 0; key < U8_MAX; key++ )
+	for( int key = 0; key < UINT_8_MAX; key++ )
 	{
 		keyboardState.keyCurrent[key] = false_value;
 		keyboardState.keyPrevious[key] = false_value;

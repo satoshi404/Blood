@@ -120,10 +120,10 @@ public:
 	static void reset_active();
 	static void set_active(Keyboard &keyboard);
 
-	static bool check(u8 key) { return keyboard->keyboard_check(key); }
-	static bool check_pressed(u8 key) { return keyboard->keyboard_check_pressed(key); }
-	static bool check_pressed_repeat(u8 key) { return keyboard->keyboard_check_pressed_repeat(key); }
-	static bool check_released(u8 key) { return keyboard->keyboard_check_released(key); }
+	static bool check(uint_8 key) { return keyboard->keyboard_check(key); }
+	static bool check_pressed(uint_8 key) { return keyboard->keyboard_check_pressed(key); }
+	static bool check_pressed_repeat(uint_8 key) { return keyboard->keyboard_check_pressed_repeat(key); }
+	static bool check_released(uint_8 key) { return keyboard->keyboard_check_released(key); }
 	static bool check_any() { return keyboard->keyboard_check_any(); }
 	static bool check_pressed_any() { return keyboard->keyboard_check_pressed_any(); }
 	static bool check_pressed_repeat_any() { return keyboard->keyboard_check_pressed_repeat_any(); }
@@ -132,14 +132,14 @@ public:
 	static bool has_input() { return keyboard->keyboard_has_input(); }
 	static char *input_buffer() { return keyboard->keyboard_input_buffer(); }
 
-	static void update(u64 delta) { return keyboard->keyboard_update(delta); }
+	static void update(uint_64 delta) { return keyboard->keyboard_update(delta); }
 	static void clear() { return keyboard->keyboard_clear(); }
 
 private:
-	bool keyboard_check(u8 key);
-	bool keyboard_check_pressed(u8 key);
-	bool keyboard_check_pressed_repeat(u8 key);
-	bool keyboard_check_released(u8 key);
+	bool keyboard_check(uint_8 key);
+	bool keyboard_check_pressed(uint_8 key);
+	bool keyboard_check_pressed_repeat(uint_8 key);
+	bool keyboard_check_released(uint_8 key);
 
 	bool keyboard_check_any();
 	bool keyboard_check_pressed_any();
@@ -149,7 +149,7 @@ private:
 	bool keyboard_has_input();
 	char *keyboard_input_buffer();
 
-	void keyboard_update(u64 delta);
+	void keyboard_update(uint_64 delta);
 	void keyboard_clear();
 
 public:

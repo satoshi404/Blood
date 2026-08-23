@@ -27,7 +27,7 @@ void X11_SetFixedSize_Hints( XCB_Connection *conn, XCB_Window window, const int 
     hints.max_width  = width;
     hints.max_height = height;
 
-    constexpr i32 hint_len = sizeof( hints ) / 4;
+    constexpr int_32 hint_len = sizeof( hints ) / 4;
 
     xcb_change_property(
         conn,

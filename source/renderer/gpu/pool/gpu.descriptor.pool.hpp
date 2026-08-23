@@ -1,21 +1,21 @@
 #pragma once
 
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/handles.hpp>
 
-namespace GpuDescriptorPool
+namespace DescriptorPool
 {
     bool init();
     void shutdown();
 
-    GpuDescriptorHandle create( const GpuDescriptor& descriptor );
-    bool update( GpuDescriptorHandle handle, const GpuDescriptor& descriptor );
-    bool destroy( GpuDescriptorHandle handle );
+    DescriptorHandle create( const Descriptor& descriptor );
+    bool update( DescriptorHandle handle, const Descriptor& descriptor );
+    bool destroy( DescriptorHandle handle );
 
-    GpuDescriptor* get( GpuDescriptorHandle handle );
+    Descriptor* get( DescriptorHandle handle );
 
-    bool exists( GpuDescriptorHandle handle );
+    bool exists( DescriptorHandle handle );
 
-    u32 size();
-    u32 capacity();
+    uint_32 size();
+    uint_32 capacity();
 }

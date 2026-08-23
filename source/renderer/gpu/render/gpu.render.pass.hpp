@@ -1,51 +1,51 @@
 #pragma once
 
-#include <renderer/gpu/core/gpu.enums.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
-#include <renderer/gpu/core/gpu.handles.hpp>
+#include <renderer/gpu/core/enums.hpp>
+#include <renderer/gpu/core/limits.hpp>
+#include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/render/gpu.render.queue.hpp>
-#include <renderer/gpu/core/gpu.types.hpp>
+#include <renderer/gpu/core/types.hpp>
 
-enum_type( GpuLoadOp, u8 )
+enum_type( LoadOpType, uint_8 )
 {
-    GpuLoadOp_Clear,
-    GpuLoadOp_Load,
-    GpuLoadOp_DontCare
+    LoadOpType_Clear,
+    LoadOpType_Load,
+    LoadOpType_DontCare
 };
 
-enum_type( GpuStoreOp, u8 )
+enum_type( StoreOpType, uint_8 )
 {
-    GpuStoreOp_Store,
-    GpuStoreOp_DontCare
+    StoreOpType_Store,
+    StoreOpType_DontCare
 };
 
-struct GpuAttachmentDesc
+struct AttachmentDesc
 {
-    GpuTextureHandle texture = {};
-    GpuLoadOp load_op = GpuLoadOp_Clear;
-    GpuStoreOp store_op = GpuStoreOp_Store;
-    GpuClear clear = {};
+    TextureHandle texture = {};
+    LoadOpType load_op = LoadOpType_Clear;
+    StoreOpType store_op = StoreOpType_Store;
+    Color clear = {};
 };
 
-struct GpuRenderPass
+struct RenderPass
 {
-    char label[GpuLimits::LabelSize] = {};
-    u32 id = 0;
+    char label[ Limits::Label_Size ] = {};
+    uint_32 id = 0;
 
     // Viewport / Scissor
-    GpuViewport viewport = {};
+    Viewport viewport = {};
     bool has_scissor = false_value;
 
     // TODO: Implementation
     // GpuScissor scissor;
 
     // TODO: Basic color + depth yet
-    GpuAttachmentDesc color;
-    GpuAttachmentDesc depth;
+    AttachmentDesc color;
+    AttachmentDesc depth;
 
-    GpuRenderQueueHandle queue = {};
+    RenderQueueHandle queue = {};
 
-    GpuContext context = GpuContext_2D; // Default
+    ContextType context_type = ContextType_2D; // Default
 
     // Flags
     bool clear_enabled = true_value;

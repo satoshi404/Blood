@@ -8,16 +8,16 @@ struct RenderState
     bool depth_write = true_value;
     bool cull_face   = false_value;
 
-    bool blending = false;
-    BlendMode blend_mode = BlendModeType_Alpha;
+    bool blending = false_value;
+    BlendModeType blend_mode_type = BlendModeType_Alpha;
 
-    CullMode cull_mode = CullModeType_Back;
+    CullModeType cull_mode_type = CullModeType_Back;
 
     bool wireframe = false_value;
 
-    f32 line_width = 1.f;
-    f32 point_size = 1.f;
+    float_32 line_width = 1.f;
+    float_32 point_size = 1.f;
 
     bool stencil_test = false_value;
-    u32 stencil_ref = 0;
+    uint_32 stencil_ref = 0;
 };

@@ -1,34 +1,34 @@
 #include <renderer/gpu/pool/gpu.buffer.pool.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 
 namespace
 {
     struct Slot
     {
         Buffer value = {};
-        u32 generation = 0;
+        uint_32 generation = 0;
         bool alive = false;
     };
 
-    Slot g_slots[GpuLimits::MaxBuffers];
-    bool g_initialized = false;
+    Slot g_slots[Limits::Max_Buffers];
+    bool g_initialized = false_value;
 }
 
-bool GpuBufferPool::init()
+bool BufferPool::init()
 {
     if (g_initialized)
         return true_value;
 
-    for (u32 i = 0; i < GpuLimits::MaxBuffers; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
         g_slots[i] = {};
 
     g_initialized = true_value;
     return true_value;
 }
 
-void GpuBufferPool::shutdown()
+void BufferPool::shutdown()
 {
-    for (u32 i = 0; i < GpuLimits::MaxBuffers; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
     {
         if (g_slots[i].alive)
             g_slots[i].value.destroy();
@@ -38,12 +38,12 @@ void GpuBufferPool::shutdown()
     g_initialized = false_value;
 }
 
-GpuBufferHandle GpuBufferPool::create(const f32* data, u32 count)
+BufferHandle BufferPool::create(const float_32* data, uint_32 count)
 {
     if (!g_initialized)
         init();
 
-    for (u32 i = 0; i < GpuLimits::MaxBuffers; ++i)
+    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
     {
         Slot& s = g_slots[i];
         if (s.alive)
@@ -63,9 +63,9 @@ GpuBufferHandle GpuBufferPool::create(const f32* data, u32 count)
     return {};
 }
 
-bool GpuBufferPool::destroy(GpuBufferHandle h)
+bool BufferPool::destroy( BufferHandle h )
 {
-    if (!h.is_valid() || h.index >= GpuLimits::MaxBuffers)
+    if (!h.is_valid() || h.index >= Limits::Max_Buffers)
         return false;
 
     Slot& s = g_slots[h.index];
@@ -78,9 +78,9 @@ bool GpuBufferPool::destroy(GpuBufferHandle h)
     return true;
 }
 
-GpuBuffer* GpuBufferPool::get(GpuBufferHandle h)
+Buffer* BufferPool::get( BufferHandle h )
 {
-    if (!h.is_valid() || h.index >= GpuLimits::MaxBuffers)
+    if (!h.is_valid() || h.index >= Limits::Max_Buffers)
         return nullptr;
 
     Slot& s = g_slots[h.index];

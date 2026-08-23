@@ -7,8 +7,8 @@ static struct WindowConfigData
 {
 	bool fullscreen;
 	bool vsync;
-	u32 width;
-	u32 height;
+	uint_32 width;
+	uint_32 height;
 	const char* title;
 	float scale;
 
@@ -33,7 +33,7 @@ void WindowConfig::Set::vsync( const bool value )
 	window_config_data.vsync = value;
 }
 
-void WindowConfig::Set::size( const u32 width, const u32 height )
+void WindowConfig::Set::size( const uint_32 width, const uint_32 height )
 {
 	window_config_data.width = width;
 	window_config_data.height = height;
@@ -62,24 +62,24 @@ bool WindowConfig::Get::is_vsync()
 	return window_config_data.vsync;
 }
 
-i32 WindowConfig::Get::width()
+int_32 WindowConfig::Get::width()
 {
 	return window_config_data.width;
 }
 
-i32 WindowConfig::Get::height()
+int_32 WindowConfig::Get::height()
 {
 	return window_config_data.height;
 }
 
-i32 WindowConfig::Get::Pixels::width()
+int_32 WindowConfig::Get::Pixels::width()
 {
-	return static_cast<i32>( window_config_data.width * window_config_data.scale );
+	return static_cast<int_32>( window_config_data.width * window_config_data.scale );
 }
 
-i32 WindowConfig::Get::Pixels::height()
+int_32 WindowConfig::Get::Pixels::height()
 {
-	return static_cast<i32>( window_config_data.height * window_config_data.scale );
+	return static_cast<int_32>( window_config_data.height * window_config_data.scale );
 }
 
 const char* WindowConfig::Get::title()

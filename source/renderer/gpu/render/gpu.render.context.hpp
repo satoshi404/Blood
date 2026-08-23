@@ -13,8 +13,8 @@ struct GpuRenderContext
 	ShaderHandle bound_shader = {};
 	MeshHandle bound_mesh = {};
 
-	u32 draw_calls = 0;
-	u32 vertices = 0;
+	uint_32 draw_calls = 0;
+	uint_32 vertices = 0;
 
 	void reset()
 	{

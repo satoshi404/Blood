@@ -1,4 +1,4 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 #if API_OPENGL
 
@@ -11,23 +11,23 @@ void Backend::set_transform ( const Transform &transform )
     glLoadIdentity();
 
     glTranslatef(
-        transform.position[0],
-        transform.position[1],
-        transform.position[2]
+        transform.position.x,
+        transform.position.y,
+        transform.position.z
     );
 
-    constexpr f32 RAD_TO_DEG = 180.f / M_PI;
-    const GLfloat rotation_x = transform.rotation[0] * RAD_TO_DEG;
-    const GLfloat rotation_y = transform.rotation[1] * RAD_TO_DEG;
-    const GLfloat rotation_z = transform.rotation[2] * RAD_TO_DEG;
+    constexpr float_32 RAD_TO_DEG = 180.f / M_PI;
+    const GLfloat rotation_x = transform.rotation.x * RAD_TO_DEG;
+    const GLfloat rotation_y = transform.rotation.y * RAD_TO_DEG;
+    const GLfloat rotation_z = transform.rotation.z * RAD_TO_DEG;
 
     glRotatef( rotation_x, 1.f, 0.f, 0.f );
     glRotatef( rotation_y, 0.f, 1.f, 0.f );
     glRotatef( rotation_z, 0.f, 0.f, 1.f );
 
-    const GLfloat scale_x = transform.scale[0];
-    const GLfloat scale_y = transform.scale[1];
-    const GLfloat scale_z = transform.scale[2];
+    const GLfloat scale_x = transform.scale.x;
+    const GLfloat scale_y = transform.scale.y;
+    const GLfloat scale_z = transform.scale.z;
     glScalef( scale_x, scale_y, scale_z );
 
 }
@@ -45,7 +45,7 @@ void Backend::set_render_state( const RenderState &state )
     {
         glEnable( GL_BLEND );
 
-        switch ( state.blend_mode )
+        switch ( state.blend_mode_type )
         {
             case BlendModeType_Additive:
                 glBlendFunc( GL_SRC_ALPHA, GL_ONE );
@@ -69,7 +69,7 @@ void Backend::set_render_state( const RenderState &state )
     {
         glEnable(GL_CULL_FACE);
         glCullFace(
-            state.cull_mode == CullModeType_Front
+            state.cull_mode_type == CullModeType_Front
                 ? GL_FRONT
                 : GL_BACK
             );

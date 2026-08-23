@@ -39,7 +39,7 @@ GLOBAL void _draw( /*const Node self*/ )
 	// self.size( 50, 50 );
 }
 
-GLOBAL void _update( f64 delta )
+GLOBAL void _update( float_64 delta )
 {
 	// ..
 }

@@ -10,21 +10,21 @@
 
 struct TimeSpec
 {
-    i64 tv_sec;
-    i64 tv_nsec;
+    int_64 tv_sec;
+    int_64 tv_nsec;
 };
 
 // MOVE
 extern "C" int clock_gettime(int, TimeSpec *);
 static constexpr int MONOTONIC = 1;
 
-static INLINE u64 alloc_time_ns()
+static INLINE uint_64 alloc_time_ns()
 {
 #if PLATFORM_LINUX
     TimeSpec ts{};
     clock_gettime(MONOTONIC, &ts);
 
-    return static_cast<u64>(ts.tv_sec) * 1000000000ULL + static_cast<u64>(ts.tv_nsec);
+    return static_cast< uint_64 >(ts.tv_sec) * 1000000000ULL + static_cast< uint_64 >(ts.tv_nsec);
 
 #elif PLATFORM_WINDOWS
     // TODO:
@@ -33,47 +33,40 @@ static INLINE u64 alloc_time_ns()
 #endif
 }
 
-// Assinatura da função a ser chamada: recebe um ponteiro genérico opcional
 using TimerCallback = void (*)(void *user_data);
 
 struct ScheduledTask
 {
     TimerCallback callback;
     void *user_data;
-    u64 time_remaining_us;
-    u64 interval_us; // usado quando repeat == true, pra reiniciar a contagem
+    uint_64 time_remaining_us;
+    uint_64 interval_us;
     bool repeat;
     bool active;
 };
 
 #if PLATFORM_LINUX
-// TimeSpec já é declarado em core/memory.hpp; só precisamos do nanosleep aqui.
-extern "C" int nanosleep(const TimeSpec *, TimeSpec *);
+    extern "C" int nanosleep(const TimeSpec *, TimeSpec *);
 #elif PLATFORM_WINDOWS
-extern "C" void Sleep(unsigned long);
+    extern "C" void Sleep(unsigned long);
 #endif
 
-// Namespace utilitário para ler o relógio monotônico em microssegundos
-// e fazer frame pacing (limitar o FPS).
-// (main.cpp chama Timer::Get::microseconds() a cada frame pra calcular o delta)
 namespace Timer
 {
     namespace Get
     {
-        static INLINE u64 microseconds()
+        static INLINE uint_64 microseconds()
         {
             return alloc_time_ns() / 1000ULL;
         }
     }
 
-    // Dorme a thread pelo tempo pedido (em microssegundos).
-    // Usado pra cravar um teto de FPS (ex.: 60) sem gastar 100% da CPU.
-    static INLINE void sleep_microseconds(u64 microseconds)
+    static INLINE void sleep_microseconds( const uint_64 microseconds)
     {
 #if PLATFORM_LINUX
         TimeSpec req{};
-        req.tv_sec = static_cast<i64>(microseconds / 1000000ULL);
-        req.tv_nsec = static_cast<i64>((microseconds % 1000000ULL) * 1000ULL);
+        req.tv_sec = static_cast<int_64>(microseconds / 1000000ULL);
+        req.tv_nsec = static_cast<int_64>((microseconds % 1000000ULL) * 1000ULL);
         nanosleep(&req, nullptr);
 #elif PLATFORM_WINDOWS
         Sleep(static_cast<unsigned long>(microseconds / 1000ULL));
@@ -84,16 +77,14 @@ namespace Timer
 class TimerScheduler
 {
 private:
-    // Limite máximo de timers simultâneos (ajuste conforme necessário)
-    static constexpr usize MAX_TASKS = 16;
+    static constexpr unsigned_size MAX_TASKS = 16;
     inline static ScheduledTask m_tasks[MAX_TASKS] = {};
 
 public:
-    // Adiciona uma nova tarefa na fila estática.
-    // repeat = true faz o callback disparar de novo a cada `delay_us`, indefinidamente.
-    static void schedule(u64 delay_us, TimerCallback callback, void *user_data = nullptr, bool repeat = false)
+
+    static void schedule( const uint_64 delay_us, TimerCallback callback, void *user_data = nullptr, bool repeat = false_value )
     {
-        for (usize i = 0; i < MAX_TASKS; ++i)
+        for (unsigned_size i = 0; i < MAX_TASKS; ++i)
         {
             if (!m_tasks[i].active)
             {
@@ -109,15 +100,15 @@ public:
         // TODO: Assert ou log se estourar o MAX_TASKS
     }
 
-    static u64 get_time()
+    static uint_64 get_time()
     {
         return Timer::Get::microseconds();
     }
 
     // Atualiza todos os timers ativos (chamado uma vez por frame no main loop)
-    static void update(u64 delta_us)
+    static void update( const uint_64 delta_us)
     {
-        for (usize i = 0; i < MAX_TASKS; ++i)
+        for (unsigned_size i = 0; i < MAX_TASKS; ++i)
         {
             if (!m_tasks[i].active)
                 continue;

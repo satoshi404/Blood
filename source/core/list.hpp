@@ -9,7 +9,7 @@ template <typename T>
 class List
 {
 public:
-	void invert_data(isize capacity_bytes)
+	void invert_data( signed_size capacity_bytes )
 	{
 		void *new_data = malloc(capacity_bytes);
 
@@ -24,7 +24,7 @@ public:
 	{
 		if (capacity < (size() + 1) * sizeof(T))
 		{
-			isize new_capacity = capacity * 2;
+			signed_size new_capacity = capacity * 2;
 			void *new_data = malloc(new_capacity);
 
 			memcpy(new_data, data, capacity);
@@ -38,7 +38,7 @@ public:
 		values[size()] = value;
 	}
 
-	NO_DISCARD T get(u64 index) const
+	NO_DISCARD T get( uint_64 index) const
 	{
 		if (index >= size())
 			return T{};
@@ -47,7 +47,7 @@ public:
 		return values[index];
 	}
 
-	NO_DISCARD u64 size() const
+	NO_DISCARD uint_64 size() const
 	{
 		return capacity / sizeof(T);
 	}
@@ -64,7 +64,7 @@ public:
 	class Iterator
 	{
 	public:
-		Iterator(const List *list, u64 index)
+		Iterator(const List *list, uint_64 index)
 			: list(list), index(index)
 		{
 		}
@@ -87,14 +87,14 @@ public:
 
 	private:
 		const List *list;
-		u64 index;
+		uint_64 index;
 	};
 
 private:
 	void *data;
-	isize capacity;
+	signed_size capacity;
 
-	void init(isize capacity_bytes)
+	void init( signed_size capacity_bytes )
 	{
 		capacity = capacity_bytes;
 		data = malloc(capacity);

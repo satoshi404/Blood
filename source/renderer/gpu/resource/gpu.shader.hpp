@@ -2,9 +2,9 @@
 
 #include <renderer/gpu/core/handles.hpp>
 
-struct GpuShader
+struct Shader
 {
-    u32 native_id = 0;
+    uint_32 native_id = 0;
 
     bool is_valid() const
     {

@@ -1,140 +1,140 @@
 #include <renderer/gpu/command/gpu.command.dispatch.hpp>
 #include <renderer/gpu/pool/gpu.descriptor.pool.hpp>
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 #include <core/debug.hpp>
 
 namespace
 {
-    typedef void (*DrawFn)(const GpuDescriptor&);
+    typedef void (*DrawFn)(const Descriptor&);
 
-    static DrawFn g_draw_table[GpuDrawType_Count][GpuContext_Count] =
+    static DrawFn g_draw_table[ DrawType_Count ][ ContextType_Count ] =
     {
-        { GpuBackend::draw_cube_2d,   GpuBackend::draw_cube_3d   },
-        { GpuBackend::draw_sphere_2d, GpuBackend::draw_sphere_3d },
-        { GpuBackend::draw_obj,    GpuBackend::draw_obj    }
+        { Backend::draw_cube_2d,   Backend::draw_cube_3d   },
+        { Backend::draw_sphere_2d, Backend::draw_sphere_3d },
+        { Backend::draw_obj,    Backend::draw_obj    }
     };
 
-    void execute_draw(const GpuDrawCommand& command)
+    void execute_draw(const DrawCommand& command)
     {
-        const GpuDescriptor* descriptor =
-            GpuDescriptorPool::get(command.descriptor);
+        const Descriptor* descriptor =
+            DescriptorPool::get(command.descriptor);
 
         if (!descriptor)
         {
             Debug::Println(
-                PrintColor_Red,
+                PrintColorType_Red,
                 "[Gpu] Draw com descriptor invalido ou expirado"
             );
             return;
         }
 
-        if (descriptor->type >= GpuDrawType_Count ||
-            descriptor->context >= GpuContext_Count)
+        if (descriptor->draw_type >= DrawType_Count ||
+            descriptor->context_type >= ContextType_Count)
         {
             Debug::Println(
-                PrintColor_Red,
+                PrintColorType_Red,
                 "[Gpu] Descriptor '%s' invalido",
                 descriptor->label
             );
             return;
         }
 
-        g_draw_table[descriptor->type][descriptor->context](*descriptor);
+        g_draw_table[descriptor->draw_type][descriptor->context_type](*descriptor);
     }
 }
 
-void GpuCommandDispatcher::execute(const GpuCommand& command)
+void CommandDispatcher::execute(const Command& command)
 {
     if (!command.enabled)
         return;
 
     switch (command.type)
     {
-        case GpuCommandType_Clear:
-            GpuBackend::clear(command.commands.clear);
+        case CommandType_Clear:
+            Backend::clear(command.commands.clear);
             break;
 
-        case GpuCommandType_Draw:
+        case CommandType_Draw:
             execute_draw(command.commands.draw);
             break;
 
-        case GpuCommandType_Viewport:
-            GpuBackend::viewport(command.commands.viewport);
+        case CommandType_Viewport:
+            Backend::viewport(command.commands.viewport);
             break;
 
-        case GpuCommandType_Swap:
-            GpuBackend::swap();
+        case CommandType_Swap:
+            Backend::swap();
             break;
 
-        case GpuCommandType_Set_Transform:
-            GpuBackend::set_transform(command.commands.transform);
+        case CommandType_Set_Transform:
+            Backend::set_transform(command.commands.transform);
             break;
 
-        case GpuCommandType_Set_Material:
+        case CommandType_Set_Material:
             if (command.commands.material.material)
-                GpuBackend::material_bind(*command.commands.material.material);
+                Backend::bind_material( (Material) *command.commands.material.material );
             break;
 
-        case GpuCommandType_Set_RenderState:
-            GpuBackend::set_render_state(command.commands.render_state);
+        case CommandType_Set_RenderState:
+            Backend::set_render_state(command.commands.render_state);
             break;
 
-        case GpuCommandType_Bind_Texture:
-            GpuBackend::bind_texture(command.commands.texture.texture, command.commands.texture.slot);
+        case CommandType_Bind_Texture:
+            Backend::bind_texture(command.commands.texture.texture, command.commands.texture.slot);
             break;
 
-        case GpuCommandType_Push_State:
-            GpuBackend::push_state();
+        case CommandType_Push_State:
+            Backend::push_state();
             break;
 
-        case GpuCommandType_Pop_State:
-            GpuBackend::pop_state();
+        case CommandType_Pop_State:
+            Backend::pop_state();
             break;
 
-        case GpuCommandType_BeginRenderPass:
+        case CommandType_BeginRenderPass:
             {
-                const GpuRenderPass& pass = command.commands.begin_pass.pass;
+                const RenderPass& pass = command.commands.begin_pass.pass;
 
                 if ( !pass.enabled ) break;
 
-                GpuBackend::viewport( pass.viewport );
+                Backend::viewport( pass.viewport );
 
-                if ( pass.clear_enabled || pass.color.load_op == GpuLoadOp_Clear )
+                if ( pass.clear_enabled || pass.color.load_op == LoadOpType_Clear )
                 {
-                    GpuBackend::clear( pass.color.clear );
+                    Backend::clear( pass.color.clear );
                 }
                 // todo:
             }
 
         break;
 
-        case GpuCommandType_EndRenderPass:
+        case CommandType_EndRenderPass:
         //..
         break;
 
-        case GpuCommandType_ExecuteRenderPass:
+        case CommandType_ExecuteRenderPass:
         {
-            GpuRenderQueueHandle qh = command.commands.execute_pass.queue;
-            GpuRenderQueue* queue = GpuRenderQueuePool::get( qh );
+            RenderQueueHandle qh = command.commands.execute_pass.queue;
+            RenderQueue* queue = RenderQueuePool::get( qh );
             if ( !queue ) break;
 
-            for ( u32 i = 0; i < queue->count; i++ )
+            for ( uint_32 i = 0; i < queue->count; i++ )
             {
-                GpuDescriptorHandle dh = queue->items[i];
+                DescriptorHandle dh = queue->items[i];
                 if (!dh.is_valid()) continue;
 
-                GpuDrawCommand cmd = {};
+                DrawCommand cmd = {};
                 cmd.descriptor = dh;
                 execute_draw( cmd );
             }
         }
         break;
 
-        case GpuCommandType_Bind_Shader:
-        case GpuCommandType_Bind_Buffer:
-        case GpuCommandType_UnBind_Buffer:
+        case CommandType_Bind_Shader:
+        case CommandType_Bind_Buffer:
+        case CommandType_UnBind_Buffer:
             Debug::Println(
-                PrintColor_Yellow,
+                PrintColorType_Yellow,
                 "[Gpu] Command %u ainda nao possui implementacao de recurso",
                 command.type
             );
@@ -142,7 +142,7 @@ void GpuCommandDispatcher::execute(const GpuCommand& command)
 
         default:
             Debug::Println(
-                PrintColor_Red,
+                PrintColorType_Red,
                 "[Gpu] Command invalido: %u",
                 command.type
             );
@@ -150,11 +150,11 @@ void GpuCommandDispatcher::execute(const GpuCommand& command)
     }
 }
 
-void GpuCommandDispatcher::execute(const GpuCommand* commands, u32 count)
+void CommandDispatcher::execute( const Command* commands, uint_32 count )
 {
     if (!commands)
         return;
 
-    for (u32 i = 0; i < count; ++i)
+    for (uint_32 i = 0; i < count; ++i)
         execute(commands[i]);
 }

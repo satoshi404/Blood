@@ -1,20 +1,20 @@
 #pragma once
 
 #include <renderer/gpu/resource/gpu.buffer.hpp>
-#include <renderer/gpu/core/gpu.enums.hpp>
+#include <renderer/gpu/core/enums.hpp>
 
-struct GpuMesh
+struct Mesh
 {
-    GpuBuffer vertex_buffer;
-    GpuBuffer index_buffer;
+    Buffer vertex_buffer;
+    Buffer index_buffer;
 
-    u32 vertex_count = 0;
-    u32 index_count = 0;
-    u32 components = 2;
-    TopologiePrimitive primitive = TopologiePrimitive_Default;
+    uint_32 vertex_count = 0;
+    uint_32 index_count = 0;
+    uint_32 components = 2;
+    TopologiePrimitiveType primitive = TopologiePrimitiveType_Default;
 
-    bool upload( const f32* positions, u32 vertex_count, u32 components = 2 );
-    void draw( TopologiePrimitive override = TopologiePrimitive_Default ) const;
+    bool upload( const float_32* positions, uint_32 vertex_count, uint_32 components = 2 );
+    void draw( TopologiePrimitiveType override = TopologiePrimitiveType_Default ) const;
     void destroy();
 
     bool is_valid() const

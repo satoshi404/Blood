@@ -1,36 +1,36 @@
 #include <renderer/gpu/pool/gpu.render.queue.pool.hpp>
 
 #include <renderer/gpu/pool/gpu.descriptor.pool.hpp>
-#include <renderer/gpu/core/gpu.limits.hpp>
+#include <renderer/gpu/core/limits.hpp>
 #include <core/debug.hpp>
 
 namespace
 {
 struct Slot
 {
-    GpuRenderQueue value = {};
-    u32 generation = 0;
+    RenderQueue value = {};
+    uint_32 generation = 0;
     bool alive = false_value;
 };
 
- Slot slots[ GpuLimits::MaxLayers ];
- u32  slot_size = 0;
+ Slot slots[ Limits::Max_Layers ];
+ uint_32  slot_size = 0;
 
-bool valid_handler( GpuRenderQueueHandle handle )
+bool valid_handler( RenderQueueHandle handle )
 {
     return
     (
         handle.is_valid() &&
-        handle.index < GpuLimits::MaxLayers &&
+        handle.index < Limits::Max_Layers &&
         slots[handle.index].alive &&
         ( slots[handle.index].generation == handle.generation )
     );
 }
 }
 
-bool GpuRenderQueuePool::init()
+bool RenderQueuePool::init()
 {
-    for ( u32 i = 0; i < GpuLimits::MaxLayers; ++i )
+    for ( uint_32 i = 0; i < Limits::Max_Layers; ++i )
 	{
 		slots[ i ] = {};
 		slots[ i ].generation = 0;
@@ -42,16 +42,16 @@ bool GpuRenderQueuePool::init()
     return true_value;
 }
 
-void GpuRenderQueuePool::shutdown()
+void RenderQueuePool::shutdown()
 {
 	slot_size = 0;
-    for (u32 i = 0; i < GpuLimits::MaxLayers; ++i) slots[i] = {};
+    for (uint_32 i = 0; i < Limits::Max_Layers; ++i) slots[i] = {};
 }
 
-GpuRenderQueueHandle GpuRenderQueuePool::create( const char* label )
+RenderQueueHandle RenderQueuePool::create( const char* label )
 {
 
-    for ( u32 i = 0; i < GpuLimits::MaxLayers; ++i )
+    for ( uint_32 i = 0; i < Limits::Max_Layers; ++i )
     {
         Slot &slot = slots[i];
 
@@ -66,8 +66,8 @@ GpuRenderQueueHandle GpuRenderQueuePool::create( const char* label )
 
 		if ( label )
 		{
-			strncpy( slot.value.label, label, GpuLimits::LabelSize - 1 );
-			slot.value.label[GpuLimits::LabelSize - 1] = '\0';
+			strncpy( slot.value.label, label, Limits::Label_Size - 1 );
+			slot.value.label[ Limits::Label_Size - 1] = '\0';
 		}
 		else {
 			slot.value.label[0] = '\0';
@@ -75,7 +75,7 @@ GpuRenderQueueHandle GpuRenderQueuePool::create( const char* label )
 
 		++slot_size;
 
-		GpuRenderQueueHandle handle;
+		RenderQueueHandle handle;
 
 		handle.index = i;
 		handle.generation = slot.generation;
@@ -85,7 +85,7 @@ GpuRenderQueueHandle GpuRenderQueuePool::create( const char* label )
     return {};
 }
 
-bool GpuRenderQueuePool::destroy( GpuRenderQueueHandle handle )
+bool RenderQueuePool::destroy( RenderQueueHandle handle )
 {
     if (!exists( handle ))
         return false_value;
@@ -99,22 +99,22 @@ bool GpuRenderQueuePool::destroy( GpuRenderQueueHandle handle )
     return true_value;
 }
 
-GpuRenderQueue *GpuRenderQueuePool::get(GpuRenderQueueHandle handle)
+RenderQueue *RenderQueuePool::get( RenderQueueHandle handle )
 {
 	return valid_handler( handle ) ? &slots[ handle.index ].value : nullptr;
 }
 
-bool GpuRenderQueuePool::exists(GpuRenderQueueHandle handle)
+bool RenderQueuePool::exists( RenderQueueHandle handle )
 {
    return  valid_handler( handle );
 }
 
-u32 GpuRenderQueuePool::size()
+uint_32 RenderQueuePool::size()
 {
     return slot_size;
 }
 
-u32 GpuRenderQueuePool::capacity()
+uint_32 RenderQueuePool::capacity()
 {
-    return GpuLimits::MaxLayers;
+    return Limits::Max_Layers;
 }
