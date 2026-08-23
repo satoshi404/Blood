@@ -147,7 +147,7 @@ void Engine::update()
 
 		pass.color.load_op = LoadOpType_Clear;
 		pass.color.store_op = StoreOpType_Store;
-		pass.color.clear = RedColor;
+		pass.color.clear = GreenColor;
 
 		pass.depth.load_op = LoadOpType_Clear;
 		pass.depth.store_op = StoreOpType_DontCare;

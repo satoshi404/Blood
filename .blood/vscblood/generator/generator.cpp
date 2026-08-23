@@ -43,13 +43,13 @@ static const char* engine_dirs[] =
 	"source/platform/xcb",
 	"source/platform/windows",
 	"source/vendor/x11",
+	"source/renderer/backend/opengl",
 	"source/renderer/gpu",
 	"source/renderer/gpu/command",
 	"source/renderer/gpu/pool",
 	"source/renderer/gpu/render",
 	"source/renderer/gpu/resource",
 	"source/renderer/gpu/state",
-	"source/renderer/layer/opengl",
 	"source/engine",
 };
 
