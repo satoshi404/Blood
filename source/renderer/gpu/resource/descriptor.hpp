@@ -4,9 +4,9 @@
 #include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/resource/material.hpp>
 #include <renderer/gpu/core/types.hpp>
-#include <renderer/gpu/state/gpu.transform.hpp>
-#include <renderer/gpu/state/gpu.render.state.hpp>
-#include <renderer/gpu/resource/gpu.mesh.hpp>
+#include <renderer/gpu/state/transform.hpp>
+#include <renderer/gpu/state/state.hpp>
+#include <renderer/gpu/resource/mesh.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 struct Descriptor

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/render/gpu.render.queue.hpp>
+#include <renderer/gpu/render/queue.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 // TODO:

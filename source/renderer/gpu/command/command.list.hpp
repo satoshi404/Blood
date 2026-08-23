@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/command/gpu.command.hpp>
+#include <renderer/gpu/command/command.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 struct CommandList

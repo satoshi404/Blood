@@ -4,7 +4,7 @@
 
 #include <renderer/gpu/core/limits.hpp>
 #include <renderer/gpu/core/handles.hpp>
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <renderer/gpu/resource/descriptor.hpp>
 
 struct RenderQueue
 {

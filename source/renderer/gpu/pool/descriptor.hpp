@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <renderer/gpu/resource/descriptor.hpp>
 #include <renderer/gpu/core/handles.hpp>
 
 namespace DescriptorPool

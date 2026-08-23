@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/render/gpu.render.pass.hpp>
+#include <renderer/gpu/render/pass.hpp>
 
 struct GpuRenderContext
 {

@@ -1,8 +1,8 @@
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
-#if API_VULKAN
+#if API_D3D12
 
-#include <backend/vulkan/vulkan.hpp>
+#include <backend/d3d12/d3d12.hpp>
 
 bool GpuBackend::init()
 {

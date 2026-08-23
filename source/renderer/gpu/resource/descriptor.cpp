@@ -1,4 +1,4 @@
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <renderer/gpu/resource/descriptor.hpp>
 #include <core/math.hpp>
 #include <string.h>
 

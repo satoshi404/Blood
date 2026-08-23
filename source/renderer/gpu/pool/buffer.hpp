@@ -1,7 +1,7 @@
 #pragma once
 
 #include <renderer/gpu/core/handles.hpp>
-#include <renderer/gpu/resource/gpu.buffer.hpp>
+#include <renderer/gpu/resource/buffer.hpp>
 
 namespace BufferPool
 {

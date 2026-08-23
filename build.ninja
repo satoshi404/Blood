@@ -29,91 +29,91 @@ rule archive
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ###########################################[ source/core ]###########################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/debug.cpp.o: cxx source/core/debug.cpp
+build $objdir/index.0_name.debug.cpp.o: cxx source/core/debug.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #########################################[ source/platform ]#########################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/keyboard.cpp.o: cxx source/platform/keyboard.cpp
-build $objdir/window.config.cpp.o: cxx source/platform/window.config.cpp
-build $objdir/mouse.cpp.o: cxx source/platform/mouse.cpp
+build $objdir/index.1_name.keyboard.cpp.o: cxx source/platform/keyboard.cpp
+build $objdir/index.1_name.window.config.cpp.o: cxx source/platform/window.config.cpp
+build $objdir/index.1_name.mouse.cpp.o: cxx source/platform/mouse.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #######################################[ source/platform/xcb ]#######################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/window.cpp.o: cxx source/platform/xcb/window.cpp
+build $objdir/index.2_name.window.cpp.o: cxx source/platform/xcb/window.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ########################################[ source/vendor/x11 ]########################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/xutil.cpp.o: cxx source/vendor/x11/xutil.cpp
+build $objdir/index.4_name.xutil.cpp.o: cxx source/vendor/x11/xutil.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #######################################[ source/renderer/gpu ]#######################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.cpp.o: cxx source/renderer/gpu/gpu.cpp
+build $objdir/index.5_name.gpu.cpp.o: cxx source/renderer/gpu/gpu.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ###################################[ source/renderer/gpu/command ]###################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.command.dispatch.cpp.o: cxx source/renderer/gpu/command/gpu.command.dispatch.cpp
-build $objdir/gpu.command.cpp.o: cxx source/renderer/gpu/command/gpu.command.cpp
+build $objdir/index.6_name.command.cpp.o: cxx source/renderer/gpu/command/command.cpp
+build $objdir/index.6_name.command.dispatch.cpp.o: cxx source/renderer/gpu/command/command.dispatch.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ####################################[ source/renderer/gpu/pool ]####################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.descriptor.pool.cpp.o: cxx source/renderer/gpu/pool/gpu.descriptor.pool.cpp
-build $objdir/gpu.texture.pool.cpp.o: cxx source/renderer/gpu/pool/gpu.texture.pool.cpp
-build $objdir/gpu.mesh.pool.cpp.o: cxx source/renderer/gpu/pool/gpu.mesh.pool.cpp
-build $objdir/gpu.render.queue.pool.cpp.o: cxx source/renderer/gpu/pool/gpu.render.queue.pool.cpp
-build $objdir/pool.buffer.cpp.o: cxx source/renderer/gpu/pool/pool.buffer.cpp
+build $objdir/index.7_name.descriptor.cpp.o: cxx source/renderer/gpu/pool/descriptor.cpp
+build $objdir/index.7_name.mesh.cpp.o: cxx source/renderer/gpu/pool/mesh.cpp
+build $objdir/index.7_name.buffer.cpp.o: cxx source/renderer/gpu/pool/buffer.cpp
+build $objdir/index.7_name.texture.cpp.o: cxx source/renderer/gpu/pool/texture.cpp
+build $objdir/index.7_name.queue.cpp.o: cxx source/renderer/gpu/pool/queue.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ###################################[ source/renderer/gpu/render ]###################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.render.queue.cpp.o: cxx source/renderer/gpu/render/gpu.render.queue.cpp
-build $objdir/gpu.render.pass.cpp.o: cxx source/renderer/gpu/render/gpu.render.pass.cpp
+build $objdir/index.8_name.pass.cpp.o: cxx source/renderer/gpu/render/pass.cpp
+build $objdir/index.8_name.queue.cpp.o: cxx source/renderer/gpu/render/queue.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ##################################[ source/renderer/gpu/resource ]##################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.buffer.cpp.o: cxx source/renderer/gpu/resource/gpu.buffer.cpp
-build $objdir/gpu.descriptor.cpp.o: cxx source/renderer/gpu/resource/gpu.descriptor.cpp
-build $objdir/gpu.mesh.cpp.o: cxx source/renderer/gpu/resource/gpu.mesh.cpp
-build $objdir/material.cpp.o: cxx source/renderer/gpu/resource/material.cpp
+build $objdir/index.9_name.material.cpp.o: cxx source/renderer/gpu/resource/material.cpp
+build $objdir/index.9_name.buffer.cpp.o: cxx source/renderer/gpu/resource/buffer.cpp
+build $objdir/index.9_name.descriptor.cpp.o: cxx source/renderer/gpu/resource/descriptor.cpp
+build $objdir/index.9_name.mesh.cpp.o: cxx source/renderer/gpu/resource/mesh.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ####################################[ source/renderer/gpu/state ]####################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.transform.cpp.o: cxx source/renderer/gpu/state/gpu.transform.cpp
+build $objdir/index.10_name.transform.cpp.o: cxx source/renderer/gpu/state/transform.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ##################################[ source/renderer/layer/opengl ]##################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/gpu.opengl.buffer.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.buffer.cpp
-build $objdir/gpu.opengl.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.cpp
-build $objdir/gpu.opengl.draw.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.draw.cpp
-build $objdir/gpu.opengl.material.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.material.cpp
-build $objdir/gpu.opengl.mesh.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.mesh.cpp
-build $objdir/gpu.opengl.state.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.state.cpp
-build $objdir/gpu.opengl.texture.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.texture.cpp
-build $objdir/gpu.opengl.shaders.cpp.o: cxx source/renderer/layer/opengl/gpu.opengl.shaders.cpp
+build $objdir/index.11_name.buffer.cpp.o: cxx source/renderer/layer/opengl/buffer.cpp
+build $objdir/index.11_name.opengl.cpp.o: cxx source/renderer/layer/opengl/opengl.cpp
+build $objdir/index.11_name.texture.cpp.o: cxx source/renderer/layer/opengl/texture.cpp
+build $objdir/index.11_name.state.cpp.o: cxx source/renderer/layer/opengl/state.cpp
+build $objdir/index.11_name.shaders.cpp.o: cxx source/renderer/layer/opengl/shaders.cpp
+build $objdir/index.11_name.mesh.cpp.o: cxx source/renderer/layer/opengl/mesh.cpp
+build $objdir/index.11_name.material.cpp.o: cxx source/renderer/layer/opengl/material.cpp
+build $objdir/index.11_name.draw.cpp.o: cxx source/renderer/layer/opengl/draw.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 ##########################################[ source/engine ]##########################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $objdir/engine.cpp.o: cxx source/engine/engine.cpp
+build $objdir/index.12_name.engine.cpp.o: cxx source/engine/engine.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +131,9 @@ build $objdir/bird.cpp.o: cxx runtime/flappy/scripts/bird.cpp
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #####################################Targets#####################################
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-build $bindir/libblood.a: archive $objdir/debug.cpp.o $objdir/keyboard.cpp.o $objdir/window.config.cpp.o $objdir/mouse.cpp.o $objdir/window.cpp.o $objdir/xutil.cpp.o $objdir/gpu.cpp.o $objdir/gpu.command.dispatch.cpp.o $objdir/gpu.command.cpp.o $objdir/gpu.descriptor.pool.cpp.o $objdir/gpu.texture.pool.cpp.o $objdir/gpu.mesh.pool.cpp.o $objdir/gpu.render.queue.pool.cpp.o $objdir/pool.buffer.cpp.o $objdir/gpu.render.queue.cpp.o $objdir/gpu.render.pass.cpp.o $objdir/gpu.buffer.cpp.o $objdir/gpu.descriptor.cpp.o $objdir/gpu.mesh.cpp.o $objdir/material.cpp.o $objdir/gpu.transform.cpp.o $objdir/gpu.opengl.buffer.cpp.o $objdir/gpu.opengl.cpp.o $objdir/gpu.opengl.draw.cpp.o $objdir/gpu.opengl.material.cpp.o $objdir/gpu.opengl.mesh.cpp.o $objdir/gpu.opengl.state.cpp.o $objdir/gpu.opengl.texture.cpp.o $objdir/gpu.opengl.shaders.cpp.o $objdir/engine.cpp.o
+build $bindir/libblood.a: archive $objdir/index.0_name.debug.cpp.o $objdir/index.1_name.keyboard.cpp.o $objdir/index.1_name.window.config.cpp.o $objdir/index.1_name.mouse.cpp.o $objdir/index.2_name.window.cpp.o $objdir/index.4_name.xutil.cpp.o $objdir/index.5_name.gpu.cpp.o $objdir/index.6_name.command.cpp.o $objdir/index.6_name.command.dispatch.cpp.o $objdir/index.7_name.descriptor.cpp.o $objdir/index.7_name.mesh.cpp.o $objdir/index.7_name.buffer.cpp.o $objdir/index.7_name.texture.cpp.o $objdir/index.7_name.queue.cpp.o $objdir/index.8_name.pass.cpp.o $objdir/index.8_name.queue.cpp.o $objdir/index.9_name.material.cpp.o $objdir/index.9_name.buffer.cpp.o $objdir/index.9_name.descriptor.cpp.o $objdir/index.9_name.mesh.cpp.o $objdir/index.10_name.transform.cpp.o $objdir/index.11_name.buffer.cpp.o $objdir/index.11_name.opengl.cpp.o $objdir/index.11_name.texture.cpp.o $objdir/index.11_name.state.cpp.o $objdir/index.11_name.shaders.cpp.o $objdir/index.11_name.mesh.cpp.o $objdir/index.11_name.material.cpp.o $objdir/index.11_name.draw.cpp.o $objdir/index.12_name.engine.cpp.o
 
-build $bindir/flappy: link $objdir/runtime.cpp.o $objdir/bird.cpp.o $objdir/debug.cpp.o $objdir/keyboard.cpp.o $objdir/window.config.cpp.o $objdir/mouse.cpp.o $objdir/window.cpp.o $objdir/xutil.cpp.o $objdir/gpu.cpp.o $objdir/gpu.command.dispatch.cpp.o $objdir/gpu.command.cpp.o $objdir/gpu.descriptor.pool.cpp.o $objdir/gpu.texture.pool.cpp.o $objdir/gpu.mesh.pool.cpp.o $objdir/gpu.render.queue.pool.cpp.o $objdir/pool.buffer.cpp.o $objdir/gpu.render.queue.cpp.o $objdir/gpu.render.pass.cpp.o $objdir/gpu.buffer.cpp.o $objdir/gpu.descriptor.cpp.o $objdir/gpu.mesh.cpp.o $objdir/material.cpp.o $objdir/gpu.transform.cpp.o $objdir/gpu.opengl.buffer.cpp.o $objdir/gpu.opengl.cpp.o $objdir/gpu.opengl.draw.cpp.o $objdir/gpu.opengl.material.cpp.o $objdir/gpu.opengl.mesh.cpp.o $objdir/gpu.opengl.state.cpp.o $objdir/gpu.opengl.texture.cpp.o $objdir/gpu.opengl.shaders.cpp.o $objdir/engine.cpp.o
+build $bindir/flappy: link $objdir/runtime.cpp.o $objdir/bird.cpp.o $objdir/index.0_name.debug.cpp.o $objdir/index.1_name.keyboard.cpp.o $objdir/index.1_name.window.config.cpp.o $objdir/index.1_name.mouse.cpp.o $objdir/index.2_name.window.cpp.o $objdir/index.4_name.xutil.cpp.o $objdir/index.5_name.gpu.cpp.o $objdir/index.6_name.command.cpp.o $objdir/index.6_name.command.dispatch.cpp.o $objdir/index.7_name.descriptor.cpp.o $objdir/index.7_name.mesh.cpp.o $objdir/index.7_name.buffer.cpp.o $objdir/index.7_name.texture.cpp.o $objdir/index.7_name.queue.cpp.o $objdir/index.8_name.pass.cpp.o $objdir/index.8_name.queue.cpp.o $objdir/index.9_name.material.cpp.o $objdir/index.9_name.buffer.cpp.o $objdir/index.9_name.descriptor.cpp.o $objdir/index.9_name.mesh.cpp.o $objdir/index.10_name.transform.cpp.o $objdir/index.11_name.buffer.cpp.o $objdir/index.11_name.opengl.cpp.o $objdir/index.11_name.texture.cpp.o $objdir/index.11_name.state.cpp.o $objdir/index.11_name.shaders.cpp.o $objdir/index.11_name.mesh.cpp.o $objdir/index.11_name.material.cpp.o $objdir/index.11_name.draw.cpp.o $objdir/index.12_name.engine.cpp.o
 
 default $bindir/flappy
 

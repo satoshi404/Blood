@@ -1,10 +1,10 @@
 #include <renderer/gpu/gpu.hpp>
 
 #include <renderer/layer/backend.hpp>
-#include <renderer/gpu/pool/gpu.descriptor.pool.hpp>
-#include <renderer/gpu/command/gpu.command.dispatch.hpp>
-#include <renderer/gpu/pool/gpu.mesh.pool.hpp>
-#include <renderer/gpu/pool/gpu.render.queue.pool.hpp>
+#include <renderer/gpu/pool/descriptor.hpp>
+#include <renderer/gpu/command/command.dispatch.hpp>
+#include <renderer/gpu/pool/mesh.hpp>
+#include <renderer/gpu/pool/queue.hpp>
 #include <core/debug.hpp>
 
 namespace

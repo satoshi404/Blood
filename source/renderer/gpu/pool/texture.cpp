@@ -1,4 +1,4 @@
-#include <renderer/gpu/pool/gpu.texture.pool.hpp>
+#include <renderer/gpu/pool/texture.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 namespace

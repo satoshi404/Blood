@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/gpu/resource/gpu.buffer.hpp>
+#include <renderer/gpu/resource/buffer.hpp>
 #include <renderer/gpu/core/enums.hpp>
 
 struct Mesh

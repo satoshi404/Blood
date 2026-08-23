@@ -3,10 +3,10 @@
 #include <renderer/gpu/core/enums.hpp>
 #include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/core/types.hpp>
-#include <renderer/gpu/state/gpu.transform.hpp>
-#include <renderer/gpu/state/gpu.render.state.hpp>
-#include <renderer/gpu/render/gpu.render.pass.hpp>
-#include <renderer/gpu/render/gpu.render.queue.hpp>
+#include <renderer/gpu/state/transform.hpp>
+#include <renderer/gpu/state/state.hpp>
+#include <renderer/gpu/render/pass.hpp>
+#include <renderer/gpu/render/queue.hpp>
 #include <renderer/gpu/resource/material.hpp>
 #include <renderer/gpu/core/limits.hpp>
 

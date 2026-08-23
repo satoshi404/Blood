@@ -36,20 +36,20 @@ struct Handle
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct GpuDescriptorTag {};
-struct GpuBufferTag {};
-struct GpuTextureTag {};
-struct GpuShaderTag {};
-struct GpuMeshTag {};
-struct GpuMaterialTag {};
-struct GpuRenderQueueTag {};
+struct DescriptorTag {};
+struct BufferTag {};
+struct TextureTag {};
+struct ShaderTag {};
+struct MeshTag {};
+struct MaterialTag {};
+struct RenderQueueTag {};
 
-using DescriptorHandle   =  Handle<GpuDescriptorTag>;
-using BufferHandle       =  Handle<GpuBufferTag>;
-using TextureHandle      =  Handle<GpuTextureTag>;
-using ShaderHandle       =  Handle<GpuShaderTag>;
-using MeshHandle         =  Handle<GpuMeshTag>;
-using MaterialHandle     =  Handle<GpuMaterialTag>;
-using RenderQueueHandle  = Handle<GpuRenderQueueTag>;
+using DescriptorHandle   =  Handle<DescriptorTag>;
+using BufferHandle       =  Handle<BufferTag>;
+using TextureHandle      =  Handle<TextureTag>;
+using ShaderHandle       =  Handle<ShaderTag>;
+using MeshHandle         =  Handle<MeshTag>;
+using MaterialHandle     =  Handle<MaterialTag>;
+using RenderQueueHandle  = Handle<RenderQueueTag>;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

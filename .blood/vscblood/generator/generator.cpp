@@ -166,6 +166,8 @@ int main( int argc, char** argv )
 	String runtime_objects;
 	runtime_objects.init();
 
+	uint_32 index = 0;
+
 	// Engine
 	for ( uint_32 index = 0; index < ARRAY_SIZE( engine_dirs ); index++ )
 	{
@@ -217,6 +219,13 @@ int main( int argc, char** argv )
 
 					String obj;
 					obj.init( "$objdir/" );
+
+					// Compile same name files
+					char object[256] = {};
+
+					sprintf( object, "index.%u_name.", index  );
+
+					obj.append( object );
 					obj.append( entry->d_name );
 					obj.append( ".o" );
 

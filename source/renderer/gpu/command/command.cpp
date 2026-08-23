@@ -1,4 +1,4 @@
-#include <renderer/gpu/command/gpu.command.hpp>
+#include <renderer/gpu/command/command.hpp>
 
 #include <string.h>
 

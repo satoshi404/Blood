@@ -3,7 +3,7 @@
 #include <renderer/gpu/core/enums.hpp>
 #include <renderer/gpu/core/limits.hpp>
 #include <renderer/gpu/core/handles.hpp>
-#include <renderer/gpu/render/gpu.render.queue.hpp>
+#include <renderer/gpu/render/queue.hpp>
 #include <renderer/gpu/core/types.hpp>
 
 enum_type( LoadOpType, uint_8 )

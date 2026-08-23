@@ -1,4 +1,4 @@
-#include <renderer/gpu/pool/gpu.buffer.pool.hpp>
+#include <renderer/gpu/pool/buffer.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
 namespace

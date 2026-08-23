@@ -4,17 +4,17 @@
 #include <constants.hpp>
 
 #include <renderer/gpu/core/handles.hpp>
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <renderer/gpu/resource/descriptor.hpp>
 #include <renderer/gpu/core/enums.hpp>
 #include <renderer/gpu/core/types.hpp>
-#include <renderer/gpu/state/gpu.transform.hpp>
-#include <renderer/gpu/state/gpu.render.state.hpp>
-#include <renderer/gpu/resource/gpu.buffer.hpp>
-#include <renderer/gpu/resource/gpu.mesh.hpp>
-#include <renderer/gpu/pool/gpu.render.queue.pool.hpp>
+#include <renderer/gpu/state/transform.hpp>
+#include <renderer/gpu/state/state.hpp>
+#include <renderer/gpu/resource/buffer.hpp>
+#include <renderer/gpu/resource/mesh.hpp>
+#include <renderer/gpu/pool/queue.hpp>
 
 // TODO: New
-#include <renderer/gpu/resource/gpu.shader.hpp>
+#include <renderer/gpu/resource/shader.hpp>
 
 #include <renderer/gpu/resource/material.hpp>
 

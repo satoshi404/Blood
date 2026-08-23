@@ -1,5 +1,5 @@
 #include <renderer/layer/backend.hpp>
-#include <renderer/gpu/resource/gpu.descriptor.hpp>
+#include <renderer/gpu/resource/descriptor.hpp>
 #include <core/debug.hpp>
 
 #if API_OPENGL

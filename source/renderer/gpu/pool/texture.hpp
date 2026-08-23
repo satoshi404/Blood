@@ -1,7 +1,7 @@
 #pragma once
 
 #include <renderer/gpu/core/handles.hpp>
-#include <renderer/gpu/resource/gpu.texture.hpp>
+#include <renderer/gpu/resource/texture.hpp>
 
 namespace TexturePool
 {
