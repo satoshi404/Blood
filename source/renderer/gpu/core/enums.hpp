@@ -44,7 +44,6 @@ enum_type( DrawType, uint_8 )
     DrawType_Cube,
     DrawType_Sphere,
     DrawType_Obj,
-    DrawType_Mesh,
     DrawType_Count
 };
 

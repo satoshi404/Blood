@@ -12,7 +12,7 @@
 
 GLOBAL void _start()
 {
-	Debug::Println( PrintColor_Cyan, "Start.." );
+	Debug::Println( PrintColorType_Cyan, "Start.." );
 
 	String title;
 	title.init( WindowConfig::Get::title() );
@@ -46,7 +46,7 @@ GLOBAL void _update( float_64 delta )
 
 GLOBAL void _finish()
 {
-	Debug::Println( PrintColor_Cyan, "Finish.." );
+	Debug::Println( PrintColorType_Cyan, "Finish.." );
 
 	Bird::free();
 }

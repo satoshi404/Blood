@@ -8,7 +8,7 @@
 
 #if PLATFORM_LINUX
 
-enum_type( XCB_PropModeType, u32 )
+enum_type( XCB_PropModeType, uint_32 )
 {
 	XCB_PropModeType_Replace = 0,
 	XCB_PropModeType_Prepend = 1,

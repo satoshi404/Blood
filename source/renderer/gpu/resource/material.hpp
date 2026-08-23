@@ -1,8 +1,7 @@
 #pragma once
 
-#include <renderer/layer/backend.hpp>
-
 #include <renderer/gpu/core/types.hpp>
+#include <renderer/gpu/core/handles.hpp>
 
 struct Material
 {
@@ -16,8 +15,5 @@ struct Material
     // Compatibility/native shader identifier for the current OpenGL path.
     uint_32 native_shader_id = 0;
 
-    void bind() const
-    {
-        Backend::bind_material( this );
-    };
+    void bind() const;
 };

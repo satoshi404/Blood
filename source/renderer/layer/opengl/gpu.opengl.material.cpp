@@ -4,7 +4,7 @@
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-void Backend::bind_material( Material material )
+void Backend::bind_material( const Material& material )
 {
     if (material.native_shader_id == 0)
     {

@@ -1,9 +1,11 @@
 #pragma once
 
+#include <pipeline.hpp>
+#include <constants.hpp>
+
 #include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/resource/gpu.descriptor.hpp>
 #include <renderer/gpu/core/enums.hpp>
-#include <renderer/gpu/resource/material.hpp>
 #include <renderer/gpu/core/types.hpp>
 #include <renderer/gpu/state/gpu.transform.hpp>
 #include <renderer/gpu/state/gpu.render.state.hpp>
@@ -14,8 +16,7 @@
 // TODO: New
 #include <renderer/gpu/resource/gpu.shader.hpp>
 
-#include <pipeline.hpp>
-#include <constants.hpp>
+#include <renderer/gpu/resource/material.hpp>
 
 namespace Backend
 {
@@ -31,7 +32,7 @@ namespace Backend
 
     extern void bind_shader( ShaderHandle shader );
     extern void bind_texture( TextureHandle texture, uint_32 slot );
-    extern void bind_material( Material m);
+    extern void bind_material( const Material& material );
 
     extern void push_state();
     extern void pop_state();

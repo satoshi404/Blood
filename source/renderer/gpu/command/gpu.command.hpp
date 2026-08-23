@@ -27,7 +27,7 @@ struct DrawCommand
 
 struct MaterialCommand
 {
-    Material* material = nullptr;
+    const Material* material = nullptr;
     ShaderHandle shader = {};
     bool override_material = false_value;
 };
@@ -40,7 +40,6 @@ struct TextureCommand
 
 struct Command
 {
-    Command();
 
     CommandType type = CommandType_Clear;
 
@@ -89,7 +88,7 @@ struct Command
     );
 
     static Command material(
-        Material* value,
+        const Material* value,
         const char* label = nullptr
     );
 

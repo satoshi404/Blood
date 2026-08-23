@@ -72,7 +72,7 @@ void CommandDispatcher::execute(const Command& command)
 
         case CommandType_Set_Material:
             if (command.commands.material.material)
-                Backend::bind_material( (Material) *command.commands.material.material );
+                Backend::bind_material( *command.commands.material.material );
             break;
 
         case CommandType_Set_RenderState:

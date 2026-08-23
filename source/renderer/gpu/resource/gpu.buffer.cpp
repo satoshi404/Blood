@@ -1,5 +1,5 @@
 #include <renderer/gpu/resource/gpu.buffer.hpp>
-#include <renderer/layer/gpu.backend.hpp>
+#include <renderer/layer/backend.hpp>
 
 bool Buffer::create(const float_32* data, uint_32 count)
 {

@@ -56,7 +56,7 @@ Command Command::viewport( const int_32 viewport_x, const int_32 viewport_y, con
 
 Command Command::swap( const char *text )
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Swap;
     make_label( command.label, sizeof( command.label ), text );
     return command;
@@ -64,16 +64,16 @@ Command Command::swap( const char *text )
 
 Command Command::transform(const Transform &value, const char *text)
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Set_Transform;
     command.commands.transform = value;
     make_label(command.label, sizeof(command.label), text);
     return command;
 }
 
-Command Command::material( Material *value, const char *text)
+Command Command::material( const Material *value, const char *text)
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Set_Material;
     command.commands.material.material = value;
     make_label(command.label, sizeof(command.label), text);
@@ -82,7 +82,7 @@ Command Command::material( Material *value, const char *text)
 
 Command Command::render_state(const RenderState &value, const char *text)
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Set_RenderState;
     command.commands.render_state = value;
     make_label(command.label, sizeof(command.label), text);
@@ -91,7 +91,7 @@ Command Command::render_state(const RenderState &value, const char *text)
 
 Command Command::texture( TextureHandle value, uint_32 slot, const char *text )
 {
-    static Command command = {};
+    Command command = {};
     command.type = CommandType_Bind_Texture;
     command.commands.texture.texture = value;
     command.commands.texture.slot = slot;
@@ -101,7 +101,7 @@ Command Command::texture( TextureHandle value, uint_32 slot, const char *text )
 
 Command Command::push_state(const char *text)
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Push_State;
     make_label(command.label, sizeof(command.label), text);
     return command;
@@ -109,7 +109,7 @@ Command Command::push_state(const char *text)
 
 Command Command::pop_state(const char *text)
 {
-    static Command command;
+    Command command;
     command.type = CommandType_Pop_State;
     make_label(command.label, sizeof(command.label), text);
     return command;

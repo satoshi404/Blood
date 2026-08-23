@@ -167,7 +167,7 @@ namespace Factory
         RenderPass pass;
         pass.viewport = { x, y, width, height };
         pass.queue = queue;
-        pass.color.load_op = LoadOpType_Clear;\
+        pass.color.load_op = LoadOpType_Clear;
 
         Color normal_color = color.normalized();
 
