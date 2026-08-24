@@ -5,6 +5,7 @@
 #include <core/debug.hpp>
 #include <core/memory.hpp>
 #include <renderer/gpu/state/transform.hpp>
+#include <renderer/factory.hpp>
 
 #include <vendor/libc/string.hpp>
 #include <vendor/libc/math.hpp>
@@ -444,6 +445,70 @@ NodeHandle Scene::create_child( NodeHandle parent, const char* name )
         NodeSystem::add_child( parent.is_valid() ? parent : root, h );
     }
     return h;
+}
+
+NodeHandle Scene::spawn_drawable(
+    DrawType type,
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz )
+{
+    NodeHandle handle = create_node( name );
+    if ( !handle.is_valid() )
+        return {};
+
+    NodeSystem::set_local_position( handle, x, y, z );
+    NodeSystem::set_local_scale( handle, sx, sy, sz );
+
+    DescriptorHandle desc = Factory::create_descriptor(
+        DescriptorBuilder()
+            .type( type )
+            .context( ContextType_3D )
+            .label( name ? name : "drawable" )
+            .build()
+    );
+
+    Node* node = NodeSystem::get( handle );
+    if ( node )
+        node->descriptor = desc;
+
+    return handle;
+}
+
+NodeHandle Scene::spawn_cube(
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz )
+{
+    return spawn_drawable( DrawType_Cube, name, x, y, z, sx, sy, sz );
+}
+
+NodeHandle Scene::spawn_cube_child(
+    NodeHandle parent,
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz )
+{
+    NodeHandle handle = create_child( parent, name );
+    if ( !handle.is_valid() )
+        return {};
+
+    NodeSystem::set_local_position( handle, x, y, z );
+    NodeSystem::set_local_scale( handle, sx, sy, sz );
+
+    DescriptorHandle desc = Factory::create_descriptor(
+        DescriptorBuilder()
+            .type( DrawType_Cube )
+            .context( ContextType_3D )
+            .label( name ? name : "cube" )
+            .build()
+    );
+
+    Node* node = NodeSystem::get( handle );
+    if ( node )
+        node->descriptor = desc;
+
+    return handle;
 }
 
 void Scene::update_transforms()

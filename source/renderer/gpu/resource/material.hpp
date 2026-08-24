@@ -5,7 +5,7 @@
 
 struct Material
 {
-    Color color = {};
+    Color color = { 1.f, 1.f, 1.f };
     ShaderHandle shader = {};
     TextureHandle albedo = {};
 

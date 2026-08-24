@@ -1,5 +1,6 @@
 #include <renderer/backend/backend.hpp>
 #include <renderer/gpu/resource/descriptor.hpp>
+#include <renderer/gpu/pool/material.hpp>
 #include <core/debug.hpp>
 
 #if API_OPENGL
@@ -96,7 +97,7 @@ namespace
             -0.5f,  0.5f, -0.5f,
         };
 
-        g_cube_material.color = { 0.95f, 0.55f, 0.15f, 1.0f };
+        g_cube_material.color = ( Color ){ 0.8f, 0.5f , 0. };
         g_cube_mesh.primitive = TopologiePrimitiveType_Triangles;
 
         // 36 vertices, 3 componentes (x, y, z)
@@ -114,9 +115,14 @@ namespace
         return fallback;
     }
 
-    const Material& resolve_material( const Descriptor& desc, const Material& fallback )
+   const Material& resolve_material( const Descriptor& desc, const Material& fallback )
+{
+    if ( desc.handle_material.is_valid() )
     {
-        return fallback;
+        Material* m = MaterialPool::get( desc.handle_material ); // se existir pool
+        if ( m ) return *m;
+    }
+    return fallback;
     }
 }
 

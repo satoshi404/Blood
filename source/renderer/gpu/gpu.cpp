@@ -5,6 +5,10 @@
 #include <renderer/gpu/command/command.dispatch.hpp>
 #include <renderer/gpu/pool/mesh.hpp>
 #include <renderer/gpu/pool/queue.hpp>
+
+#include <renderer/gpu/pool/material.hpp>
+#include <renderer/gpu/pool/shader.hpp>
+
 #include <core/debug.hpp>
 
 namespace
@@ -20,6 +24,8 @@ bool Gpu::init()
 
     // Init
     DescriptorPool::init();
+    MaterialPool::init();
+    ShaderPool::init();
     RenderQueuePool::init();
 
     if (! Backend::init())
@@ -50,6 +56,8 @@ void Gpu::shutdown()
         return;
 
     Backend::shutdown();
+    MaterialPool::shutdown();
+    ShaderPool::shutdown();
     DescriptorPool::shutdown();
 
     g_statistics = {};
@@ -114,4 +122,47 @@ void Gpu::execute(const Command& command)
         return;
 
     CommandDispatcher::execute(command);
+}
+
+MaterialHandle Gpu::create_material( const Material& material )
+{
+    return MaterialPool::create( material );
+}
+
+bool Gpu::update_material( MaterialHandle handle, const Material& material )
+{
+    return MaterialPool::update( handle, material );
+}
+
+bool Gpu::destroy_material( MaterialHandle handle )
+{
+    return MaterialPool::destroy( handle );
+}
+
+Material* Gpu::get_material( MaterialHandle handle )
+{
+    return MaterialPool::get( handle );
+}
+
+const Material* Gpu::get_material_const( MaterialHandle handle )
+{
+    return MaterialPool::get_const( handle );
+}
+
+ShaderHandle Gpu::create_shader( const char* vs, const char* fs, const char* label )
+{
+    Shader s = {};
+    if ( !Backend::shader_create_from_source( s, vs, fs ) )
+        return {};
+    if ( label )
+        // copy label into s.label
+    return ShaderPool::create( s );
+}
+
+bool Gpu::destroy_shader( ShaderHandle handle )
+{
+    Shader* s = ShaderPool::get( handle );
+    if ( !s ) return false_value;
+    Backend::shader_destroy( *s );
+    return ShaderPool::destroy( handle );
 }

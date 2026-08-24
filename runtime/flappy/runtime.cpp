@@ -1,138 +1,118 @@
-#include <core/debug.hpp>
-#include <core/string.hpp>
-#include <core/types.hpp>
-#include <core/math.hpp>
-
-#include <platform/keyboard.hpp>
-#include <platform/window.hpp>
-
 #include <engine/engine.hpp>
 #include <engine/system/node.hpp>
-#include <engine/system/component.hpp>
-#include <engine/system/serializer.hpp>
+#include <platform/keyboard.hpp>
+#include <platform/window.hpp>
+#include <core/debug.hpp>
+#include <core/string.hpp>
+#include <renderer/factory.hpp>
 
-#include <vendor/libc/math.hpp>
-#include <string.h>
+// shader unlit embutido ou carregado de arquivo depois
+static const char* VS = R"(#version 330 core
+layout(location=0) in vec3 a_pos;
+uniform mat4 u_mvp;
+void main(){ gl_Position = u_mvp * vec4(a_pos,1.0); }
+)";
 
-#include "scripts/bird.hpp"
+static const char* FS = R"(#version 330 core
+uniform vec4 u_color;
+out vec4 frag;
+void main(){ frag = u_color; }
+)";
 
-static NodeHandle g_player_node = {};
-static NodeHandle g_camera_node = {};
+static ShaderHandle   g_unlit = {};
+static MaterialHandle g_mat_red   = {};
+static MaterialHandle g_mat_green = {};
+static bool           g_use_green = false_value;
+
+static NodeHandle g_player = {};
+static NodeHandle g_pipe   = {};
 
 GLOBAL void _start()
 {
-	Debug::Println( PrintColorType_Cyan, "Start.." );
+    Debug::Println( PrintColorType_Cyan, "Start.." );
 
-	String title;
-	title.init( WindowConfig::Get::title() );
-	title.append( " -" );
-	title.append( "FlappyBirds", true_value );
+    String title;
+    title.init( WindowConfig::Get::title() );
+    title.append( " - FlappyBirds", true_value );
+    WindowConfig::Set::title( title.data() );
+    CoreWindow::update_config();
 
-	WindowConfig::Set::title( title.data() );
-	CoreWindow::update_config();
+    Scene& scene = Engine::scene();
 
-	Scene& scene = Engine::scene();
+    g_player = scene.spawn_cube( "Player", 0.f, 0.f, -4.f, 0.5f, 0.5f, 0.5f );
+    g_pipe   = scene.spawn_cube( "Pipe",   2.f, 0.f, -4.f, 0.4f, 2.0f, 0.4f );
 
-	// Try load from file first
-	const char* scene_path = "runtime/flappy/scenes/main.scene";
-	if ( scene.load( scene_path ) )
-	{
-		Debug::Println( PrintColorType_Green, "Scene loaded from file" );
+    scene.spawn_cube_child( g_player, "Hat", 0.f, 0.6f, 0.f, 0.3f, 0.3f, 0.3f );
 
-		// Find nodes by walking children (simple lookup by name)
-		Node* root = NodeSystem::get( scene.root );
-		if ( root )
-		{
-			for ( uint_64 i = 0; i < root->children.size(); ++i )
-			{
-				Node* n = NodeSystem::get( root->children[ i ] );
-				if ( !n ) continue;
+	g_unlit = Gpu::create_shader( VS, FS, "unlit_color" );
 
-				if ( strcmp( n->name, "Player" ) == 0 )
-					g_player_node = root->children[ i ];
-				else if ( strcmp( n->name, "Camera" ) == 0 )
-					g_camera_node = root->children[ i ];
-			}
-		}
-	}
-	else
-	{
-		// Fallback: create programmatically
-		Debug::Println( PrintColorType_Yellow, "Scene file not found, creating default" );
+	Material red = {};
+    red.color = RedColor;      // { 1, 0, 0, 1 }
+	//red.shader = g_unlit;
+    g_mat_red = Gpu::create_material( red );
 
-		g_player_node = scene.create_node( "Player" );
-		g_camera_node = scene.create_node( "Camera" );
+    Material green = {};
+    green.color = GreenColor;  // { 0, 1, 0, 1 }
+	//green.shader = g_unlit;
+    g_mat_green = Gpu::create_material( green );
 
-		if ( g_player_node.is_valid() )
-		{
-			NodeSystem::set_local_position( g_player_node, 6.f, 0.f, 0.f );
-			ComponentSystem::add_render( g_player_node );
-			ComponentSystem::add_mesh( g_player_node );
-		}
-
-		if ( g_camera_node.is_valid() )
-		{
-			NodeSystem::set_local_position( g_camera_node, 0.f, 0.f, 5.f );
-			CameraComponent* cam = ComponentSystem::add_camera( g_camera_node );
-			if ( cam )
-			{
-				cam->fov = 70.0f;
-				cam->near_plane = 0.1f;
-				cam->far_plane = 500.0f;
-			}
-		}
-
-		// Save so next run can load it
-		scene.save( scene_path );
-	}
-
-	Debug::Println( PrintColorType_Cyan, "Scene → nodes: %llu | components: %llu",
-		NodeSystem::count(), ComponentSystem::count() );
-
-	Bird::init();
+    // Liga material ao descriptor do node
+    Node* player = NodeSystem::get( g_player );
+    if ( player )
+    {
+        Descriptor* d = Gpu::get_descriptor_mutable( player->descriptor );
+        if ( d )
+        {
+            d->handle_material = g_mat_red;
+            d->dirty = true_value;
+        }
+    }
 }
-
 
 GLOBAL void _input()
 {
-	if ( Keyboard::check_pressed( VK_Space ) )
-	{
-		Bird::bump();
-		NodeSystem::set_local_scale( g_player_node, 3., 1., 1. );
-		NodeSystem::update_world_transforms( g_player_node );
-	}
+  if ( Keyboard::check_pressed( VK_Space ) )
+  {
+    g_use_green = !g_use_green;
 
-	// F5 = save scene
-	if ( Keyboard::check_pressed( VK_F5 ) )
-	{
-		Engine::scene().save( "runtime/flappy/scenes/main.scene" );
-		Debug::Println( PrintColorType_Cyan, "Scene saved (F5)" );
-	}
-}
+    Node* player = NodeSystem::get( g_player );
+    if ( !player ) return;
 
-GLOBAL void _draw()
-{
+    Descriptor* d = Gpu::get_descriptor_mutable( player->descriptor );
+    if ( !d ) return;
+
+    d->handle_material = g_use_green ? g_mat_green : g_mat_red;
+  }
 }
 
 GLOBAL void _update( float_64 delta )
 {
-	float x = NodeSystem::get( g_player_node )->local.position.x;
-	float y = NodeSystem::get( g_player_node )->local.position.y;
-	float z = NodeSystem::get( g_player_node )->local.position.z;
+    static float_64 t = 0.0;
+    t += delta * 0.000002;
 
-	Debug::Println( PrintColorType_Cyan, "Pos= x : %f, y : %f, z : %f", x, y, z );
-	if ( g_player_node.is_valid() )
-	{
-		static float_64 t = 0.0;
-		t += delta * 0.001;
-		NodeSystem::set_local_position( g_player_node, 0.f, (float_32)(sin(t) * 0.5), 0.f );
-	}
+    if ( g_player.is_valid() )
+    {
+		Node* player = NodeSystem::get( g_player );
+
+    	for ( int index = 0; index < player->children.size(); index++  )
+    	{
+    	     NodeHandle child_handle = player->children.get( index );
+    	     Node* child = NodeSystem::get ( child_handle );
+    	     const auto t_child = child->local;
+
+    	     float rot_x = t;
+    	     float rot_y = t * .5f;
+    	     float rot_z = t;
+
+    	     NodeSystem::set_local_rotation( child_handle, rot_x, rot_y, rot_z );
+    	}
+    }
 }
+GLOBAL void _draw() {
 
-GLOBAL void _finish()
-{
-	Debug::Println( PrintColorType_Cyan, "Finish.." );
-	g_player_node = {};
-	g_camera_node = {};
-	Bird::free();
+	// ..
+}
+GLOBAL void _finish() {
+	Gpu::destroy_material( g_mat_red );
+    Gpu::destroy_material( g_mat_green );
 }

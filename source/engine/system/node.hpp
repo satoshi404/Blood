@@ -7,6 +7,7 @@
 #include <renderer/gpu/state/transform.hpp>
 #include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/core/limits.hpp>
+#include <renderer/gpu/core/types.hpp>
 
 // Forward
 struct ComponentTag;
@@ -131,6 +132,23 @@ struct Scene
 
     NodeHandle create_node( const char* name = "Node" );
     NodeHandle create_child( NodeHandle parent, const char* name = "Child" );
+    NodeHandle spawn_drawable(
+    DrawType type,
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz );
+
+    NodeHandle spawn_cube(
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz );
+
+    NodeHandle spawn_cube_child(
+    NodeHandle parent,
+    const char* name,
+    float_32 x, float_32 y, float_32 z,
+    float_32 sx, float_32 sy, float_32 sz );
+
 
     void update_transforms();
 

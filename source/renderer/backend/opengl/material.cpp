@@ -8,7 +8,7 @@ void Backend::bind_material( const Material& material )
 {
     if (material.native_shader_id == 0)
     {
-        const float_32 color[4] =
+        const GLfloat color[4] =
         {
             material.color.r,
             material.color.g,

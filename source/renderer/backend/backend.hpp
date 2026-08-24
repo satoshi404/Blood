@@ -41,8 +41,15 @@ namespace Backend
     extern void buffer_destroy( Buffer &buffer );
     extern void mesh_draw( const Mesh &mesh, TopologiePrimitiveType primitive_type );
 
-    extern bool shader_create( Shader &shader );
-    extern void shader_destroy( Shader &shader );
+    extern bool shader_create_from_source(
+        Shader& out,
+        const char* vertex_src,
+        const char* fragment_src
+    );
+    extern void shader_destroy( Shader& shader );
+    extern void bind_shader( const Shader& shader );
+    extern void set_shader_color( const Shader& shader, const Color& color );
+
     extern void draw_obj( const Descriptor &desc );
 
     extern void draw_cube_2d( const Descriptor &desc );

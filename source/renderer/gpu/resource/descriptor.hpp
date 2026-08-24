@@ -18,6 +18,7 @@ struct Descriptor
     MeshHandle handle_mesh;
     MaterialHandle handle_material;
 
+
     Transform transform = {};
     GpuSize size = {100.0f, 100.0f, 100.0f};
 
