@@ -56,7 +56,6 @@ namespace Factory
     {
         return RenderQueuePool::create( label );
     }
-
     INLINE bool destroy_render_queue( const RenderQueueHandle handle )
     {
         return RenderQueuePool::destroy( handle );

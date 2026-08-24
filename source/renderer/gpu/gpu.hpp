@@ -25,6 +25,7 @@ namespace Gpu
     extern DescriptorHandle create_descriptor( const Descriptor& descriptor );
     extern bool update_descriptor( DescriptorHandle handle, const Descriptor& descriptor );
     extern bool destroy_descriptor( DescriptorHandle handle );
+    extern bool destroy_pool( BufferHandle handle );
 
     extern const Descriptor* get_descriptor( DescriptorHandle handle );
     extern Descriptor* get_descriptor_mutable( DescriptorHandle handle );

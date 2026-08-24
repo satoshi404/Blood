@@ -8,6 +8,8 @@
 #include <platform/keyboard.hpp>
 
 #include <renderer/factory.hpp>
+#include <engine/system/node.hpp>
+#include <engine/system/component.hpp>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,10 +17,11 @@
 
 // TODO: Test gpu renderer
 
-
 static DescriptorHandle simple_handle = {};
 static RenderQueueHandle simple_queue = {};
 static Transform simple_transform = {};
+
+static Scene g_main_scene = {};
 
 namespace EngineBackend
 {
@@ -30,8 +33,6 @@ namespace EngineBackend
     uint_64 delta;
 	float_64 angle = 0.;
 
-	// EngineRenderer 2D;
-
   	constexpr float_64 ROTATION_SPEED = 4.0;
 	constexpr uint_64 TARGET_FPS = 144ULL;
 	constexpr uint_64 TARGET_FRAME_US = 1000000ULL / TARGET_FPS;
@@ -39,22 +40,36 @@ namespace EngineBackend
 
 bool Engine::init()
 {
-	// Engine init
+	// Window
 	if ( !CoreWindow::init() )
 	{
 		Debug::Println( PrintColorType_Red, "Engine: Error init core window" );
 		return false_value;
 	}
 
+	// GPU
 	if ( !Factory::init() )
 	{
 		Debug::Println( PrintColorType_Red, "Engine: Error init gpu renderer" );
 		return false_value;
 	}
 
+	// Node System + Component System + Scene
+	if ( !ComponentSystem::init() )
+	{
+		Debug::Println( PrintColorType_Red, "Engine: Error init ComponentSystem" );
+		return false_value;
+	}
+
+	if ( !g_main_scene.init( "MainScene" ) )
+	{
+		Debug::Println( PrintColorType_Red, "Engine: Error init NodeSystem / Scene" );
+		return false_value;
+	}
+
 	CoreWindow::show();
 
-	// Create
+	// Temporary test objects (will be replaced by proper scene nodes later)
 	simple_queue = Factory::create_render_queue( "queue" );
 	if ( !simple_queue.is_valid() )
 	{
@@ -67,7 +82,6 @@ bool Engine::init()
 	simple_transform.position = fvec3( 0.f, 0.f, -4.f );
 	simple_transform.scale = fvec3( .8f, .8f, .8f );
 	simple_transform.mark_dirty();
-
 
 	simple_handle = Factory::create_descriptor(
 		DescriptorBuilder()
@@ -97,6 +111,8 @@ bool Engine::init()
 	// Runtime init
 	_start();
 
+	Debug::Println( PrintColorType_Green, "Engine: initialized (nodes: %llu, components: %llu)",
+		NodeSystem::count(), ComponentSystem::count() );
 	return true_value;
 }
 
@@ -181,6 +197,12 @@ void Engine::update()
 		// Runtime update
 		_update( EngineBackend::delta );
 
+		// Scene / Node transforms
+		g_main_scene.update_transforms();
+
+		// Components (scripts etc.)
+		ComponentSystem::update_all( EngineBackend::delta );
+
 		// Engine update
 		Keyboard::update( EngineBackend::delta );
 
@@ -201,13 +223,22 @@ void Engine::update()
 
 void Engine::free()
 {
-	// Engine free
-	//GpuFactory::destroy_descriptor( simple_handle );
+	// Runtime free first
+	_finish();
+
+	// Scene + systems
+	g_main_scene.free();
+	ComponentSystem::shutdown();
+	NodeSystem::shutdown();
+
+	// GPU + Window
 	Factory::shutdown();
 	CoreWindow::terminate();
+}
 
-	// Runtime free
-	_finish();
+Scene& Engine::scene()
+{
+	return g_main_scene;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,7 +253,6 @@ void EngineCall::stop()
 // Parse args
 int main()
 {
-	// TODO:
 	if ( !Engine::init() ) return exit_failed_code;
 
 	Engine::update();

@@ -171,15 +171,17 @@ async function command_generate()
 	const root = get_workspace_path();
 	if ( !root ) return;
 
-	const generatorSrc = path.join( root, ".blood/vscblood/generator/generator.cpp" );
-	const generatorBin = path.join( root, ".blood/vscblood/generator/generator" );
+	const generatorSrc = path.join( root, "tools/generator/generator.cpp" );
+	const generatorBin = path.join( root, "tools/generator/temp/generator" );
 	const coreDebug = path.join( root, "source/core/debug.cpp" );
 	const includeDir = path.join( root, "source" );
 
 	const cmd = [
+		`mkdir tools/generator/temp `,
 		`clang++ "${generatorSrc}" "${coreDebug}" -o "${generatorBin}" -I"${includeDir}"`,
 		`"${generatorBin}"`,
-		`rm -f "${generatorBin}"`
+		`rm -f "${generatorBin}"`,
+		`rm -r tools/generator/temp `
 	].join( " && " );
 
 	await TerminalRunCommand( { command: cmd, workspaceRoot: root } );

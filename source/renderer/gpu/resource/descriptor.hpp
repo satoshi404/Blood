@@ -12,7 +12,7 @@
 struct Descriptor
 {
     DrawType draw_type = DrawType_Cube;
-    ContextType context_type = ContextType_2D; // TODO: REMOVE
+    ContextType context_type = ContextType_3D; // TODO: REMOVE
 
     // TODO: Handle Resource
     MeshHandle handle_mesh;

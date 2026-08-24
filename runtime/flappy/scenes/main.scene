@@ -1,11 +1,17 @@
+// Blood Engine Scene File
+// Auto-generated - edit with care
+
 scene "Main"
 {
-    type = "2D"
+    version = 1
+
     node "Player"
     {
-        transform = ...
-
-        mesh = "player.mesh"
-        material = "player.mat"
+        active = true
+        visible = false
+        position = 0.000000 -0.428831 0.000000
+        rotation = 0.000000 0.000000 0.000000
+        scale = 0.003000 0.030000 0.000300
     }
+
 }

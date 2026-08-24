@@ -11,6 +11,8 @@ namespace Engine
 	extern bool init();
 	extern void update();
 	extern void free();
+
+	extern Scene& scene();
 }
 
 namespace EngineCall

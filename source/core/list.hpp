@@ -3,102 +3,162 @@
 #include <core/types.hpp>
 #include <core/memory.hpp>
 
+// Uses system malloc/realloc/free for now (same pattern as String)
+#include <stdlib.h>
+#include <string.h>
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
-class List
+struct List
 {
-public:
-	void invert_data( signed_size capacity_bytes )
-	{
-		void *new_data = malloc(capacity_bytes);
+    T*          data     = nullptr;
+    uint_64     count    = 0;
+    uint_64     capacity = 0;
 
-		memcpy(new_data, data, capacity);
-		free(data);
+    void init( uint_64 initial_capacity = 8 )
+    {
+        if ( initial_capacity < 1 )
+            initial_capacity = 8;
 
-		data = new_data;
-		capacity = capacity_bytes;
-	}
+        capacity = initial_capacity;
+        count    = 0;
+        data     = static_cast<T*>( malloc( capacity * sizeof( T ) ) );
+    }
 
-	void append(T value)
-	{
-		if (capacity < (size() + 1) * sizeof(T))
-		{
-			signed_size new_capacity = capacity * 2;
-			void *new_data = malloc(new_capacity);
+    void free()
+    {
+        if ( data )
+        {
+            ::free( data );
+            data = nullptr;
+        }
+        count    = 0;
+        capacity = 0;
+    }
 
-			memcpy(new_data, data, capacity);
-			free(data);
+    void clear()
+    {
+        count = 0;
+    }
 
-			data = new_data;
-			capacity = new_capacity;
-		}
+    bool reserve( uint_64 new_capacity )
+    {
+        if ( new_capacity <= capacity )
+            return true_value;
 
-		T *values = static_cast<T *>(data);
-		values[size()] = value;
-	}
+        T* new_data = static_cast<T*>( realloc( data, new_capacity * sizeof( T ) ) );
+        if ( !new_data )
+            return false_value;
 
-	NO_DISCARD T get( uint_64 index) const
-	{
-		if (index >= size())
-			return T{};
+        data     = new_data;
+        capacity = new_capacity;
+        return true_value;
+    }
 
-		T *values = static_cast<T *>(data);
-		return values[index];
-	}
+    bool ensure_capacity( uint_64 needed )
+    {
+        if ( needed <= capacity )
+            return true_value;
 
-	NO_DISCARD uint_64 size() const
-	{
-		return capacity / sizeof(T);
-	}
+        uint_64 new_cap = capacity ? capacity * 2 : 8;
+        while ( new_cap < needed )
+            new_cap *= 2;
 
-	void clear()
-	{
-		if (data)
-			free(data);
-		data = nullptr;
-		capacity = 0;
-		memset(this, 0, sizeof(List));
-	}
+        return reserve( new_cap );
+    }
 
-	class Iterator
-	{
-	public:
-		Iterator(const List *list, uint_64 index)
-			: list(list), index(index)
-		{
-		}
+    // ------------------------------------------------------------------
+    bool append( const T& value )
+    {
+        if ( !ensure_capacity( count + 1 ) )
+            return false_value;
 
-		Iterator &operator++()
-		{
-			index++;
-			return *this;
-		}
+        data[ count++ ] = value;
+        return true_value;
+    }
 
-		bool operator!=(const Iterator &other) const
-		{
-			return index != other.index;
-		}
+    bool push( const T& value )
+    {
+        return append( value );
+    }
 
-		T operator*() const
-		{
-			return list->get(index);
-		}
+    T pop()
+    {
+        if ( count == 0 )
+            return T{};
 
-	private:
-		const List *list;
-		uint_64 index;
-	};
+        return data[ --count ];
+    }
 
-private:
-	void *data;
-	signed_size capacity;
+    // ------------------------------------------------------------------
+    NO_DISCARD T& operator[]( uint_64 index )
+    {
+        return data[ index ];
+    }
 
-	void init( signed_size capacity_bytes )
-	{
-		capacity = capacity_bytes;
-		data = malloc(capacity);
-	}
+    NO_DISCARD const T& operator[]( uint_64 index ) const
+    {
+        return data[ index ];
+    }
+
+    NO_DISCARD T get( uint_64 index ) const
+    {
+        if ( index >= count )
+            return T{};
+        return data[ index ];
+    }
+
+    NO_DISCARD T* try_get( uint_64 index )
+    {
+        if ( index >= count )
+            return nullptr;
+        return &data[ index ];
+    }
+
+    NO_DISCARD uint_64 size() const
+    {
+        return count;
+    }
+
+    NO_DISCARD bool empty() const
+    {
+        return count == 0;
+    }
+
+    NO_DISCARD T* begin() { return data; }
+    NO_DISCARD T* end()   { return data + count; }
+
+    NO_DISCARD const T* begin() const { return data; }
+    NO_DISCARD const T* end()   const { return data + count; }
+
+    // ------------------------------------------------------------------
+    // Fast remove (order not preserved)
+    bool remove_at( uint_64 index )
+    {
+        if ( index >= count )
+            return false_value;
+
+        data[ index ] = data[ count - 1 ];
+        --count;
+        return true_value;
+    }
+
+    bool remove_swap( uint_64 index )
+    {
+        return remove_at( index );
+    }
+
+    // Ordered remove (preserves order, slower)
+    bool remove_ordered( uint_64 index )
+    {
+        if ( index >= count )
+            return false_value;
+
+        for ( uint_64 i = index; i < count - 1; ++i )
+            data[ i ] = data[ i + 1 ];
+
+        --count;
+        return true_value;
+    }
 };
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
