@@ -1,7 +1,8 @@
 #include <renderer/backend/backend.hpp>
 #include <renderer/gpu/resource/descriptor.hpp>
-#include <renderer/gpu/pool/material.hpp>
 #include <core/debug.hpp>
+
+#include <renderer/gpu/pool.hpp>
 
 #if API_OPENGL
 
@@ -119,7 +120,7 @@ namespace
 {
     if ( desc.handle_material.is_valid() )
     {
-        Material* m = MaterialPool::get( desc.handle_material ); // se existir pool
+        Material* m = Pool::get_material( desc.handle_material ); // se existir pool
         if ( m ) return *m;
     }
     return fallback;

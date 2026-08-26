@@ -1,6 +1,6 @@
 #include <renderer/gpu/pool/queue.hpp>
 
-#include <renderer/gpu/pool/descriptor.hpp>
+//#include <renderer/gpu/pool/descriptor.hpp>
 #include <renderer/gpu/core/limits.hpp>
 #include <core/debug.hpp>
 

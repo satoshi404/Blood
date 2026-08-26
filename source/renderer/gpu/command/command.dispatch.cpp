@@ -1,7 +1,9 @@
 #include <renderer/gpu/command/command.dispatch.hpp>
-#include <renderer/gpu/pool/descriptor.hpp>
+//#include <renderer/gpu/pool/descriptor.hpp>
 #include <renderer/backend/backend.hpp>
 #include <core/debug.hpp>
+
+#include <renderer/gpu/pool.hpp>
 
 namespace
 {
@@ -16,8 +18,7 @@ namespace
 
     void execute_draw(const DrawCommand& command)
     {
-        const Descriptor* descriptor =
-            DescriptorPool::get(command.descriptor);
+        const Descriptor* descriptor = Pool::get_descriptor( command.descriptor );
 
         if (!descriptor)
         {

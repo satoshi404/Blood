@@ -1,19 +1,12 @@
-#include <renderer/gpu/pool/descriptor.hpp>
+#include <renderer/gpu/pool.hpp>
 #include <renderer/gpu/core/limits.hpp>
+
 #include <core/debug.hpp>
 
-struct Slot
-{
-    Descriptor value = {};
-    uint_32 generation = 0;
-    bool alive = false_value;
-};
+static Slot<Descriptor> slots[ Limits::Max_Descriptors ] = {};
+static bool initialized = false_value;
 
-static Slot slots[ Limits::Max_Descriptors ];
-static uint_32  slot_size = 0;
-
-static bool descriptor_initialised = false_value;
-
+// Todo:
 static bool valid_handler( DescriptorHandle handle )
 {
     return
@@ -25,43 +18,37 @@ static bool valid_handler( DescriptorHandle handle )
     );
 }
 
-bool DescriptorPool::init()
+bool Pool::init()
 {
-    for ( uint_32 i = 0; i < Limits::Max_Descriptors; ++i ) slots[ i ] = {};
+	if ( initialized ) return false_value;
 
-    slot_size = 0;
+	for ( Slot<Descriptor>& slot : slots ) {
+		slot = {};
+	}
 
-    descriptor_initialised = true_value;
+	initialized = true_value;
 
-    return true_value;
+	return true_value;
 }
 
-void DescriptorPool::shutdown()
+void Pool::free()
 {
-    if ( !descriptor_initialised )
-    {
-        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
-        return;
-    }
-    slot_size = 0;
+	if ( !initialized ) return;
 
-    for (uint_32 i = 0; i < Limits::Max_Descriptors; ++i) slots[i] = {};
+	for ( Slot<Descriptor>& slot : slots ) slot = {};
 }
 
-DescriptorHandle DescriptorPool::create(const Descriptor &descriptor)
+DescriptorHandle Pool::create_descriptor( const Descriptor& descriptor )
 {
-    if ( !descriptor_initialised )
+	if ( !initialized )
     {
-        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
+        Debug::Println( PrintColorType_Red, "[Pool::Error] Descriptor not initialized" );
         return {};
     }
 
-    for ( uint_32 i = 0; i < Limits::Max_Descriptors; ++i )
+    for ( Slot<Descriptor>& slot : slots )
     {
-        Slot &slot = slots[i];
-
-        if (slot.alive)
-            continue;
+        if ( slot.alive ) continue;
 
         slot.generation++;
         if (slot.generation == 0)
@@ -69,65 +56,68 @@ DescriptorHandle DescriptorPool::create(const Descriptor &descriptor)
 
         slot.value = descriptor;
         slot.alive = true_value;
-        ++slot_size;
 
-        return {i, slot.generation};
+		const uint_32 index = &slot - slots;
+        return { index, slot.generation };
     }
 
     Debug::Println(
         PrintColorType_Red,
-        "[Gpu] Descriptor pool cheio (max %u)",
+        "[Pool::Error] Descriptor pool cheio (max %u)",
         Limits::Max_Descriptors);
 
     return {};
 }
 
-bool DescriptorPool::update(
-    DescriptorHandle handle,
-    const Descriptor &descriptor)
+bool Pool::update_descriptor( DescriptorHandle handle, const Descriptor& descriptor )
 {
-    if ( !descriptor_initialised )
+    if ( !initialized )
     {
-        Debug::Println( PrintColorType_Red, "Error: Descriptor not initialised" );
+        Debug::Println( PrintColorType_Red, "[Pool::Error] Descriptor not initialised" );
         return false_value;
     }
 
     if ( !valid_handler(handle) ) return false_value;
 
     slots[handle.index].value = descriptor;
-    slots[handle.index].value.dirty = true;
+    slots[handle.index].value.dirty = true_value;
+
     return true_value;
 }
 
-bool DescriptorPool::destroy( DescriptorHandle handle )
+Descriptor* Pool::get_descriptor( DescriptorHandle handle )
 {
-    if (!valid_handler(handle))
-        return false_value;
+	if ( !handle.is_valid() || handle.index >= Limits::Max_Descriptors ) return nullptr;
+
+    Slot<Descriptor>& slot = slots[ handle.index ];
+
+    if ( !slot.alive || slot.generation != handle.generation )
+        return nullptr;
+
+    return &slot.value;
+}
+
+bool Pool::exist_descriptor( DescriptorHandle handle )
+{
+    return valid_handler( handle );
+}
+
+signed_size Pool::size()
+{
+	return ARRAY_SIZE( slots );
+}
+
+signed_size Pool::capacity()
+{
+	return Limits::Max_Descriptors;
+}
+
+bool Pool::destroy_descriptor( DescriptorHandle handle )
+{
+	if (!valid_handler(handle)) return false_value;
 
     slots[handle.index].alive = false_value;
     slots[handle.index].value = {};
 
-    if ( slot_size > 0 ) --slot_size;
-
     return true_value;
-}
-
-Descriptor *DescriptorPool::get( DescriptorHandle handle )
-{
-    return valid_handler(handle) ? &slots[ handle.index ].value : nullptr;
-}
-
-bool DescriptorPool::exists( DescriptorHandle handle )
-{
-    return valid_handler(handle);
-}
-
-uint_32 DescriptorPool::size()
-{
-    return slot_size;
-}
-
-uint_32 DescriptorPool::capacity()
-{
-    return Limits::Max_Descriptors;
 }

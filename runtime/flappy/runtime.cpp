@@ -6,6 +6,8 @@
 #include <core/string.hpp>
 #include <renderer/factory.hpp>
 
+#include <renderer/gpu/pool.hpp>
+
 // shader unlit embutido ou carregado de arquivo depois
 static const char* VS = R"(#version 330 core
 layout(location=0) in vec3 a_pos;
@@ -49,18 +51,18 @@ GLOBAL void _start()
 	Material red = {};
     red.color = RedColor;      // { 1, 0, 0, 1 }
 	//red.shader = g_unlit;
-    g_mat_red = Gpu::create_material( red );
+    g_mat_red = Pool::create_material( red );
 
     Material green = {};
     green.color = GreenColor;  // { 0, 1, 0, 1 }
 	//green.shader = g_unlit;
-    g_mat_green = Gpu::create_material( green );
+    g_mat_green = Pool::create_material( green );
 
     // Liga material ao descriptor do node
     Node* player = NodeSystem::get( g_player );
     if ( player )
     {
-        Descriptor* d = Gpu::get_descriptor_mutable( player->descriptor );
+        Descriptor* d = Pool::get_descriptor( player->descriptor );
         if ( d )
         {
             d->handle_material = g_mat_red;
@@ -78,7 +80,7 @@ GLOBAL void _input()
     Node* player = NodeSystem::get( g_player );
     if ( !player ) return;
 
-    Descriptor* d = Gpu::get_descriptor_mutable( player->descriptor );
+    Descriptor* d = Pool::get_descriptor( player->descriptor );
     if ( !d ) return;
 
     d->handle_material = g_use_green ? g_mat_green : g_mat_red;
@@ -113,6 +115,6 @@ GLOBAL void _draw() {
 	// ..
 }
 GLOBAL void _finish() {
-	Gpu::destroy_material( g_mat_red );
-    Gpu::destroy_material( g_mat_green );
+	Pool::destroy_material( g_mat_red );
+    Pool::destroy_material( g_mat_green );
 }

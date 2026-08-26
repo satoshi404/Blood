@@ -27,31 +27,6 @@ namespace Factory
         return Gpu::statistics();
     }
 
-    INLINE DescriptorHandle create_descriptor(const Descriptor& descriptor )
-    {
-        return Gpu::create_descriptor( descriptor );
-    }
-
-    INLINE bool update_descriptor( const DescriptorHandle handle, const Descriptor& descriptor )
-    {
-        return Gpu::update_descriptor( handle, descriptor );
-    }
-
-    INLINE bool destroy_descriptor( const DescriptorHandle handle )
-    {
-        return Gpu::destroy_descriptor( handle );
-    }
-
-    INLINE const Descriptor* get_descriptor( const DescriptorHandle handle )
-    {
-        return Gpu::get_descriptor( handle );
-    }
-
-    INLINE Descriptor* get_descriptor_mutable( const DescriptorHandle handle )
-    {
-        return Gpu::get_descriptor_mutable( handle );
-    }
-
     INLINE RenderQueueHandle create_render_queue( const char* label = nullptr )
     {
         return RenderQueuePool::create( label );

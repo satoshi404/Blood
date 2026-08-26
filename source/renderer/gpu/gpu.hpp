@@ -22,17 +22,6 @@ namespace Gpu
     extern void new_frame();
     extern const Statistics& statistics();
 
-    extern DescriptorHandle create_descriptor( const Descriptor& descriptor );
-    extern bool update_descriptor( DescriptorHandle handle, const Descriptor& descriptor );
-    extern bool destroy_descriptor( DescriptorHandle handle );
-    extern bool destroy_pool( BufferHandle handle );
-
-    extern MaterialHandle create_material( const Material& material );
-    extern bool           update_material( MaterialHandle handle, const Material& material );
-    extern bool           destroy_material( MaterialHandle handle );
-    extern Material*      get_material( MaterialHandle handle );
-    extern const Material* get_material_const( MaterialHandle handle );
-
     ShaderHandle create_shader( const char* vs, const char* fs, const char* label = nullptr );
     bool         destroy_shader( ShaderHandle handle );
     Shader*      get_shader( ShaderHandle handle );

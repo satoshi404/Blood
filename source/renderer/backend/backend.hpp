@@ -37,8 +37,9 @@ namespace Backend
     extern void push_state();
     extern void pop_state();
 
-    extern bool buffer_create( Buffer &buffer, const float_32 *data, uint_32 float_count);
+    extern bool buffer_create( Buffer &buffer, const float_32 *data, const uint_32 count);
     extern void buffer_destroy( Buffer &buffer );
+
     extern void mesh_draw( const Mesh &mesh, TopologiePrimitiveType primitive_type );
 
     extern bool shader_create_from_source(
@@ -46,8 +47,9 @@ namespace Backend
         const char* vertex_src,
         const char* fragment_src
     );
-    extern void shader_destroy( Shader& shader );
+
     extern void bind_shader( const Shader& shader );
+    extern void shader_destroy( Shader& shader );
     extern void set_shader_color( const Shader& shader, const Color& color );
 
     extern void draw_obj( const Descriptor &desc );

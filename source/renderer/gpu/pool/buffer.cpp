@@ -1,92 +1,104 @@
-#include <renderer/gpu/pool/buffer.hpp>
+#include <renderer/gpu/pool.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
-namespace
+static Slot<Buffer> slots[ Limits::Max_Buffers ] = {};
+static bool initialized = false_value;
+
+//bool Pool::init()
+//{
+//	if ( initialized ) return false_value;
+//
+//	for ( Slot<Buffer>& slot : slots ) {
+//		slot = {};
+//	}
+//
+//	initialized = true_value;
+//
+//	return true_value;
+//}
+//
+//void Pool::shutdown()
+//{
+//	if ( !initialized ) return;
+//
+//	for ( Slot<Buffer>& slot : slots )
+//    {
+//        if ( slot.alive )
+//            slot.value.destroy();
+//
+//        slot = {};
+//    }
+//}
+
+BufferHandle Pool::create_buffer( const float_32* data, const uint_32 count )
 {
-    struct Slot
+	if ( !initialized ) init();
+
+    for ( Slot<Buffer>& slot : slots )
     {
-        Buffer value = {};
-        uint_32 generation = 0;
-        bool alive = false;
-    };
+        if ( slot.alive ) continue;
 
-    Slot g_slots[Limits::Max_Buffers];
-    bool g_initialized = false_value;
-}
+        if ( !slot.value.create(data, count ) ) return {};
 
-bool BufferPool::init()
-{
-    if (g_initialized)
-        return true_value;
+        ++slot.generation;
+        if ( slot.generation == 0 ) slot.generation = 1;
 
-    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
-        g_slots[i] = {};
+        slot.alive = true_value;
 
-    g_initialized = true_value;
-    return true_value;
-}
-
-void BufferPool::shutdown()
-{
-    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
-    {
-        if (g_slots[i].alive)
-            g_slots[i].value.destroy();
-        g_slots[i] = {};
-    }
-
-    g_initialized = false_value;
-}
-
-BufferHandle BufferPool::create(const float_32* data, uint_32 count)
-{
-    if (!g_initialized)
-        init();
-
-    for (uint_32 i = 0; i < Limits::Max_Buffers; ++i)
-    {
-        Slot& s = g_slots[i];
-        if (s.alive)
-            continue;
-
-        if (!s.value.create(data, count))
-            return {};
-
-        ++s.generation;
-        if (s.generation == 0)
-            s.generation = 1;
-
-        s.alive = true;
-        return { i, s.generation };
+		const uint_32 index = &slot - slots;
+        return { index, slot.generation };
     }
 
     return {};
 }
 
-bool BufferPool::destroy( BufferHandle h )
+bool Pool::update_buffer( BufferHandle handle, const Buffer& resource )
 {
-    if (!h.is_valid() || h.index >= Limits::Max_Buffers)
-        return false;
-
-    Slot& s = g_slots[h.index];
-
-    if (!s.alive || s.generation != h.generation)
-        return false;
-
-    s.value.destroy();
-    s.alive = false;
-    return true;
+    // ..
+	return true_value;
 }
 
-Buffer* BufferPool::get( BufferHandle h )
+Buffer* Pool::get_buffer( BufferHandle handle )
 {
-    if (!h.is_valid() || h.index >= Limits::Max_Buffers)
+	if ( !handle.is_valid() || handle.index >= Limits::Max_Buffers ) return nullptr;
+
+    Slot<Buffer>& slot = slots[ handle.index ];
+
+    if ( !slot.alive || slot.generation != handle.generation )
         return nullptr;
 
-    Slot& s = g_slots[h.index];
+    return &slot.value;
+}
 
-    if (!s.alive || s.generation != h.generation)
-        return nullptr;
+bool Pool::exist_buffer( BufferHandle handle )
+{
+    return  handle.is_valid() &&
+        handle.index < Limits::Max_Buffers &&
+        slots[handle.index].alive &&
+        ( slots[handle.index].generation == handle.generation );
+}
 
-    return &s.value;
+//signed_size Pool::size()
+//{
+//	return ARRAY_SIZE( slots );
+//}
+//
+//signed_size Pool::capacity()
+//{
+//	return Limits::Max_Buffers;
+//}
+
+bool Pool::destroy_buffer( BufferHandle handle )
+{
+	if ( !handle.is_valid() || handle.index >= Limits::Max_Buffers ) return false_value;
+
+    Slot<Buffer>& slot = slots[ handle.index ];
+
+    if ( !slot.alive || slot.generation != handle.generation)
+        return false;
+
+    slot.value.destroy();
+    slot.alive = false_value;
+
+    return true_value;
 }

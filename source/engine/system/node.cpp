@@ -10,6 +10,8 @@
 #include <vendor/libc/string.hpp>
 #include <vendor/libc/math.hpp>
 
+#include <renderer/gpu/pool.hpp>
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Internal storage
 
@@ -460,7 +462,7 @@ NodeHandle Scene::spawn_drawable(
     NodeSystem::set_local_position( handle, x, y, z );
     NodeSystem::set_local_scale( handle, sx, sy, sz );
 
-    DescriptorHandle desc = Factory::create_descriptor(
+    DescriptorHandle desc = Pool::create_descriptor(
         DescriptorBuilder()
             .type( type )
             .context( ContextType_3D )
@@ -496,7 +498,7 @@ NodeHandle Scene::spawn_cube_child(
     NodeSystem::set_local_position( handle, x, y, z );
     NodeSystem::set_local_scale( handle, sx, sy, sz );
 
-    DescriptorHandle desc = Factory::create_descriptor(
+    DescriptorHandle desc = Pool::create_descriptor(
         DescriptorBuilder()
             .type( DrawType_Cube )
             .context( ContextType_3D )

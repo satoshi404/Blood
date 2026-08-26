@@ -11,6 +11,8 @@
 #include <engine/system/node.hpp>
 #include <engine/system/component.hpp>
 
+#include <renderer/gpu/pool.hpp>
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static RenderQueueHandle g_main_queue = {};
@@ -34,11 +36,10 @@ static void collect_renderables( NodeHandle handle, RenderQueue* queue )
 
     if ( node->visible && node->descriptor.is_valid() )
     {
-        // Sync world transform -> GPU descriptor
-        if ( Descriptor* des = Factory::get_descriptor_mutable( node->descriptor ) )
+        if ( Descriptor* descriptor = Pool::get_descriptor( node->descriptor ) )
         {
-            des->transform = node->world;
-            des->dirty     = true_value;
+            descriptor->transform = node->world;
+            descriptor->dirty     = true_value;
         }
         queue->push( node->descriptor );
     }

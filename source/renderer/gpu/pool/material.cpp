@@ -1,67 +1,57 @@
-#include <renderer/gpu/pool/material.hpp>
+#include <renderer/gpu/pool.hpp>
 #include <renderer/gpu/core/limits.hpp>
 #include <core/debug.hpp>
 
-namespace
+static Slot<Material> slots[ Limits::Max_Materials ] = {};
+
+
+// TODO: Init
+static bool initialized = true_value;
+
+// Todo:
+static bool valid_handle( MaterialHandle handle )
 {
-    struct Slot
-    {
-        Material value      = {};
-        uint_32  generation = 0;
-        bool     alive      = false_value;
-    };
-
-    Slot    g_slots[ Limits::Max_Materials ];
-    uint_32 g_count       = 0;
-    bool    g_initialized = false_value;
-
-    bool valid_handle( MaterialHandle handle )
-    {
-        return handle.is_valid()
-            && handle.index < Limits::Max_Materials
-            && g_slots[ handle.index ].alive
-            && g_slots[ handle.index ].generation == handle.generation;
-    }
+    return
+    (
+        handle.is_valid() &&
+        handle.index < Limits::Max_Materials &&
+        slots[handle.index].alive &&
+        ( slots[handle.index].generation == handle.generation )
+    );
 }
 
-bool MaterialPool::init()
+// TODO: init all
+//bool Pool::init()
+//{
+//    if ( initialized ) return true_value;
+//
+//    for ( Slot<Material>& slot : slots ) slot = {};
+//
+//    initialized = true_value;
+//
+//    return true_value;
+//}
+//
+//void Pool::free()
+//{
+//    if ( !initialized ) return;
+//
+//    for ( Slot<Material>& slot : slots ) slot = {};
+//
+//    initialized = false_value;
+//}
+
+MaterialHandle Pool::create_material( const Material& material )
 {
-    if ( g_initialized )
-        return true_value;
-
-    for ( uint_32 i = 0; i < Limits::Max_Materials; ++i )
-        g_slots[ i ] = {};
-
-    g_count       = 0;
-    g_initialized = true_value;
-    return true_value;
-}
-
-void MaterialPool::shutdown()
-{
-    if ( !g_initialized )
-        return;
-
-    for ( uint_32 i = 0; i < Limits::Max_Materials; ++i )
-        g_slots[ i ] = {};
-
-    g_count       = 0;
-    g_initialized = false_value;
-}
-
-MaterialHandle MaterialPool::create( const Material& material )
-{
-    if ( !g_initialized )
+    if ( !initialized )
     {
-        Debug::Println( PrintColorType_Red, "[MaterialPool] create antes de init" );
+        Debug::Println( PrintColorType_Red, "[Pool::Material] create antes de init" );
         return {};
     }
 
-    for ( uint_32 i = 0; i < Limits::Max_Materials; ++i )
+    for ( Slot<Material>& slot : slots )
     {
-        Slot& slot = g_slots[ i ];
-        if ( slot.alive )
-            continue;
+        if ( slot.alive ) continue;
 
         slot.generation++;
         if ( slot.generation == 0 )
@@ -69,9 +59,9 @@ MaterialHandle MaterialPool::create( const Material& material )
 
         slot.value = material;
         slot.alive = true_value;
-        ++g_count;
 
-        return { i, slot.generation };
+        const uint_32 index = &slot - slots;
+        return { index, slot.generation };
     }
 
     Debug::Println(
@@ -82,50 +72,40 @@ MaterialHandle MaterialPool::create( const Material& material )
     return {};
 }
 
-bool MaterialPool::update( MaterialHandle handle, const Material& material )
+bool Pool::update_material( MaterialHandle handle, const Material& material )
 {
-    if ( !valid_handle( handle ) )
-        return false_value;
+    if ( !valid_handle( handle ) ) return false_value;
 
-    g_slots[ handle.index ].value = material;
+    slots[ handle.index ].value = material;
     return true_value;
 }
 
-bool MaterialPool::destroy( MaterialHandle handle )
+bool Pool::destroy_material( MaterialHandle handle )
 {
-    if ( !valid_handle( handle ) )
-        return false_value;
+    if ( !valid_handle( handle ) ) return false_value;
 
-    g_slots[ handle.index ].value = {};
-    g_slots[ handle.index ].alive = false_value;
-
-    if ( g_count > 0 )
-        --g_count;
+    slots[ handle.index ].value = {};
+    slots[ handle.index ].alive = false_value;
 
     return true_value;
 }
 
-Material* MaterialPool::get( MaterialHandle handle )
+Material* Pool::get_material( MaterialHandle handle )
 {
-    return valid_handle( handle ) ? &g_slots[ handle.index ].value : nullptr;
+    return valid_handle( handle ) ? & slots[ handle.index ].value : nullptr;
 }
 
-const Material* MaterialPool::get_const( MaterialHandle handle )
-{
-    return get( handle );
-}
-
-bool MaterialPool::exists( MaterialHandle handle )
+bool Pool::exist_material( MaterialHandle handle )
 {
     return valid_handle( handle );
 }
 
-uint_32 MaterialPool::size()
-{
-    return g_count;
-}
-
-uint_32 MaterialPool::capacity()
-{
-    return Limits::Max_Materials;
-}
+//uint_32 MaterialPool::size()
+//{
+//    return g_count;
+//}
+//
+//uint_32 MaterialPool::capacity()
+//{
+//    return Limits::Max_Materials;
+//}
