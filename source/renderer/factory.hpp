@@ -116,37 +116,4 @@ namespace Factory
         return Command::execute_queue( queue, label );
     }
 
-    INLINE RenderPass make_simple_pass(
-        const int_32 x, const int_32 y, const int_32 width, const int_32 height,
-        RenderQueueHandle queue,
-        ContextType context_type,
-        Color color,
-        const char* label = nullptr
-    )
-    {
-        RenderPass pass;
-        pass.viewport = { x, y, width, height };
-        pass.queue = queue;
-        pass.color.load_op = LoadOpType_Clear;
-
-        Color normal_color = color.normalized();
-
-        const float_32 r = normal_color.r;
-        const float_32 g = normal_color.g;
-        const float_32 b = normal_color.b;
-        const float_32 a = normal_color.a;
-
-        pass.color.clear = { r, g, b, a };
-        pass.clear_enabled = true_value;
-        pass.context_type = context_type;
-
-        if ( label )
-        {
-            strncpy( pass.label, label, Limits::Label_Size - 1 );
-            pass.label[ Limits::Label_Size - 1] = '\0';
-        }
-
-        return pass;
-    }
-
 }

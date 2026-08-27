@@ -46,16 +46,22 @@ GLOBAL void _start()
 
     scene.spawn_cube_child( g_player, "Hat", 0.f, 0.6f, 0.f, 0.3f, 0.3f, 0.3f );
 
-	g_unlit = Pool::create_shader( { .label = "shader" } );
+    Shader shader;
+    Backend::set_shader_color(shader, RedColor );
+	g_unlit = Pool::create_shader( shader );
+
+   // shader = *Pool::get_shader( g_unlit );
+   // Backend::shader_create_from_source( shader, FS, VS );
+
 
 	Material red = {};
     red.color = RedColor;      // { 1, 0, 0, 1 }
-	//red.shader = g_unlit;
+	red.shader = g_unlit;
     g_mat_red = Pool::create_material( red );
 
     Material green = {};
     green.color = GreenColor;  // { 0, 1, 0, 1 }
-	//green.shader = g_unlit;
+	green.shader = g_unlit;
     g_mat_green = Pool::create_material( green );
 
     // Liga material ao descriptor do node
