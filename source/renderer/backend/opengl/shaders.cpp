@@ -83,8 +83,9 @@ void Backend::shader_destroy( Shader& shader )
     shader.loc_mvp = shader.loc_color = -1;
 }
 
-void Backend::bind_shader( const Shader& shader )
+void Backend::bind_shader( Shader shader )
 {
+
     if ( shader.native_id )
         glUseProgram( shader.native_id );
     else

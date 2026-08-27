@@ -1,86 +1,119 @@
-#include <renderer/gpu/pool/texture.hpp>
+#include <renderer/gpu/pool.hpp>
 #include <renderer/gpu/core/limits.hpp>
 
-namespace
+
+static Slot<Texture> slots[ Limits::Max_Textures ];
+
+// TODO: Init
+static bool initialized = true_value; // false_value - but for test chenge to true
+
+// Todo:
+bool valid_handle( TextureHandle handle )
 {
-    struct Slot
+    return
+    (
+        handle.is_valid() &&
+        handle.index < Limits::Max_Textures &&
+        slots[handle.index].alive &&
+        ( slots[handle.index].generation == handle.generation )
+    );
+}
+
+// TODO:
+// bool Pool::init()
+// {
+//     if (initialized) return true_value;
+//
+//     for ( Slot<Texture>& slot : slots )
+//         slot = {};
+//
+//     initialized = true_value;
+//
+//     return true_value;
+// }
+//
+// void Pool::free()
+// {
+//     for ( Slot<Texture>& slot : slots )
+//         slot = {};
+//
+//     initialized = false_value;
+// }
+
+TextureHandle Pool::create_texture( const Texture& texture )
+{
+    if ( !initialized ) init();
+
+    for ( Slot<Texture>& slot : slots )
     {
-        Texture value = {};
-        uint_32 generation = 0;
-        bool alive = false;
-    };
+        if ( slot.alive ) continue;
 
-    Slot g_slots[ Limits::Max_Textures ];
-    bool g_initialized = false;
-}
+        ++slot.generation;
+        if (slot.generation == 0)
+            slot.generation = 1;
 
-bool TexturePool::init()
-{
-    if (g_initialized)
-        return true_value;
+        slot.value = texture;
+        slot.alive = true_value;
 
-    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
-        g_slots[i] = {};
-
-    g_initialized = true_value;
-    return true_value;
-}
-
-void TexturePool::shutdown()
-{
-    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
-        g_slots[i] = {};
-
-    g_initialized = false_value;
-}
-
-TextureHandle TexturePool::create( const Texture& texture )
-{
-    if (!g_initialized)
-        init();
-
-    for (uint_32 i = 0; i < Limits::Max_Textures; ++i)
-    {
-        Slot& s = g_slots[i];
-        if (s.alive)
-            continue;
-
-        ++s.generation;
-        if (s.generation == 0)
-            s.generation = 1;
-
-        s.value = texture;
-        s.alive = true;
-        return { i, s.generation };
+        const uint_32 index = &slot - slots;
+        return { index, slot.generation };
     }
 
     return {};
 }
 
-bool TexturePool::destroy( TextureHandle handle )
+bool Pool::update_texture( TextureHandle handle, const Texture& texture )
 {
-    if (!handle.is_valid() || handle.index >= Limits::Max_Textures)
+    if ( !valid_handle( handle ) )
         return false_value;
 
-    Slot& slot = g_slots[handle.index];
+    Slot<Texture>& slot = slots[ handle.index ];
+    slot.value = texture;
+
+    return true_value;
+}
+
+bool Pool::destroy_texture( TextureHandle handle )
+{
+    if ( !handle.is_valid() || handle.index >= Limits::Max_Textures )
+        return false_value;
+
+    Slot<Texture>& slot = slots[handle.index];
 
     if (!slot.alive || slot.generation != handle.generation)
         return false_value;
 
     slot.value = {};
     slot.alive = false_value;
-    return true;
+
+    return true_value;
 }
 
-Texture* TexturePool::get( TextureHandle h )
+Texture* Pool::get_texture( TextureHandle handle )
 {
-    if (!h.is_valid() || h.index >= Limits::Max_Textures)
+    if ( !handle.is_valid() || handle.index >= Limits::Max_Textures )
         return nullptr;
 
-    Slot& s = g_slots[h.index];
+    Slot<Texture>& slot = slots[ handle.index ];
 
-    if (!s.alive || s.generation != h.generation)
+    if ( !slot.alive || slot.generation != handle.generation )
         return nullptr;
 
-    return &s.value;
+    return &slot.value;
 }
+
+
+bool Pool::exist_texture( TextureHandle handle )
+{
+    return valid_handle( handle );
+}
+
+// signed_size Pool::size()
+// {
+//     return ARRAY_SIZE( slots );
+// }
+//
+// signed_size Pool::capacity()
+// {
+//     return Limits::Max_Textures;
+// }

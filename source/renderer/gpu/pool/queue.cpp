@@ -1,22 +1,15 @@
-#include <renderer/gpu/pool/queue.hpp>
+#include <renderer/gpu/pool.hpp>
 
-//#include <renderer/gpu/pool/descriptor.hpp>
-#include <renderer/gpu/core/limits.hpp>
 #include <core/debug.hpp>
+#include <vendor/libc/string.hpp>
 
-namespace
-{
-struct Slot
-{
-    RenderQueue value = {};
-    uint_32 generation = 0;
-    bool alive = false_value;
-};
+static Slot<RenderQueue> slots[ Limits::Max_Layers ];
 
- Slot slots[ Limits::Max_Layers ];
- uint_32  slot_size = 0;
+// TODO: Init
+static bool initialized = true_value;
 
-bool valid_handler( RenderQueueHandle handle )
+// Todo:
+bool valid_handle( RenderQueueHandle handle )
 {
     return
     (
@@ -26,35 +19,36 @@ bool valid_handler( RenderQueueHandle handle )
         ( slots[handle.index].generation == handle.generation )
     );
 }
-}
 
-bool RenderQueuePool::init()
+//bool Pool::init()
+//{
+//    for ( Slot<RenderQueue>& slot : slots )
+//	{
+//		slot = {};
+//		slot.generation = 0;
+//		slot.alive = false_value;
+//	}
+//
+//    initialized = true_value;
+//
+//    return true_value;
+//}
+//
+//void Pool::free()
+//{
+//     for ( Slot<RenderQueue>& slot : slots )
+//	 {
+//		slot = {};
+//	 }
+//
+//	 initialized = false_value;
+//}
+
+RenderQueueHandle Pool::create_queue( const char* label )
 {
-    for ( uint_32 i = 0; i < Limits::Max_Layers; ++i )
-	{
-		slots[ i ] = {};
-		slots[ i ].generation = 0;
-		slots[i].alive = false_value;
-	}
 
-    slot_size = 0;
-
-    return true_value;
-}
-
-void RenderQueuePool::shutdown()
-{
-	slot_size = 0;
-    for (uint_32 i = 0; i < Limits::Max_Layers; ++i) slots[i] = {};
-}
-
-RenderQueueHandle RenderQueuePool::create( const char* label )
-{
-
-    for ( uint_32 i = 0; i < Limits::Max_Layers; ++i )
+    for ( Slot<RenderQueue>& slot : slots )
     {
-        Slot &slot = slots[i];
-
 		if ( slot.alive ) continue;
 
 		slot.generation++;
@@ -73,48 +67,42 @@ RenderQueueHandle RenderQueuePool::create( const char* label )
 			slot.value.label[0] = '\0';
 		}
 
-		++slot_size;
-
-		RenderQueueHandle handle;
-
-		handle.index = i;
-		handle.generation = slot.generation;
-		return handle;
+		const uint_32 index = &slot - slots;
+		return { index, slot.generation };
 
 	}
     return {};
 }
 
-bool RenderQueuePool::destroy( RenderQueueHandle handle )
+bool Pool::destroy_queue( RenderQueueHandle handle )
 {
-    if (!exists( handle ))
-        return false_value;
+    if (!exist_queue( handle )) return false_value;
 
-    slots[handle.index].alive = false_value;
-	slots[handle.index].generation++;
-    slots[handle.index].value.clear();
+	Slot<RenderQueue>& slot = slots[ handle.index ];
 
-    if ( slot_size > 0 ) --slot_size;
+    slot.alive = false_value;
+	slot.generation++;
+    slot.value.clear();
 
     return true_value;
 }
 
-RenderQueue *RenderQueuePool::get( RenderQueueHandle handle )
+RenderQueue* Pool::get_queue( RenderQueueHandle handle )
 {
-	return valid_handler( handle ) ? &slots[ handle.index ].value : nullptr;
+	return valid_handle( handle ) ? &slots[ handle.index ].value : nullptr;
 }
 
-bool RenderQueuePool::exists( RenderQueueHandle handle )
+bool Pool::exist_queue( RenderQueueHandle handle )
 {
-   return  valid_handler( handle );
+   return  valid_handle( handle );
 }
 
-uint_32 RenderQueuePool::size()
-{
-    return slot_size;
-}
-
-uint_32 RenderQueuePool::capacity()
-{
-    return Limits::Max_Layers;
-}
+//signed_size Pool::size()
+//{
+//    return ARRAY_SIZE( slots );
+//}
+//
+//signed_size Pool::capacity()
+//{
+//    return Limits::Max_Layers;
+//}

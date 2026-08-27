@@ -46,7 +46,7 @@ GLOBAL void _start()
 
     scene.spawn_cube_child( g_player, "Hat", 0.f, 0.6f, 0.f, 0.3f, 0.3f, 0.3f );
 
-	g_unlit = Gpu::create_shader( VS, FS, "unlit_color" );
+	g_unlit = Pool::create_shader( { .label = "shader" } );
 
 	Material red = {};
     red.color = RedColor;      // { 1, 0, 0, 1 }

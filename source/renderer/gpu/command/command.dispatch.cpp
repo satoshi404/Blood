@@ -1,9 +1,9 @@
 #include <renderer/gpu/command/command.dispatch.hpp>
-//#include <renderer/gpu/pool/descriptor.hpp>
 #include <renderer/backend/backend.hpp>
-#include <core/debug.hpp>
 
 #include <renderer/gpu/pool.hpp>
+
+#include <core/debug.hpp>
 
 namespace
 {
@@ -81,7 +81,8 @@ void CommandDispatcher::execute(const Command& command)
             break;
 
         case CommandType_Bind_Texture:
-            Backend::bind_texture(command.commands.texture.texture, command.commands.texture.slot);
+            if ( !command.commands.texture.texture.is_valid() ) break;
+            Backend::bind_texture( command.commands.texture.texture, command.commands.texture.slot );
             break;
 
         case CommandType_Push_State:
@@ -115,8 +116,8 @@ void CommandDispatcher::execute(const Command& command)
 
         case CommandType_ExecuteRenderPass:
         {
-            RenderQueueHandle qh = command.commands.execute_pass.queue;
-            RenderQueue* queue = RenderQueuePool::get( qh );
+            RenderQueueHandle queue_handle = command.commands.execute_pass.queue;
+            RenderQueue* queue = Pool::get_queue( queue_handle );
             if ( !queue ) break;
 
             for ( uint_32 i = 0; i < queue->count; i++ )

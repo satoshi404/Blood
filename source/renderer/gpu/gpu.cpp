@@ -3,10 +3,6 @@
 #include <renderer/backend/backend.hpp>
 #include <renderer/gpu/command/command.dispatch.hpp>
 
-#include <renderer/gpu/pool/mesh.hpp>
-#include <renderer/gpu/pool/queue.hpp>
-#include <renderer/gpu/pool/shader.hpp>
-
 #include <renderer/gpu/pool.hpp>
 
 #include <core/debug.hpp>
@@ -22,20 +18,14 @@ bool Gpu::init()
     if (g_initialized)
         return true_value;
 
-    ShaderPool::init();
-    RenderQueuePool::init();
-
     Pool::init();
 
-    if (! Backend::init())
+    if ( !Backend::init() )
     {
         Debug::Println(
             PrintColorType_Red,
             "[Gpu] backend init falhou"
         );
-
-        ShaderPool::shutdown();
-        RenderQueuePool::shutdown();
 
         Pool::free();
 
@@ -59,8 +49,6 @@ void Gpu::shutdown()
         return;
 
     Backend::shutdown();
-    ShaderPool::shutdown();
-   // DescriptorPool::shutdown();
 
     Pool::free();
 
@@ -99,22 +87,4 @@ void Gpu::execute(const Command& command)
         return;
 
     CommandDispatcher::execute(command);
-}
-
-ShaderHandle Gpu::create_shader( const char* vs, const char* fs, const char* label )
-{
-    Shader s = {};
-    if ( !Backend::shader_create_from_source( s, vs, fs ) )
-        return {};
-    if ( label )
-        // copy label into s.label
-    return ShaderPool::create( s );
-}
-
-bool Gpu::destroy_shader( ShaderHandle handle )
-{
-    Shader* s = ShaderPool::get( handle );
-    if ( !s ) return false_value;
-    Backend::shader_destroy( *s );
-    return ShaderPool::destroy( handle );
 }

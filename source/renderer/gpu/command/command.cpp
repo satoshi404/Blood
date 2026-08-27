@@ -71,7 +71,7 @@ Command Command::transform(const Transform &value, const char *text)
     return command;
 }
 
-Command Command::material( const Material *value, const char *text)
+Command Command::material( Material *value, const char *text)
 {
     Command command;
     command.type = CommandType_Set_Material;

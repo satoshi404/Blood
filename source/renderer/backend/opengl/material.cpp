@@ -4,8 +4,9 @@
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-void Backend::bind_material( const Material& material )
+void Backend::bind_material( Material material )
 {
+
     if (material.native_shader_id == 0)
     {
         const GLfloat color[4] =
@@ -16,11 +17,11 @@ void Backend::bind_material( const Material& material )
             material.color.a
         };
 
-        glColor4fv(color);
+        glColor4fv( color );
     }
     else
     {
-        glUseProgram(material.native_shader_id);
+        glUseProgram( material.native_shader_id );
     }
 }
 

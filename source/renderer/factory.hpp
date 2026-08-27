@@ -27,20 +27,6 @@ namespace Factory
         return Gpu::statistics();
     }
 
-    INLINE RenderQueueHandle create_render_queue( const char* label = nullptr )
-    {
-        return RenderQueuePool::create( label );
-    }
-    INLINE bool destroy_render_queue( const RenderQueueHandle handle )
-    {
-        return RenderQueuePool::destroy( handle );
-    }
-
-    INLINE RenderQueue* get_render_queue( const RenderQueueHandle handle )
-    {
-        return RenderQueuePool::get( handle );
-    }
-
     INLINE Command make_draw_command(
         DescriptorHandle h,
         const char* label = nullptr)

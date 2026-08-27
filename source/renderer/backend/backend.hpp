@@ -11,7 +11,8 @@
 #include <renderer/gpu/state/state.hpp>
 #include <renderer/gpu/resource/buffer.hpp>
 #include <renderer/gpu/resource/mesh.hpp>
-#include <renderer/gpu/pool/queue.hpp>
+
+#include <renderer/gpu/pool.hpp>
 
 // TODO: New
 #include <renderer/gpu/resource/shader.hpp>
@@ -30,9 +31,9 @@ namespace Backend
     extern void set_transform( const Transform &transform );
     extern void set_render_state( const RenderState &state );
 
-    extern void bind_shader( ShaderHandle shader );
+    extern void bind_shader( Shader shader );
     extern void bind_texture( TextureHandle texture, uint_32 slot );
-    extern void bind_material( const Material& material );
+    extern void bind_material( Material material );
 
     extern void push_state();
     extern void pop_state();
@@ -48,7 +49,6 @@ namespace Backend
         const char* fragment_src
     );
 
-    extern void bind_shader( const Shader& shader );
     extern void shader_destroy( Shader& shader );
     extern void set_shader_color( const Shader& shader, const Color& color );
 

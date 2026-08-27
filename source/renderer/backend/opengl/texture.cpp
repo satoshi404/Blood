@@ -4,19 +4,13 @@
 
 #include <renderer/backend/opengl/opengl.hpp>
 
-void Backend::bind_texture( TextureHandle texture, const uint_32 slot )
+void Backend::bind_texture( TextureHandle handle, const uint_32 slot )
 {
-    if ( !texture.is_valid() ) return;
+    Texture* texture = Pool::get_texture( handle );
+    if ( !texture->is_valid() ) return;
 
     glActiveTexture( GL_TEXTURE0 + slot );
 }
 
-void Backend::bind_shader( ShaderHandle shader )
-{
-    if ( !shader.is_valid() )
-        return;
-
-    // ..
-}
 
 #endif

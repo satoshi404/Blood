@@ -22,13 +22,6 @@ namespace Gpu
     extern void new_frame();
     extern const Statistics& statistics();
 
-    ShaderHandle create_shader( const char* vs, const char* fs, const char* label = nullptr );
-    bool         destroy_shader( ShaderHandle handle );
-    Shader*      get_shader( ShaderHandle handle );
-
-    extern const Descriptor* get_descriptor( DescriptorHandle handle );
-    extern Descriptor* get_descriptor_mutable( DescriptorHandle handle );
-
     extern void submit( CommandList& command_list );
     extern void execute( const Command&  command_list );
 }

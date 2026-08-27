@@ -20,6 +20,7 @@ struct Color
         return *this;
     }
 
+    // TODO:
     Color& plus( const Color other )
     {
         return *this;

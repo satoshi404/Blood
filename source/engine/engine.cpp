@@ -56,7 +56,7 @@ bool Engine::init()
     if ( !ComponentSystem::init() ) return false_value;
     if ( !g_main_scene.init( "MainScene" ) ) return false_value;
 
-    g_main_queue = Factory::create_render_queue( "main" );
+    g_main_queue = Pool::create_queue( "main" );
     if ( !g_main_queue.is_valid() )
         return false_value;
 
@@ -98,7 +98,7 @@ void Engine::update()
         g_main_scene.update_transforms();
 
         // 3) Coletar o que o runtime adicionou e renderizar
-        RenderQueue* queue = Factory::get_render_queue( g_main_queue );
+        RenderQueue* queue = Pool::get_queue( g_main_queue );
         if ( queue )
         {
             queue->clear();

@@ -24,6 +24,8 @@ extern "C" void * CDECL memmove( void *dest, const void *src, usize n );
 extern "C" int CDECL memcmp( const void *ptr1, const void *ptr2, usize n );
 #endif
 
+#include <string.h>
+
 //extern "C" char* CDECL strchr( const char *str, int c );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

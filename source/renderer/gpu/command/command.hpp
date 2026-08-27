@@ -3,12 +3,16 @@
 #include <renderer/gpu/core/enums.hpp>
 #include <renderer/gpu/core/handles.hpp>
 #include <renderer/gpu/core/types.hpp>
+#include <renderer/gpu/core/limits.hpp>
+
 #include <renderer/gpu/state/transform.hpp>
 #include <renderer/gpu/state/state.hpp>
+
 #include <renderer/gpu/render/pass.hpp>
 #include <renderer/gpu/render/queue.hpp>
+
 #include <renderer/gpu/resource/material.hpp>
-#include <renderer/gpu/core/limits.hpp>
+#include <renderer/gpu/resource/texture.hpp>
 
 struct BeginRenderPassCommand
 {
@@ -27,7 +31,7 @@ struct DrawCommand
 
 struct MaterialCommand
 {
-    const Material* material = nullptr;
+    Material* material = nullptr;
     ShaderHandle shader = {};
     bool override_material = false_value;
 };
@@ -88,7 +92,7 @@ struct Command
     );
 
     static Command material(
-        const Material* value,
+        Material* value,
         const char* label = nullptr
     );
 
