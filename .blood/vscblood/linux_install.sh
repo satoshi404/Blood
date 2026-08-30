@@ -1,12 +1,10 @@
-#!/bin/sh
-
-VSIX_NAME=vscblood.vsix
+#!/bin /bash
 
 mkdir extension
-#cp -R syntax       extension/syntax
 cp -R extension.js extension
 cp -R package.json extension
 
-zip -rqm $VSIX_NAME extension
+zip -rqm vscblood.vsix extension
+codebin --install-extension vscblood.vsix
 
-~/Downloads/vscode/usr/share/code/bin/code --install-extension $VSIX_NAME
+rem -rf extension
